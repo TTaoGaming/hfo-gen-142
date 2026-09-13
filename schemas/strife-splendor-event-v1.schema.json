@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TTaoGaming/hfo-gen-142/schemas/strife-splendor-event-v1.schema.json",
+  "title": "Gen142 Strife/Splendor CloudEvent v1",
+  "type": "object",
+  "required": ["specversion", "id", "source", "type", "time", "datacontenttype", "data"],
+  "properties": {
+    "specversion": {"const": "1.0"},
+    "id": {"type": "string", "minLength": 1},
+    "source": {"type": "string", "format": "uri-reference"},
+    "type": {"enum": ["dev.worldweaver.strife.v1", "dev.worldweaver.splendor.v1"]},
+    "subject": {"type": "string"},
+    "time": {"type": "string", "format": "date-time", "pattern": "Z$"},
+    "datacontenttype": {"const": "application/json"},
+    "dataschema": {"type": "string", "format": "uri"},
+    "traceparent": {"type": "string"},
+    "tracestate": {"type": "string"},
+    "data": {
+      "type": "object",
+      "required": ["classification", "title", "summary", "domain", "age_band", "observed_utc", "evidence", "status", "claim_ceiling", "strongest_falsifier", "ablation_failure"],
+      "properties": {
+        "classification": {"enum": ["STRIFE", "SPLENDOR"]},
+        "title": {"type": "string", "minLength": 1},
+        "summary": {"type": "string", "minLength": 1},
+        "domain": {"type": "string", "minLength": 1},
+        "age_band": {"enum": ["RECENT", "MIDDLE", "DEEP", "CURRENT"]},
+        "observed_utc": {"type": "string", "format": "date-time", "pattern": "Z$"},
+        "fresh_until": {"type": ["string", "null"], "format": "date-time"},
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["evidence_id", "kind", "content_sha256", "visibility"],
+            "properties": {
+              "evidence_id": {"type": "string"},
+              "kind": {"enum": ["GITHUB", "DRIVE", "RUNTIME", "WEB", "TEST", "HUMAN_OBSERVATION", "OTHER"]},
+              "ref": {"type": ["string", "null"]},
+              "content_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+              "visibility": {"enum": ["PUBLIC", "PRIVATE", "SANITIZED"]},
+              "observed_utc": {"type": ["string", "null"], "format": "date-time"}
+            },
+            "additionalProperties": false
+          }
+        },
+        "prov": {
+          "type": "object",
+          "properties": {
+            "entity_ids": {"type": "array", "items": {"type": "string"}},
+            "activity_id": {"type": ["string", "null"]},
+            "agent_id": {"type": ["string", "null"]},
+            "was_derived_from": {"type": "array", "items": {"type": "string"}},
+            "used": {"type": "array", "items": {"type": "string"}}
+          },
+          "additionalProperties": false
+        },
+        "status": {"enum": ["OBSERVED", "SOURCED", "FALSIFIED", "CORROBORATED", "CONSUMED", "ADOPTED", "HOLD", "KILL", "SUPERSEDED"]},
+        "claim_ceiling": {"type": "string"},
+        "effect_ceiling": {"type": ["string", "null"]},
+        "strongest_falsifier": {"type": "string"},
+        "ablation_failure": {"type": "string"},
+        "guard_or_mechanism": {"type": ["string", "null"]},
+        "consumer_refs": {"type": "array", "items": {"type": "string"}},
+        "supersedes": {"type": "array", "items": {"type": "string"}},
+        "tags": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}
