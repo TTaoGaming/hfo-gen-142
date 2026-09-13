@@ -1,0 +1,26 @@
+{
+  "title": "Gen142 Knowledge Event v0",
+  "required": ["event_id", "carrier_uuid", "kind", "domain", "statement", "observed_utc", "source_refs", "content_hash", "parent_ids", "visibility", "claim_ceiling", "strongest_falsifier"],
+  "kind_values": ["OBSERVATION", "CLAIM", "SCAR", "RULE", "SKILL", "DECISION", "CONFLICT", "CONSUMER_ACK", "SUPERSEDE"],
+  "status_values": ["PROPOSED", "CORROBORATED", "ACCEPTED", "FALSIFIED", "CONFLICT", "STALE_UNKNOWN", "SUPERSEDED"],
+  "visibility_values": ["PUBLIC", "PRIVATE", "SECRET_REF_ONLY"],
+  "fields": {
+    "event_id": "string",
+    "carrier_uuid": "uuid",
+    "kind": "enum",
+    "domain": "string",
+    "statement": "string",
+    "status": "enum",
+    "observed_utc": "date-time",
+    "fresh_until": "date-time|null",
+    "source_refs": "string[]",
+    "content_hash": "string",
+    "parent_ids": "string[]",
+    "visibility": "enum",
+    "claim_ceiling": "string",
+    "strongest_falsifier": "string",
+    "verifier_refs": "string[]",
+    "consumer_refs": "string[]",
+    "supersedes": "string[]"
+  }
+}
