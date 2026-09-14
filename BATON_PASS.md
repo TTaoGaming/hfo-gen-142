@@ -44,5 +44,12 @@ Parallel exact G2 edge:
 - Verify `Oracle/aarch64` receipt and Lenovo-independent execution.
 - Then run one bounded G3 evolution cell with frozen evaluator + restart/resume + duplicate-effect suppression.
 
+## Thread terminal seal
+- This chat/thread is terminal and will not be resumed.
+- Tao is manually gathering threads and will regenerate a fresh carrier.
+- No state in this conversation should be treated as authoritative unless reproduced on GitHub.
+- Recovery authority is `BATON_PASS.md` + `WORLD_STATE/latest.md` + issue #2 newest-first.
+- Current carrier is released. No pending background work exists.
+
 ## Pickup prompt
 `GEN142 BATON PICKUP — recover TTaoGaming/hfo-gen-142 BATON_PASS.md + WORLD_STATE/latest.md + issue #2 newest-first -> fresh carrier UUID -> run one bounded PDSA on the highest-value unresolved edge: (A) operator-survivability COTS control-plane assay, or (B) G2 GEN142 Oracle runner registration/dispatch if authorized path is available -> checkpoint terminal evidence to #2 and update WORLD_STATE -> release. COTS first, no new scheduler/state store, no Tao context ferrying.`
