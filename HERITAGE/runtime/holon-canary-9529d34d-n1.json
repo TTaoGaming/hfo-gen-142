@@ -1,0 +1,42 @@
+﻿{
+  "actor_state_patch": {
+    "actor_id": "SIGRUN-GEN142",
+    "heritage_event_ids": [
+      "sha256:deaca8771667521e0c9613f7face8936a6e19e995c5924de8bf78bd70070bd43",
+      "sha256:d8c731b2240c28868373e5a58dea75e321592a90b6f743f1b225fdc7a02aa33d"
+    ],
+    "last_verified_transition": "sha256:d8c731b2240c28868373e5a58dea75e321592a90b6f743f1b225fdc7a02aa33d",
+    "skills": [
+      {
+        "donor_actor_id": "SIGRUN-GEN142",
+        "mutation_of": null,
+        "provenance_event": "sha256:deaca8771667521e0c9613f7face8936a6e19e995c5924de8bf78bd70070bd43",
+        "skill_id": "carrier.frontier.kimi.exact-output",
+        "skill_version": "v1"
+      }
+    ]
+  },
+  "claim_ceiling": "DETERMINISTIC_HERITAGE_PROMOTION_ONLY__NO_QUEUE_LEASE_PROVIDER_OR_EXTERNAL_SUBMIT_AUTHORITY",
+  "code": "VERIFIED_EFFECT_ADMITTED",
+  "heritage_event": {
+    "actor_id": "SIGRUN-GEN142",
+    "carrier_episode_id": "sha256:7455a8c55c9cf4cca6b858ead031d56a8c67dfebae512c5d76f06b6b0ecf259a",
+    "consumer_ack_ref": "durable-readback:593dce03fd17d332ae7488a5f1f74e5755349277c4e5a731b377d19dc1f8da19",
+    "event_class": "VERIFIED_MISSION_EFFECT",
+    "event_id": "sha256:d8c731b2240c28868373e5a58dea75e321592a90b6f743f1b225fdc7a02aa33d",
+    "mission_id": "HOLON-CANARY-9529D34D-N1",
+    "model": "kimi-for-coding",
+    "observed_utc": "2026-09-14T19:26:53Z",
+    "operator_touches": 0,
+    "output_ref": "HERITAGE/runtime/holon-canary-9529d34d-n1.kimi.jsonl",
+    "output_sha256": "0de679dbfd7171bf387fb6502157dd69ad8066ce6f5df5db3f67bb12a1e1944c",
+    "provider": "managed:kimi-code",
+    "provider_tier": "FRONTIER",
+    "verifier_class": "FROZEN_MECHANICAL_VERIFIER",
+    "verifier_receipt_ref": "exact-match:HOLON_GEN142_N1_SKILL_REUSED_PASS"
+  },
+  "next_mission_ready": true,
+  "promoted_skill": null,
+  "promotion_allowed": false,
+  "state": "PROMOTE"
+}

@@ -89,11 +89,36 @@ class HolonKernelTests(unittest.TestCase):
         self.assertEqual(out["code"], "BLOCK_SELF_AWARD")
 
 
+    def test_replay_event_id_is_deterministic(self) -> None:
+        first = mod.reduce_transition(payload())
+        second = mod.reduce_transition(payload())
+        self.assertEqual(first["heritage_event"]["event_id"], second["heritage_event"]["event_id"])
+
+    def test_required_skill_survives_into_next_mission(self) -> None:
+        first = mod.reduce_transition(payload())
+        p = payload()
+        p["actor"] = first["actor_state_patch"]
+        p["mission"]["mission_id"] = "M2"
+        p["mission"]["required_skills"] = [{"skill_id":"carrier.frontier.exact-output","skill_version":"v1"}]
+        p["carrier"]["carrier_episode_id"] = "E2"
+        p.pop("skill_candidate")
+        out = mod.reduce_transition(p)
+        self.assertEqual(out["state"], "PROMOTE")
+        self.assertTrue(out["next_mission_ready"])
+        self.assertEqual(len(out["actor_state_patch"]["heritage_event_ids"]), 2)
+
+    def test_missing_required_skill_holds_before_effect(self) -> None:
+        p = payload()
+        p["mission"]["required_skills"] = [{"skill_id":"missing","skill_version":"v9"}]
+        out = mod.reduce_transition(p)
+        self.assertEqual(out["code"], "BLOCK_REQUIRED_SKILL_MISSING")
+
+    def test_event_id_matches_immutable_event_payload(self) -> None:
+        out = mod.reduce_transition(payload())
+        event = dict(out["heritage_event"])
+        event_id = event.pop("event_id")
+        self.assertEqual(event_id, mod._event_id(event))
+
+
 if __name__ == "__main__":
     unittest.main()
-
-# Determinism is a replay invariant: the same verified transition yields the same event id.
-def test_replay_event_id_is_deterministic() -> None:
-    first = mod.reduce_transition(payload())
-    second = mod.reduce_transition(payload())
-    assert first["heritage_event"]["event_id"] == second["heritage_event"]["event_id"]

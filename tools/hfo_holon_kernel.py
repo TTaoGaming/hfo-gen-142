@@ -74,6 +74,24 @@ def reduce_transition(payload: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(receipts, list) or not receipts:
         return _hold("BLOCK_UNQUALIFIED_CARRIER", "qualification_receipts required")
 
+    actor_skills = actor.get("skills", [])
+    required_skills = mission.get("required_skills", [])
+    if not isinstance(actor_skills, list) or not isinstance(required_skills, list):
+        raise ValueError("actor.skills and mission.required_skills must be lists")
+    actor_skill_keys = {
+        (str(s.get("skill_id")), str(s.get("skill_version")))
+        for s in actor_skills if isinstance(s, dict)
+    }
+    missing_skills = []
+    for required in required_skills:
+        if not isinstance(required, dict):
+            raise ValueError("required_skills entries must be objects")
+        key = (_require_text(required, "skill_id"), _require_text(required, "skill_version"))
+        if key not in actor_skill_keys:
+            missing_skills.append({"skill_id": key[0], "skill_version": key[1]})
+    if missing_skills:
+        return _hold("BLOCK_REQUIRED_SKILL_MISSING", json.dumps(missing_skills, sort_keys=True))
+
     terminal = result.get("terminal_state")
     verifier_class = result.get("verifier_class")
     verifier_pass = result.get("verifier_pass") is True
@@ -146,16 +164,36 @@ def reduce_transition(payload: dict[str, Any]) -> dict[str, Any]:
         event["skill_promotion"] = promoted_skill
 
     event["event_id"] = _event_id(event)
+    promoted_with_provenance = None
     if promoted_skill is not None:
-        promoted_skill["provenance_event"] = event["event_id"]
+        promoted_with_provenance = {**promoted_skill, "provenance_event": event["event_id"]}
+
+    updated_skills = list(actor_skills)
+    if promoted_with_provenance is not None:
+        promoted_key = (promoted_with_provenance["skill_id"], promoted_with_provenance["skill_version"])
+        updated_skills = [
+            s for s in updated_skills
+            if not (isinstance(s, dict) and (str(s.get("skill_id")), str(s.get("skill_version"))) == promoted_key)
+        ]
+        updated_skills.append(promoted_with_provenance)
+    heritage_ids = actor.get("heritage_event_ids", [])
+    if not isinstance(heritage_ids, list):
+        raise ValueError("actor.heritage_event_ids must be a list")
+    actor_state_patch = {
+        "actor_id": actor_id,
+        "skills": updated_skills,
+        "heritage_event_ids": [*heritage_ids, event["event_id"]],
+        "last_verified_transition": event["event_id"],
+    }
 
     return {
         "state": "PROMOTE",
         "code": "VERIFIED_EFFECT_ADMITTED",
         "next_mission_ready": True,
-        "promotion_allowed": promoted_skill is not None,
+        "promotion_allowed": promoted_with_provenance is not None,
         "heritage_event": event,
-        "promoted_skill": promoted_skill,
+        "promoted_skill": promoted_with_provenance,
+        "actor_state_patch": actor_state_patch,
         "claim_ceiling": (
             "DETERMINISTIC_HERITAGE_PROMOTION_ONLY__"
             "NO_QUEUE_LEASE_PROVIDER_OR_EXTERNAL_SUBMIT_AUTHORITY"

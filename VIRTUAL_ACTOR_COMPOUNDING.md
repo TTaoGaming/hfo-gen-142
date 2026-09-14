@@ -50,3 +50,9 @@ For a frontier mission it rejects non-frontier substitution. Promotion requires 
 The first live carrier assay is persisted under `HERITAGE/runtime/holon-canary-9529d34d.*`: a managed Kimi frontier carrier produced the frozen sentinel, mechanical verification passed, the result was durably read back, and the reducer emitted a provenance-bound skill promotion with `next_mission_ready=true`.
 
 This proves the actor→carrier→verifier→heritage seam mechanically. It does **not** yet prove Cloudflare-hosted unattended N+1 dispatch, cross-actor transfer, or the 20-episode/8-hour soak gate.
+
+### N+1 carrier-replacement assay
+
+A second fresh Kimi carrier episode consumed the actor-state patch from the first verified mission. Mission N+1 explicitly required `carrier.frontier.kimi.exact-output@v1`; the reducer admitted it only because that skill survived in Sigrun's actor state with donor/provenance intact. N+1 independently exact-matched a new sentinel, appended a second immutable heritage event, and returned `next_mission_ready=true` with zero operator touches in the carrier result.
+
+This closes carrier replacement + skill survival at the deterministic reducer boundary. The remaining live-runtime seam is to make the deployed Cloudflare durable actor consume equivalent verified receipts and advance N+1 automatically; the currently deployed native scout loops/researches but does not yet promote verifier-backed skills into its durable state.

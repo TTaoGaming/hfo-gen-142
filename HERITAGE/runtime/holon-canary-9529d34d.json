@@ -1,4 +1,20 @@
 ﻿{
+  "actor_state_patch": {
+    "actor_id": "SIGRUN-GEN142",
+    "heritage_event_ids": [
+      "sha256:deaca8771667521e0c9613f7face8936a6e19e995c5924de8bf78bd70070bd43"
+    ],
+    "last_verified_transition": "sha256:deaca8771667521e0c9613f7face8936a6e19e995c5924de8bf78bd70070bd43",
+    "skills": [
+      {
+        "donor_actor_id": "SIGRUN-GEN142",
+        "mutation_of": null,
+        "provenance_event": "sha256:deaca8771667521e0c9613f7face8936a6e19e995c5924de8bf78bd70070bd43",
+        "skill_id": "carrier.frontier.kimi.exact-output",
+        "skill_version": "v1"
+      }
+    ]
+  },
   "claim_ceiling": "DETERMINISTIC_HERITAGE_PROMOTION_ONLY__NO_QUEUE_LEASE_PROVIDER_OR_EXTERNAL_SUBMIT_AUTHORITY",
   "code": "VERIFIED_EFFECT_ADMITTED",
   "heritage_event": {
@@ -18,7 +34,7 @@
     "skill_promotion": {
       "donor_actor_id": "SIGRUN-GEN142",
       "mutation_of": null,
-      "provenance_event": "sha256:deaca8771667521e0c9613f7face8936a6e19e995c5924de8bf78bd70070bd43",
+      "provenance_event": null,
       "skill_id": "carrier.frontier.kimi.exact-output",
       "skill_version": "v1"
     },
