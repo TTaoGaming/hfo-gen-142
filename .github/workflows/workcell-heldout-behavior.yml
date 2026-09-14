@@ -1,0 +1,27 @@
+name: workcell-heldout-behavior
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'heldout/test_workcell_runtime_v1_behavior.py'
+      - 'tools/workcell_runtime_v1.py'
+      - 'tools/select_research_workitem.py'
+      - 'tools/terminal_handoff_gate.py'
+      - '.github/workflows/workcell-heldout-behavior.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  behavior:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run held-out black-box behavior assays
+        run: python -m unittest heldout.test_workcell_runtime_v1_behavior -v
