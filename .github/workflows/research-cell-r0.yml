@@ -74,9 +74,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           MARKER: ${{ steps.select.outputs.marker }}
+          SELECTION_SHA: ${{ steps.select.outputs.selection_sha }}
         run: |
           set -euo pipefail
-          body="$(cat "$RUNNER_TEMP/research-cell/report.md")"$'\n\n'"Selection SHA256: `${{ steps.select.outputs.selection_sha }}`"$'\n\n'"$MARKER"
+          body="$(cat "$RUNNER_TEMP/research-cell/report.md")"$'\n\n'"Selection SHA256: $SELECTION_SHA"$'\n\n'"$MARKER"
           response="$(jq -n --arg body "$body" '{body:$body}' | gh api "repos/${GITHUB_REPOSITORY}/issues/${ISSUE}/comments" --method POST --input -)"
           echo "url=$(jq -r .html_url <<<"$response")" >> "$GITHUB_OUTPUT"
           echo "id=$(jq -r .id <<<"$response")" >> "$GITHUB_OUTPUT"
