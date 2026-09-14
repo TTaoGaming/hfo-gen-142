@@ -6,6 +6,7 @@ on:
     paths:
       - 'AGENTS.md'
       - 'GATEWAY.md'
+      - 'BURROW.md'
       - 'HOLON_MISSION_COMMAND_CONTRACT.md'
       - '.agents/skills/twinling-pdsa/SKILL.md'
       - '.agents/skills/roach-fanin/SKILL.md'
@@ -17,6 +18,7 @@ on:
     paths:
       - 'AGENTS.md'
       - 'GATEWAY.md'
+      - 'BURROW.md'
       - 'HOLON_MISSION_COMMAND_CONTRACT.md'
       - '.agents/skills/twinling-pdsa/SKILL.md'
       - '.agents/skills/roach-fanin/SKILL.md'
@@ -43,6 +45,7 @@ jobs:
           set -euo pipefail
           active=(
             GATEWAY.md
+            BURROW.md
             .agents/skills/twinling-pdsa/SKILL.md
             .agents/skills/roach-fanin/SKILL.md
             .agents/skills/hive-integration/SKILL.md
@@ -58,12 +61,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          skills=(
+          surfaces=(
+            BURROW.md
             .agents/skills/twinling-pdsa/SKILL.md
             .agents/skills/roach-fanin/SKILL.md
             .agents/skills/hive-integration/SKILL.md
           )
-          for file in "${skills[@]}"; do
+          for file in "${surfaces[@]}"; do
             grep -q 'terminal_handoff_gate.py' "$file"
             grep -q 'next_handoff:' "$file"
           done
