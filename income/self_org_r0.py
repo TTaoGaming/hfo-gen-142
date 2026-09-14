@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 REPO = os.getenv("HFO_REPO", "TTaoGaming/hfo-gen-142")
 ISSUE = int(os.getenv("HFO_ISSUE", "7"))
 MODEL = os.getenv("HFO_OLLAMA_MODEL", "granite4.2:3b-q4_K_M")
+NEURAL_TIMEOUT = float(os.getenv("HFO_NEURAL_TIMEOUT", "8"))
 API = "https://api.github.com"
 RAW = "https://raw.githubusercontent.com"
 UA = {"User-Agent": "gen142-income-selforg-r0"}
@@ -17,7 +18,7 @@ def get_json(url):
 def post_json(url, payload):
     data = json.dumps(payload).encode()
     req = urllib.request.Request(url, data=data, headers={"Content-Type":"application/json"})
-    with urllib.request.urlopen(req, timeout=90) as r:
+    with urllib.request.urlopen(req, timeout=NEURAL_TIMEOUT) as r:
         return json.load(r)
 
 def extract_json(text):
@@ -29,7 +30,6 @@ def extract_json(text):
 
 def main():
     config = get_json(f"{RAW}/{REPO}/main/income/self_org_r0.json")
-    issue = get_json(f"{API}/repos/{REPO}/issues/{ISSUE}")
     comments = get_json(f"{API}/repos/{REPO}/issues/{ISSUE}/comments?per_page=100")
     bodies = [c.get("body", "") for c in comments]
     occupancy = {k: 0 for k in config["lanes"]}
@@ -55,7 +55,7 @@ def main():
     neural = {}
     try:
         prompt = "Choose ONE lane from this already-symbolically-eligible set. Optimize for fastest credible external income signal. Do not invent authority. Return JSON only: {selected_lane,rationale}.\n" + json.dumps(neural_pool)
-        resp = post_json("http://127.0.0.1:11434/api/chat", {"model":MODEL,"stream":False,"messages":[{"role":"user","content":prompt}],"options":{"temperature":0}})
+        resp = post_json("http://127.0.0.1:11434/api/chat", {"model":MODEL,"stream":False,"messages":[{"role":"user","content":prompt}],"options":{"temperature":0,"num_predict":64}})
         neural = extract_json(resp.get("message",{}).get("content",""))
     except Exception as e:
         neural = {"error": type(e).__name__}
