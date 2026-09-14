@@ -1,5 +1,7 @@
 # One measured evolution cell, supervised by Sigrun
 
+Sequential notes/blocker cycles continue in [PDSA_NOTES.md](PDSA_NOTES.md).
+
 Consumer: Sigrun's next packing campaign and the implementer closing PR4. The
 objective is to automate the useful manual research/proposal/verification loop,
 not maximize launches or spend. This is a reduced operating decision and measured
