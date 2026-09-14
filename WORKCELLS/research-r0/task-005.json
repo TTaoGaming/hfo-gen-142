@@ -1,0 +1,14 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-WORKCELL-V1-005",
+  "priority": 100,
+  "admitted": true,
+  "question": "Do Durable Object alarms provide automatic retry semantics without Tao monitoring failures?",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {
+      "url": "https://developers.cloudflare.com/durable-objects/api/alarms/",
+      "assertions": ["at-least-once", "retried automatically"]
+    }
+  ]
+}

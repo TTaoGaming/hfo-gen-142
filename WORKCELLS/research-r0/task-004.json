@@ -1,0 +1,14 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-WORKCELL-V1-004",
+  "priority": 200,
+  "admitted": true,
+  "question": "Can Cloudflare Agents natively schedule recurring work without Tao as runtime?",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {
+      "url": "https://developers.cloudflare.com/agents/runtime/execution/schedule-tasks/",
+      "assertions": ["Scheduled tasks survive agent restarts", "scheduleEvery()", "Overlap prevention"]
+    }
+  ]
+}
