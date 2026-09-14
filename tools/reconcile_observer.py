@@ -206,32 +206,46 @@ def observe(source_doc, fetcher=http_fetch, now=None):
         return hold("SOURCE_DOC_TYPE")
     if source_doc.get("schema") != SOURCE_SCHEMA:
         return hold("SOURCE_DOC_SCHEMA", declared=source_doc.get("schema"))
-    if set(source_doc) - {"schema", "sources"}:
-        return hold("SOURCE_DOC_FORBIDDEN_FIELD", fields=sorted(set(source_doc) - {"schema", "sources"}))
+    extra_doc_fields = sorted(set(source_doc) - {"schema", "sources"})
+    if extra_doc_fields:
+        return hold("SOURCE_DOC_FORBIDDEN_FIELD", fields=extra_doc_fields)
     sources = source_doc.get("sources")
     if not isinstance(sources, list):
         return hold("SOURCE_LIST_INVALID")
 
-    by_kind = {}
-    evidence = {}
-    observed_utc = utc_text(now)
-
+    # Phase 1: validate the ENTIRE caller request before any network read. This
+    # prevents a malicious later source spec from causing partial observation
+    # side effects before the request is rejected.
+    ordered_kinds = []
+    seen_kinds = set()
     for spec in sources:
         if not isinstance(spec, dict):
             return hold("SOURCE_SPEC_TYPE")
-        forbidden = sorted((set(spec) - {"kind"}) | (set(spec) & CALLER_FORBIDDEN_FIELDS))
-        if forbidden:
-            return hold("CALLER_AUTHORITY_FORBIDDEN", fields=forbidden)
+        forbidden = sorted(set(spec) - {"kind"})
+        if forbidden or set(spec) & CALLER_FORBIDDEN_FIELDS:
+            return hold("CALLER_AUTHORITY_FORBIDDEN", fields=sorted(set(forbidden) | (set(spec) & CALLER_FORBIDDEN_FIELDS)))
         kind = spec.get("kind")
         if kind not in REQUIRED_KINDS:
             return hold("SOURCE_KIND_INVALID", declared=kind)
-        if kind in by_kind:
+        if kind in seen_kinds:
             return hold("DUPLICATE_SOURCE_KIND", kind=kind)
+        binding = SOURCE_REGISTRY[kind]
+        if not trusted_registry_url(kind, binding["url"]):
+            return hold("REGISTRY_AUTHORITY_INVALID", kind=kind)
+        seen_kinds.add(kind)
+        ordered_kinds.append(kind)
 
+    missing = sorted(set(REQUIRED_KINDS) - seen_kinds)
+    if missing:
+        return hold("REQUIRED_SOURCE_MISSING", missing=missing)
+
+    # Phase 2: only after full preflight do controller/API readbacks occur.
+    by_kind = {}
+    evidence = {}
+    observed_utc = utc_text(now)
+    for kind in ordered_kinds:
         binding = SOURCE_REGISTRY[kind]
         url = binding["url"]
-        if not trusted_registry_url(kind, url):
-            return hold("REGISTRY_AUTHORITY_INVALID", kind=kind)
         try:
             raw = fetcher(url, _auth_headers(kind, url))
         except Exception as exc:
@@ -258,10 +272,6 @@ def observe(source_doc, fetcher=http_fetch, now=None):
             "data_sha256": digest(data),
             "self_attested": False,
         }
-
-    missing = sorted(set(REQUIRED_KINDS) - set(by_kind))
-    if missing:
-        return hold("REQUIRED_SOURCE_MISSING", missing=missing)
 
     snapshot = {
         "schema": rk.SCHEMA,
