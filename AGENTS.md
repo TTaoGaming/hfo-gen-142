@@ -33,6 +33,19 @@ Every carrier entering this repository must assume prior state can be stale, con
 - VPS leaf execution should pass through `ops/vps_exec_guard.py`; that wrapper is bounded execution only and must never acquire semantic lease/queue ownership.
 - Tao relay defaults false. Escalate only named human authority boundaries: secret/OAuth/2FA/payment/permission/protected merge/irreversible external submit.
 
+## Battlefield / income forcing
+- Read `BATTLEFIELD_SELECTION_STANDARD.md` before scouting, recommending, or attacking any external leaderboard, competition, benchmark, challenge, case-study target, or income lane.
+- Every external target MUST have a machine-readable `battlefield.v1` card conforming to `schemas/battlefield.v1.schema.json`.
+- Before a target may be recommended or executed, `python tools/battlefield_gate.py <card.json>` must return `ADMIT_*`.
+- A verbal recommendation without a passing card is `INVALID_RECOMMENDATION` and must not be routed to Tao.
+- Prestige is evaluated before win probability. Do not lower the prestige floor merely to obtain an easy crown.
+- No demo-only primaries: a target without named buyer persona, specific offer, declared-demand evidence, and positive 30-day cash hypothesis is killed.
+- No random fights: every target needs a current incumbent, rules/verifier evidence, at least two legal donors, two mutable axes, and a falsifiable weakness hypothesis with gap evidence.
+- No frontier substitution: `FRONTIER_REQUIRED` targets fail closed if the qualified provider is unavailable; never silently run local/small models instead.
+- No full attack before the predeclared canary promotion rule passes.
+- A scout cycle returns at most three survivors and exactly one primary; if none pass, return `NONE`, not a proxy trophy.
+- Domain is explicitly agnostic. Agents are the force multiplier; the work domain is selected by battlefield fitness and commercial translation, not by familiarity with AI.
+
 ## Promotion rule
 `PROPOSAL -> EXECUTION RECEIPT -> INDEPENDENT FALSIFICATION -> VERIFIED RESULT -> CONSUMER ACK`
 
