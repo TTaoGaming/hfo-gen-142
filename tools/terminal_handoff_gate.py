@@ -59,6 +59,7 @@ def receipt_error(owner, receipt, expected_work_ref=None, allow_armed=False):
     if owner == "github-actions":
         allowed = (
             rtype == "github_actions_run" and "/actions/runs/" in provenance,
+            rtype == "github_workflow_dispatch" and "/actions/workflows/" in provenance and provenance.endswith("/dispatches"),
             allow_armed and rtype == "github_actions_watch" and "/actions/workflows/" in provenance,
         )
         if not any(allowed):
