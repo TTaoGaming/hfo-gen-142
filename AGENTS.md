@@ -32,6 +32,8 @@ Every carrier entering this repository must assume prior state can be stale, con
 - Before executing a holon mission, `python tools/holon_gate.py <mission.json>` must return `ADMIT`.
 - VPS leaf execution should pass through `ops/vps_exec_guard.py`; that wrapper is bounded execution only and must never acquire semantic lease/queue ownership.
 - Tao relay defaults false. Escalate only named human authority boundaries: secret/OAuth/2FA/payment/permission/protected merge/irreversible external submit.
+- Before declaring terminal, materialize `hfo.terminal-handoff.v1` and require `python tools/terminal_handoff_gate.py <handoff.json>` -> `ADMIT_TERMINAL`.
+- `next_consumer` prose is not a handoff. With `TAO_RELAY_REQUIRED=false`, terminal work must already contain an automatic dispatch/reconcile receipt or verified mission-complete evidence. Generic `Tao decide/launch/check` is invalid.
 
 ## Battlefield / income forcing
 - Read `BATTLEFIELD_SELECTION_STANDARD.md` before scouting, recommending, or attacking any external leaderboard, competition, benchmark, challenge, case-study target, or income lane.
