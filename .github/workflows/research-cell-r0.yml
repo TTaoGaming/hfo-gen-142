@@ -1,0 +1,104 @@
+name: research-cell-r0
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'WORKCELLS/research-r0/task.json'
+      - 'tools/research_cell_r0.py'
+      - 'tools/terminal_handoff_gate.py'
+      - '.github/workflows/research-cell-r0.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  TASK: WORKCELLS/research-r0/task.json
+  ISSUE: '13'
+
+jobs:
+  cell:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Detect durable retirement receipt
+        id: prior
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          work_id="$(python -c 'import json; print(json.load(open("WORKCELLS/research-r0/task.json"))["work_id"])')"
+          spec_sha="$(sha256sum "$TASK" | awk '{print $1}')"
+          marker="<!-- hfo-research-cell-r0:${work_id}:${spec_sha} -->"
+          existing="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${ISSUE}/comments" --jq ".[] | select(.body | contains(\"${marker}\")) | .html_url" | head -n1 || true)"
+          echo "work_id=$work_id" >> "$GITHUB_OUTPUT"
+          echo "spec_sha=$spec_sha" >> "$GITHUB_OUTPUT"
+          echo "marker=$marker" >> "$GITHUB_OUTPUT"
+          if [ -n "$existing" ]; then
+            echo "retired=true" >> "$GITHUB_OUTPUT"
+            echo "ack_url=$existing" >> "$GITHUB_OUTPUT"
+          else
+            echo "retired=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Tool-based research
+        if: steps.prior.outputs.retired != 'true'
+        run: python tools/research_cell_r0.py "$TASK" "$RUNNER_TEMP/research-cell"
+
+      - name: Report to GitHub and obtain ConsumerAck
+        if: steps.prior.outputs.retired != 'true'
+        id: ack
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MARKER: ${{ steps.prior.outputs.marker }}
+        run: |
+          set -euo pipefail
+          body="$(cat "$RUNNER_TEMP/research-cell/report.md")"$'\n\n'"$MARKER"
+          response="$(jq -n --arg body "$body" '{body:$body}' | gh api "repos/${GITHUB_REPOSITORY}/issues/${ISSUE}/comments" --method POST --input -)"
+          echo "url=$(jq -r .html_url <<<"$response")" >> "$GITHUB_OUTPUT"
+          echo "id=$(jq -r .id <<<"$response")" >> "$GITHUB_OUTPUT"
+
+      - name: Terminal handoff and retire
+        if: steps.prior.outputs.retired != 'true'
+        env:
+          ACK_URL: ${{ steps.ack.outputs.url }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          out=Path(os.environ['RUNNER_TEMP'])/'research-cell'
+          result=json.loads((out/'result.json').read_text())
+          handoff={
+            'schema':'hfo.terminal-handoff.v1', 'mission_id':result['work_id'],
+            'actor_id':'research-cell-r0', 'terminal_state':'PASS',
+            'tao_relay_required':False, 'operator_action_required':'NONE',
+            'next':{'mode':'MISSION_COMPLETE'}, 'mission_complete':True,
+            'verifier_receipt':{'result_sha256':result['result_sha256'],'source_count':len(result['sources'])},
+            'consumer_ack':{'type':'github_issue_comment','url':os.environ['ACK_URL']},
+          }
+          (out/'handoff.json').write_text(json.dumps(handoff,indent=2))
+          PY
+          python tools/terminal_handoff_gate.py "$RUNNER_TEMP/research-cell/handoff.json"
+
+      - name: Durable receipt artifact
+        if: steps.prior.outputs.retired != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: research-cell-${{ github.run_id }}
+          path: ${{ runner.temp }}/research-cell/
+          retention-days: 7
+
+      - name: Retired cell no-op
+        if: steps.prior.outputs.retired == 'true'
+        run: echo "RETIRED_ALREADY_ACKED ${{ steps.prior.outputs.ack_url }}"
