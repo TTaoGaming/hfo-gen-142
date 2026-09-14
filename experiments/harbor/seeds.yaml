@@ -1,0 +1,34 @@
+# Public gene seeds mined from harbor-framework/harbor-index at 5399ea1.
+# These are evidence-backed starting points, not claims of local executability.
+# Never place credentials in this file.
+
+seeds:
+  - id: codex-gpt-5.6-terra-max
+    agent: codex
+    model: gpt-5.6-terra
+    reasoning_effort: max
+    provenance: leaderboard/submissions/2026-07-14-gpt-5-6-terra-max-codex.json
+    notes: official public leaderboard submission seed
+
+  - id: terminus2-openrouter-minimax-m3
+    agent: terminus-2
+    model: openrouter/minimax/minimax-m3
+    parser: json
+    provenance: leaderboard/judge-goldset/tasks/widesearch-list-bri-projects-202__AvSpDRj/environment/trajectory.json
+    notes: public Harbor judge-goldset trajectory
+
+  - id: terminus2-openrouter-glm-5.2
+    agent: terminus-2
+    model: openrouter/z-ai/glm-5.2
+    parser: json
+    provenance: leaderboard/judge-goldset/tasks/algotune-optimize-lti-sim__GzgeTaj/environment/trajectory.json
+    notes: public Harbor judge-goldset trajectory
+
+  - id: gemini-cli-gemini-3.1-pro-preview
+    agent: gemini-cli
+    model: gemini/gemini-3.1-pro-preview
+    reasoning_effort: high
+    version: 0.34.0
+    environment_seen: daytona
+    provenance: leaderboard/judge-goldset/rollouts/gaia2-adapt-hard-2__AJYahrm/config.json
+    notes: public Harbor judge-goldset rollout config
