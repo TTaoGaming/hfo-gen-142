@@ -1,0 +1,376 @@
+{
+  "work_id": "packing-shinka-pdsa-20260914-r1",
+  "service_started_utc": "2026-09-14T01:50:44Z",
+  "service_finished_utc": "2026-09-14T01:54:22Z",
+  "elapsed_seconds": 218,
+  "service_cpu_seconds": 17.752,
+  "service_peak_memory_mib": 219,
+  "actor_state": "STOPPED",
+  "winner_found": false,
+  "time_to_winner_seconds": null,
+  "observed_claim": "Finite pilot stopped on uncertain provider completion; reliable cloning unproven",
+  "provider_rows": [
+    {
+      "slot": 0,
+      "provider": "kimi",
+      "model": "k3-256k",
+      "input_sha256": "556ed1a2935d45ca4a81ba5a3512ca86ae1c95de1094129a03855fd5dcb0229e",
+      "state": "RETURNED",
+      "reserved_utc": "2026-09-14T01:50:54.437Z",
+      "dispatched": true,
+      "http_status": 200,
+      "model_returned": "k3-256k",
+      "usage": {
+        "prompt_tokens": 797,
+        "completion_tokens": 2230,
+        "total_tokens": 3027,
+        "completion_tokens_details": {
+          "reasoning_tokens": 1961
+        }
+      },
+      "response": {
+        "id": "packing-shinka-pdsa-20260914-r1-0",
+        "object": "chat.completion",
+        "created": 1789350740,
+        "model": "k3-256k",
+        "choices": [
+          {
+            "index": 0,
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "<NAME>\nfull_interior_relax_v1\n</NAME>\n\n<DESCRIPTION>\nThe plateau is likely from shell-only boundary-direction optimization with beta=10000 and modest restarts. I switch mechanism to `full`, letting all centers, including any near-origin sphere, move under explicit overlap/wall violation gradients. I keep `beta` high in case it is reused for smoothing, but rely on `full`\u2019s exact penalty rather than log-sum-exp direction packing. `target_gain=5e-6` is safely above the 1e-8 win threshold yet still small enough to remain near the incumbent feasible basin. `noise=0.006` gives meaningful multi-start diversification without destroying the dense 6D configuration, `maxiter=500` uses the full local-optimization budget, and the new seed changes the eight deterministic trials away from the failed shell basin.\n</DESCRIPTION>\n\n<CODE>\n```python\n# EVOLVE-BLOCK-START\n{'method': 'full', 'noise': 0.006, 'beta': 250000, 'target_gain': 0.000005, 'maxiter': 500, 'seed': 60221413}\n# EVOLVE-BLOCK-END\n```\n</CODE>"
+            }
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 797,
+          "completion_tokens": 2230,
+          "total_tokens": 3027,
+          "completion_tokens_details": {
+            "reasoning_tokens": 1961
+          }
+        }
+      },
+      "finished_utc": "2026-09-14T01:52:20.377Z"
+    },
+    {
+      "slot": 1,
+      "provider": "google-ai-studio",
+      "model": "gemini-3.5-flash-lite",
+      "input_sha256": "28c0b162c3e2ce3959cd76fa96931dbf8058f5c9420106ba31462a34b0da0f9d",
+      "state": "RETURNED",
+      "reserved_utc": "2026-09-14T01:52:20.633Z",
+      "dispatched": true,
+      "http_status": 200,
+      "model_returned": "gemini-3.5-flash-lite",
+      "usage": {
+        "promptTokenCount": 760,
+        "candidatesTokenCount": 229,
+        "totalTokenCount": 989,
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 760
+          }
+        ],
+        "serviceTier": "standard"
+      },
+      "response": {
+        "id": "packing-shinka-pdsa-20260914-r1-1",
+        "object": "chat.completion",
+        "created": 1789350743,
+        "model": "gemini-3.5-flash-lite",
+        "choices": [
+          {
+            "index": 0,
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "<NAME>\nfull_method_exploratory\n</NAME>\n\n<DESCRIPTION>\nSwitching from the 'shell' method (which failed to improve past the 0.3099 plateau using various beta/multistart configurations) to the 'full' method. The 'full' method allows all sphere centers, including those near the origin, to move freely and directly minimizes overlap/wall violations using analytic gradients with L-BFGS-B, followed by precise feasible radius measurement. This enables discovering non-shell configurations and breaking out of the boundary-only optimization trap.\n</DESCRIPTION>\n\n<CODE>\n```python\n# Declarative genome. Evaluator parses this as data; it never imports this file.\n# EVOLVE-BLOCK-START\n{'method': 'full', 'noise': 0.0, 'beta': 1000, 'target_gain': 0.00001, 'maxiter': 300, 'seed': 42}\n# EVOLVE-BLOCK-END\n```\n</CODE>"
+            }
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 760,
+          "completion_tokens": 229,
+          "total_tokens": 989
+        }
+      },
+      "finished_utc": "2026-09-14T01:52:23.135Z"
+    },
+    {
+      "slot": 2,
+      "provider": "groq",
+      "model": "openai/gpt-oss-120b",
+      "input_sha256": "51ab55ee079f0f2428f2930622470e94180fef226001c790231993544fa93318",
+      "state": "RETURNED",
+      "reserved_utc": "2026-09-14T01:52:31.185Z",
+      "dispatched": true,
+      "http_status": 200,
+      "model_returned": "openai/gpt-oss-120b",
+      "usage": {
+        "queue_time": 0.00554105,
+        "prompt_tokens": 907,
+        "prompt_time": 0.045390022,
+        "completion_tokens": 528,
+        "completion_time": 1.116183481,
+        "total_tokens": 1435,
+        "total_time": 1.161573503,
+        "completion_tokens_details": {
+          "reasoning_tokens": 459
+        }
+      },
+      "response": {
+        "id": "packing-shinka-pdsa-20260914-r1-2",
+        "object": "chat.completion",
+        "created": 1789350752,
+        "model": "openai/gpt-oss-120b",
+        "choices": [
+          {
+            "index": 0,
+            "finish_reason": "stop",
+            "message": {
+              "role": "assistant",
+              "content": "# EVOLVE-BLOCK-START\n{'method': 'full', 'noise': 0.0005, 'beta': 50000, 'target_gain': 0.000001, 'maxiter': 400, 'seed': 123456}\n# EVOLVE-BLOCK-END"
+            }
+          }
+        ],
+        "usage": {
+          "queue_time": 0.00554105,
+          "prompt_tokens": 907,
+          "prompt_time": 0.045390022,
+          "completion_tokens": 528,
+          "completion_time": 1.116183481,
+          "total_tokens": 1435,
+          "total_time": 1.161573503,
+          "completion_tokens_details": {
+            "reasoning_tokens": 459
+          }
+        }
+      },
+      "finished_utc": "2026-09-14T01:52:32.864Z"
+    },
+    {
+      "slot": 3,
+      "provider": "openrouter",
+      "model": "nvidia/nemotron-3.5-lightning:free",
+      "input_sha256": "2b8f3d6458a6ddfb5aa9da54139ae8dc89b704f9e52706933a27aadd496908d0",
+      "state": "AMBIGUOUS_NO_RETRY",
+      "reserved_utc": "2026-09-14T01:52:36.087Z",
+      "dispatched": true,
+      "reason": "AMBIGUOUS_TIMEOUT",
+      "response": {
+        "error": {
+          "message": "AMBIGUOUS_NO_RETRY"
+        }
+      }
+    }
+  ],
+  "native_metrics": {
+    "replay-kimi/metrics.json": {
+      "combined_score": 0.309963933216626,
+      "public": {
+        "radius": 0.309963933216626,
+        "baseline": 0.309963933216626,
+        "winner": false,
+        "trial_count": 8,
+        "reason": "COMPLETE"
+      },
+      "private": {
+        "parent_sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+        "accepted_sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+        "verification": {
+          "radius": "154981966608313/500000000000000",
+          "containment_checks": 119,
+          "pair_checks": 7021,
+          "min_wall_slack": "6900348342138445053061/50000000000000000000000000000000",
+          "min_pair_slack": "12398550680295224175167/50000000000000000000000000000000"
+        },
+        "history": [
+          {
+            "trial": 0,
+            "radius": 0.30995089868293113,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 1,
+            "radius": 0.30995113816425257,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 2,
+            "radius": 0.30995107228982,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 3,
+            "radius": 0.30995111203128645,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 4,
+            "radius": 0.3099511183784244,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 5,
+            "radius": 0.30995101057560226,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 6,
+            "radius": 0.30995106674180517,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 7,
+            "radius": 0.3099512365032112,
+            "accepted_improvement": false
+          }
+        ],
+        "elapsed_seconds": 11.79042983497493
+      }
+    },
+    "results/gen_0/results/metrics.json": {
+      "combined_score": 0.309963933216626,
+      "public": {
+        "radius": 0.309963933216626,
+        "baseline": 0.309963933216626,
+        "winner": false,
+        "trial_count": 8,
+        "reason": "COMPLETE"
+      },
+      "private": {
+        "parent_sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+        "accepted_sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+        "verification": {
+          "radius": "154981966608313/500000000000000",
+          "containment_checks": 119,
+          "pair_checks": 7021,
+          "min_wall_slack": "6900348342138445053061/50000000000000000000000000000000",
+          "min_pair_slack": "12398550680295224175167/50000000000000000000000000000000"
+        },
+        "history": [
+          {
+            "trial": 0,
+            "radius": 0.30995554496861555,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 1,
+            "radius": 0.30995554509273127,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 2,
+            "radius": 0.3099555450939582,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 3,
+            "radius": 0.3099555451645375,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 4,
+            "radius": 0.3099555450246153,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 5,
+            "radius": 0.3099555449825211,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 6,
+            "radius": 0.30995554508519974,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 7,
+            "radius": 0.3099555450893744,
+            "accepted_improvement": false
+          }
+        ],
+        "elapsed_seconds": 4.8272410170175135
+      }
+    },
+    "results/gen_2/results/metrics.json": {
+      "combined_score": 0.309963933216626,
+      "public": {
+        "radius": 0.309963933216626,
+        "baseline": 0.309963933216626,
+        "winner": false,
+        "trial_count": 8,
+        "reason": "COMPLETE"
+      },
+      "private": {
+        "parent_sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+        "accepted_sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+        "verification": {
+          "radius": "154981966608313/500000000000000",
+          "containment_checks": 119,
+          "pair_checks": 7021,
+          "min_wall_slack": "6900348342138445053061/50000000000000000000000000000000",
+          "min_pair_slack": "12398550680295224175167/50000000000000000000000000000000"
+        },
+        "history": [
+          {
+            "trial": 0,
+            "radius": 0.3099385723366569,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 1,
+            "radius": 0.3099385723366569,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 2,
+            "radius": 0.3099385723366569,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 3,
+            "radius": 0.3099385723366569,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 4,
+            "radius": 0.3099385723366569,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 5,
+            "radius": 0.3099385723366569,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 6,
+            "radius": 0.3099385723366569,
+            "accepted_improvement": false
+          },
+          {
+            "trial": 7,
+            "radius": 0.3099385723366569,
+            "accepted_improvement": false
+          }
+        ],
+        "elapsed_seconds": 6.98467649705708
+      }
+    }
+  },
+  "source_sha256": {
+    "run.py": "21d5b77277c5205b7cb288152d96e881ed4c3c3ac03d928669432b1aa4dc6f25",
+    "evaluate.py": "8f5a95f27c36c0ee55d523a534891c0671abe1f2e61fb9559a754689d5763acf",
+    "initial.py": "e03e3e8c5223db9dea222c5a302fe99b9c3caa59509c76263b9b9916a2cf75f8"
+  },
+  "failures": [
+    "Missing native Kimi evaluation receipt; unchanged evaluator replay completed",
+    "Groq omitted required proposal envelope",
+    "OpenRouter completion unknown after deadline",
+    "Native pricing cache refused protected home; local model price zero is not cost evidence",
+    "urllib status observation returned 403; existing curl observer worked"
+  ]
+}
