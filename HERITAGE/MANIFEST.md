@@ -27,7 +27,7 @@ Ablation question: what measurable failure returns if we delete this gene? If no
 ## Standardized Strife/Splendor intake
 
 - Canonical event schema: `schemas/strife-splendor-event-v1.schema.json`.
-- Validated seed: `HERITAGE/STRIFE_SPLENDOR_SEED_V1.jsonl` (7 STRIFE + 2 SPLENDOR).
+- Validated seed: `HERITAGE/STRIFE_SPLENDOR_SEED_V1.jsonl` (10 STRIFE + 2 SPLENDOR).
 - Every evidence item carries an exact content SHA-256 and claim ceiling.
 - Legacy Gen137 formal axes (`port`, `dependability`, `control_deviation`, violated invariant/guard) are preserved as namespaced tags in v1; do not fork a second ontology merely to carry them.
 - Archive evidence never becomes `ADOPTED` merely because it was important or repeated. Promotion still requires falsification, corroboration, consumption, and current fit.
