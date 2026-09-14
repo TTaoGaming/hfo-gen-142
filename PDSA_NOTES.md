@@ -218,3 +218,18 @@ approval review rejected persistent installation; the isolated test left the
 system package unchanged. Live model calls, cap changes and new champions were
 zero. Two verified fixture generations are proven; two unattended live
 generations still need the joined admitted acceptance test.
+
+## Approved installation follow-up — 2026-09-14
+
+Operator approved the tested Oracle patch. Installation preserved ownership,
+permissions and a verified rollback copy; candidate readback matched exactly.
+The installed-package recovery assay passed two verified generations and all
+checkpoint/concurrency rejection cases with cached responses. Its first attempt
+exposed a test shutdown race; freezing the caller before descendant cleanup and
+asserting an unchanged archive corrected the harness. Both attempts are retained
+in [INSTALL_R1.json](hatchery/shinka-cell/INSTALL_R1.json).
+
+The installation approval blocker is resolved. No live model call, cap change,
+new campaign or Cloudflare deployment occurred. The installed feature remains
+opt-in; unattended live operation still requires fresh admission and the joined
+supervisor/Cloudflare acceptance test.

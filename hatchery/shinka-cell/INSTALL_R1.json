@@ -1,0 +1,97 @@
+{
+  "status": "APPROVED_INSTALL_AND_INSTALLED_PACKAGE_ASSAY_PASS",
+  "observed_utc": "2026-09-14T04:27:53.052084Z",
+  "authorization": "Operator approved the tested Oracle recovery patch after reviewable publication at 88cf908214d63d5b91a8b6eb21ccb525774e0b16",
+  "installation": {
+    "status": "INSTALLED_HASH_VERIFIED",
+    "utc": "2026-09-14T04:24:07.892769+00:00",
+    "before_sha256": "0ae3308ebf16f910f82883d1d15255aa32622c5f0503017fd8d5a4d9108d1691",
+    "after_sha256": "4ea52abb2c46da529ea3e06fd51ba39918205820d05dfbd3cf5fb3df1602f6b3",
+    "rollback_sha256": "0ae3308ebf16f910f82883d1d15255aa32622c5f0503017fd8d5a4d9108d1691",
+    "ownership_and_mode_preserved": true,
+    "active_shinka_units": 0,
+    "live_provider_calls": 0,
+    "campaigns_started": 0,
+    "feature_default": "OFF",
+    "target": "/opt/hfo-evolution/venv/lib/python3.12/site-packages/shinka/core/async_runner.py",
+    "rollback_path": "/opt/hfo-evolution/venv/lib/python3.12/site-packages/shinka/core/async_runner.py.pre-approved-checkpoint-0ae3308ebf16"
+  },
+  "recovery": {
+    "status": "PASS",
+    "live_provider_calls": 0,
+    "fixture_requests": 2,
+    "requests_before_kill": 1,
+    "requests_for_resumed_generation": 0,
+    "archive_before": [
+      [
+        "fe94b816-b3b4-4039-b73f-8c7fb4953cfc",
+        0
+      ]
+    ],
+    "archive_after": [
+      [
+        "fe94b816-b3b4-4039-b73f-8c7fb4953cfc",
+        0
+      ],
+      [
+        "9250fab5-7d96-4de3-9522-79a594005573",
+        1
+      ],
+      [
+        "a591821a-78d4-4cbc-8187-21949362b7a8",
+        2
+      ]
+    ],
+    "caller_a_returncode": -9,
+    "caller_b_returncode": 0,
+    "terminal_replay_returncode": 0,
+    "independent_geometry": {
+      "1": {
+        "sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+        "radius": "154981966608313/500000000000000",
+        "containment_checks": 119,
+        "pair_checks": 7021
+      },
+      "2": {
+        "sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+        "radius": "154981966608313/500000000000000",
+        "containment_checks": 119,
+        "pair_checks": 7021
+      }
+    },
+    "elapsed_seconds": 59.140853859018534,
+    "operator_actions_during_run": 0,
+    "negative_cases": {
+      "missing-checkpoint": {
+        "exit": 1,
+        "reason": "RECOVERY_HOLD_NO_ACCEPTED_PROPOSAL",
+        "new_requests": 0
+      },
+      "changed-candidate": {
+        "exit": 1,
+        "reason": "RECOVERY_HOLD_CHECKPOINT_MISMATCH",
+        "new_requests": 0
+      },
+      "changed-evaluator": {
+        "exit": 1,
+        "reason": "RECOVERY_HOLD_CHECKPOINT_MISMATCH",
+        "new_requests": 0
+      }
+    },
+    "concurrent_caller_rejected": true
+  },
+  "assay_source_sha256_lf": "cbb7a02005de6511c6462928c53b59a092fde9ad30135481fbce75e312d3c67a",
+  "installed_package_unchanged_by_assay": true,
+  "execution": "Installed /opt/hfo-evolution package; empty PYTHONPATH; isolated new fixture directory; private network; existing transient systemd supervisor",
+  "fixture_label_correction": "The reused assay printed a temporary-copy claim label. This run used the installed package, not a copied library; other stated limitations remain.",
+  "failed_installed_assay": {
+    "status": "FAIL",
+    "reason": "The test killed descendants before stopping the caller; archive advanced to generation one during shutdown, invalidating its negative-test snapshot",
+    "repair": "Freeze caller process group first; assert archive unchanged during kill; no additional production patch needed"
+  },
+  "live_provider_calls": 0,
+  "campaigns_started": 0,
+  "spending_caps_changed": false,
+  "new_champions": 0,
+  "claim_ceiling": "Approved module installation and installed-package cached-response recovery are verified. Harness drives restart; no unattended live campaign, hosted Cloudflare cancellation, whole-host recovery or cross-host fencing proof. Feature remains opt-in and was enabled only for the isolated assay."
+}

@@ -23,6 +23,9 @@ def launch(label):
     child=subprocess.Popen([sys.executable,'run.py'],env=env,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
     children.append((child,stream));return child
 def kill_tree(child):
+    # Freeze the caller before enumerating children; it must not commit a killed
+    # evaluator or dispatch another proposal while descendant shutdown waits.
+    if child.poll() is None:os.killpg(child.pid,signal.SIGSTOP)
     try:
         descendants=psutil.Process(child.pid).children(recursive=True)
         for node in descendants:
@@ -49,8 +52,10 @@ try:
     limit=time.monotonic()+65
     while not checkpoint.exists() and first.poll() is None and time.monotonic()<limit:time.sleep(.02)
     assert checkpoint.exists(),'NO_ACCEPTED_CHECKPOINT'
+    os.killpg(first.pid,signal.SIGSTOP)
     before=archive();assert [x[1] for x in before]==[0],before
     kill_tree(first);before_calls=len(calls);assert before_calls==1
+    assert archive()==before,'ARCHIVE_CHANGED_DURING_KILL'
     import fcntl
     with (p/'.shinka-cell.lock').open('a') as held_lock:
         fcntl.flock(held_lock,fcntl.LOCK_EX | fcntl.LOCK_NB)

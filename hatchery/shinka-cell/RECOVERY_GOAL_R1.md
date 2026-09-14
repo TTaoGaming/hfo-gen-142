@@ -1,5 +1,20 @@
 # Bounded stabilization: cancellation and recovery
 
+**Approved follow-up:** the Oracle module was installed at 2026-09-14 04:24:07 UTC
+with exact candidate and rollback hashes verified. The installed-package assay
+passed in 59.141 seconds: two verified generations, zero repeat requests for the
+resumed proposal, all three negative cases and single-writer exclusion passed.
+See [INSTALL_R1.json](INSTALL_R1.json). Feature activation was confined to the
+isolated cached-response assay. No live campaign or Cloudflare deployment started.
+The original bounded-goal account below remains historical evidence.
+
+The first installed-package test revealed a harness shutdown race: the caller
+could commit while its descendants were being killed. The harness now freezes
+the caller first and asserts the archive is unchanged during shutdown. The
+installed module required no further change. Production supervisors must stop
+the complete process group before replacement; automatic production recovery
+is still unproven. The prior installation approval blocker is now resolved.
+
 Goal started 2026-09-14 03:52:46 UTC; deadline 04:22:46 UTC.
 Evidence: [GOAL_R1.json](GOAL_R1.json). This cycle made **zero live model calls**,
 changed no spending caps, and installed no production changes.
