@@ -1,0 +1,55 @@
+{
+  "specversion": "1.0",
+  "id": "2b3b991d-a978-5e37-9fe3-313d9661134c",
+  "source": "urn:example:storage-kata",
+  "type": "dev.worldweaver.splendor.v1",
+  "subject": "synthetic-example/splendor",
+  "time": "2026-01-01T00:00:00Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://raw.githubusercontent.com/TTaoGaming/hfo-gen-142/673bf24e08744d1a06811bb927e6da12580d493b/schemas/strife-splendor-event-v1.schema.json",
+  "data": {
+    "classification": "SPLENDOR",
+    "title": "Synthetic example: a verified offload procedure",
+    "summary": "Illustrative scenario only; no actual occurrence asserted. A worker checks cloud bytes, unchanged sources and restoration before declaring an archive recoverable.",
+    "domain": "LOCAL_RESOURCE_SCARS",
+    "age_band": "CURRENT",
+    "observed_utc": "2026-01-01T00:00:00Z",
+    "fresh_until": null,
+    "evidence": [
+      {
+        "evidence_id": "urn:example:public-storage-workflow-v1",
+        "kind": "GITHUB",
+        "ref": "https://github.com/TTaoGaming/hfo-gen-142/blob/54bc3bb5665dabf5bc1fa697f08bffecb9b90812/HERITAGE/proposals/storage-kata-v1/README.md",
+        "content_sha256": "93c10224e7342f0bcd1f888a8d514ee78f87de98441a92a012a0559ba390b311",
+        "visibility": "PUBLIC"
+      }
+    ],
+    "status": "OBSERVED",
+    "claim_ceiling": "SYNTHETIC EXAMPLE ONLY. Evidence is the public workflow document, not an operational receipt. IDs and times are illustrative; no real recovery, private evidence access or consumer use is asserted.",
+    "effect_ceiling": "PROPOSAL_ONLY_NO_DELETE_OR_PROMOTION_AUTHORITY",
+    "strongest_falsifier": "This example provides no evidence that any real system executed the procedure.",
+    "ablation_failure": "Proposed test only: remove byte verification and introduce a corrupted fixture; an independent checker should reject the result.",
+    "guard_or_mechanism": "Bounded reviewed backup verification, source consistency checks, measured physical recovery and restoration test.",
+    "consumer_refs": [],
+    "supersedes": [],
+    "tags": [
+      "synthetic-example",
+      "storage",
+      "pdsa",
+      "para"
+    ],
+    "prov": {
+      "entity_ids": [
+        "urn:example:public-storage-workflow-v1"
+      ],
+      "activity_id": "urn:example:documentation",
+      "agent_id": "urn:example:documentation-author",
+      "was_derived_from": [
+        "urn:example:public-storage-workflow-v1"
+      ],
+      "used": [
+        "urn:example:public-storage-workflow-v1"
+      ]
+    }
+  }
+}
