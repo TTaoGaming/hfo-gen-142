@@ -41,3 +41,12 @@ No second queue, lease, identity root or acceptance authority is introduced unle
 PASS requires: carrier replacement with actor identity intact; verified skill promotion surviving N+1; at least one skill transfer that improves another actor under a frozen verifier; reconstructable attribution; zero duplicate accepted effects; and declining Tao CPR/operator-minutes.
 
 Near-term soak gate: >=20 unattended episodes followed by >=8 hours unattended. Long-term claim `UNATTENDED_HIVE` requires the stronger hostile-soak gate in the inherited architecture.
+## Mechanical reducer
+
+`tools/hfo_holon_kernel.py` is the thin fail-closed reducer between a bounded carrier episode and durable heritage. It does not schedule work, own leases, call providers, or submit externally.
+
+For a frontier mission it rejects non-frontier substitution. Promotion requires a successful terminal, admitted independent/frozen verifier, verifier receipt, ConsumerAck, and no self-award. Failure becomes an append-only scar, not a promoted skill.
+
+The first live carrier assay is persisted under `HERITAGE/runtime/holon-canary-9529d34d.*`: a managed Kimi frontier carrier produced the frozen sentinel, mechanical verification passed, the result was durably read back, and the reducer emitted a provenance-bound skill promotion with `next_mission_ready=true`.
+
+This proves the actor→carrier→verifier→heritage seam mechanically. It does **not** yet prove Cloudflare-hosted unattended N+1 dispatch, cross-actor transfer, or the 20-episode/8-hour soak gate.
