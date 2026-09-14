@@ -1,0 +1,21 @@
+{
+  "observed_utc": "2026-09-14T03:33:39Z",
+  "cycle": "N2",
+  "status": "B1_REPRODUCED_LOCAL_NOT_REPAIRED",
+  "source_commit": "49b05f98c80566dca76b67478861e37647ce782a",
+  "source_path": "hatchery/pdsa-budget.mjs",
+  "source_sha256_lf": "26250613a5946b3fb223c32adc038361da24b74f0fa9eb63c5414697f542b4cb",
+  "assay": "B1_STOP_DURING_QUOTA",
+  "stop_ack": true,
+  "mock_calls_at_stop": 0,
+  "mock_calls_after_quota_release": 1,
+  "expected_mock_calls_after_quota_release": 0,
+  "final_state": "STOPPED_BY_EVALUATOR",
+  "test_exit": 1,
+  "existing_tests_passed": 3,
+  "new_falsifier_failed": 1,
+  "live_provider_calls": 0,
+  "runtime_mutations": 0,
+  "claim_ceiling": "Local VM fixture against committed candidate source. No live quota leak, hosted reproduction or repair claim.",
+  "next_action": "Serialize cancellation against the actual dispatch boundary in the existing owner; replay this falsifier and existing in-flight stop test before any deployment."
+}

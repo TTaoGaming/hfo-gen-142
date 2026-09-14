@@ -4,13 +4,13 @@ import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 const source=readFileSync(new URL('pdsa-budget.mjs',import.meta.url),'utf8');
-function setup(fail=false,defer=false){
+function setup(fail=false,defer=false,quotaHook=null){
  const data=new Map();let lock=Promise.resolve(),calls=0;
  let release,entered;const gate=new Promise(r=>release=r),started=new Promise(r=>entered=r);
  const response=model=>({ok:true,status:200,json:async()=>({model,modelVersion:model,choices:[{message:{content:'{}'}}],candidates:[{content:{parts:[{text:'{}'}]}}]})});
  const dispatch=async(model)=>{calls++;entered();if(defer)await gate;if(fail)throw Error('UNKNOWN');return response(model);};
  class Now extends Date{constructor(...x){super(...(x.length?x:['2026-09-14T02:00:00Z']));} static now(){return Date.parse('2026-09-14T02:00:00Z');}}
- const context={Date:Now,AbortSignal,setTimeout,clearTimeout,JSON,fetch:async(url,opts)=>url.includes('/models')?{ok:true,json:async()=>({data:[{id:'nvidia/nemotron-3.5-lightning:free',pricing:{prompt:'0',completion:'0'}}]})}:dispatch(JSON.parse(opts.body).model),dailyJson:async r=>r.json(),vpsHash:async s=>createHash('sha256').update(s).digest('hex'),refreshQuota:async()=>({rows:[{consistent:true,remaining:100,limit:100}]}),quotaFresh:()=>true};
+ const context={Date:Now,AbortSignal,setTimeout,clearTimeout,JSON,fetch:async(url,opts)=>url.includes('/models')?{ok:true,json:async()=>({data:[{id:'nvidia/nemotron-3.5-lightning:free',pricing:{prompt:'0',completion:'0'}}]})}:dispatch(JSON.parse(opts.body).model),dailyJson:async r=>r.json(),vpsHash:async s=>createHash('sha256').update(s).digest('hex'),refreshQuota:async()=>{if(quotaHook)await quotaHook();return {rows:[{consistent:true,remaining:100,limit:100}]};},quotaFresh:()=>true};
  const fn=vm.runInNewContext(source+';pdsaBudget',context);
  const cell={ctx:{storage:{get:async k=>structuredClone(data.get(k)),put:async(k,v)=>data.set(k,structuredClone(v))},blockConcurrencyWhile:f=>{const x=lock.then(f);lock=x.catch(()=>{});return x;}}};
  const env={CELL_STATE:{put:async()=>{}},AI:{gateway:()=>({run:async q=>dispatch(q.query.model??q.endpoint.split('/')[2].split(':')[0])})}};
@@ -36,4 +36,20 @@ test('stop during an in-flight call survives its late completion',async()=>{
  x.release();await pending;
  assert.equal((await x.run(null)).state,'STOPPED_BY_EVALUATOR');
  await x.run(request(2));assert.equal(x.calls(),1);
+});
+
+// Opt-in falsifier while B1 is open: a failure is the expected current finding,
+// not a passing cancellation guard. All HTTP and quota calls are mocked above.
+if(process.env.PDSA_STOP_RACE_ASSAY==='1')test('B1: stop during quota check prevents dispatch',async()=>{
+ let entered,release;
+ const checking=new Promise(r=>entered=r),gate=new Promise(r=>release=r);
+ const x=setup(false,false,async()=>{entered();await gate;});
+ const pending=x.run(request(0));await checking;
+ const stopped=await x.run('stop');const callsAtStop=x.calls();
+ release();await pending;
+ const state=await x.run(null);
+ console.log(JSON.stringify({assay:'B1_STOP_DURING_QUOTA',source_sha256:createHash('sha256').update(source.replaceAll('\r\n','\n')).digest('hex'),stop_ack:stopped.stopped,calls_at_stop:callsAtStop,calls_after_release:x.calls(),final_state:state.state,live_provider_calls:0}));
+ assert.equal(stopped.stopped,true);
+ assert.equal(callsAtStop,0);
+ assert.equal(x.calls(),0,'Stop was acknowledged before a provider call was dispatched');
 });

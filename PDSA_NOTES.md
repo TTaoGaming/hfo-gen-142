@@ -57,3 +57,44 @@ coverage. Smallest guard: test stop before dispatch separately from stop after
 dispatch. **Splendor:** existing immutable receipts expose incomplete recovery
 without spending more quota; the earlier champion lineage remains preserved.
 No new champion or increase in runtime stability is claimed this cycle.
+
+## Cycle N2 — 2026-09-14T03:33:39Z
+
+**Plan:** run B1's falsifier using only mocked quota and provider transport.
+**Do:** extend the existing adapter fixture with a deferred quota response.
+Start a request, wait until quota checking begins, acknowledge stop, release
+the quota response, then count provider dispatches. No production code change,
+runtime deployment, package installation or live model request occurred.
+
+**Study:** **B1 is confirmed locally, not repaired.** The stop ACK was true with
+zero calls at that instant. After releasing quota, one mock call occurred; the
+stored state still read `STOPPED_BY_EVALUATOR`. The new guard assertion failed
+with `1 !== 0`; the three older tests passed in the same execution. A final
+stopped state does not establish that a post-stop call was prevented.
+Evidence: `hatchery/shinka-cell/PDSA_N2.json`, bound to the candidate source hash.
+
+Reproduce in PowerShell from this repository:
+
+```powershell
+$env:PDSA_STOP_RACE_ASSAY='1'
+node hatchery/pdsa-budget.test.mjs
+Remove-Item Env:PDSA_STOP_RACE_ASSAY
+```
+
+The opt-in falsifier intentionally exits 1 on current code. Default tests do not
+exercise B1 and their passing result must not be presented as cancellation
+acceptance. This is local fixture evidence; the deployed Worker was not probed
+or modified, and no live quota leak is inferred.
+
+**Act / next queued cycle:** narrow B1 repair before B2 recovery work. The
+implementation carrier must serialize stop against the actual dispatch boundary,
+including asynchronous persistence; merely preserving a stop flag or checking it
+before another await is insufficient. Keep an already in-flight result recoverable
+without reopening admission. Required replay: this falsifier reports zero mock
+calls after stop; existing in-flight completion, replay and exhaustion tests pass.
+No deployment follows without that evidence and current source/version readback.
+
+Blocker delta: B1 `SUSPECTED -> REPRODUCED_LOCAL`; B2–B5 unchanged and not re-tested.
+The next campaign remains unstarted. **Strife:** durable status can disagree with
+effect history. **Splendor:** a deterministic mock isolated the failure without
+using quota. This is diagnostic progress, not improved runtime stability.
