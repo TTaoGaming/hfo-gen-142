@@ -18,6 +18,20 @@ Every material execution episode should emit a document conforming to `schemas/c
 
 `REACHABLE != ADMITTED != AUTHORIZED`
 
+## Default placement policy
+
+For compatible workloads, the preferred stable gateway target is `oracle-vps`; see `ORACLE_GATEWAY.md`.
+
+Placement order is a policy, not authority:
+1. `oracle-vps` for ingress/gateway/admission, stable low-cost execution and provider/CLI bridges;
+2. Cloudflare-native execution for work that belongs inside Agent/DO + Workflow durable ownership;
+3. `ovh-vps` for x86/heavier/burst/verifier/challenger/overflow work;
+4. laptop only for UI/human-session or explicit opportunistic burst work.
+
+A carrier must still prove the selected target in its envelope. `PREFERRED_TARGET != REACHABLE != ADMITTED != AUTHORIZED`.
+
+If Oracle is unavailable, the carrier must HOLD or select another target from current evidence. It must never fabricate Oracle reachability merely because Oracle is the preferred gateway.
+
 ## Failure classes
 
 Use the first failing boundary instead of `AGENT_FAILED`:
