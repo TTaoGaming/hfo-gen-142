@@ -15,6 +15,7 @@ The system already had clocks, durable local state machines, workers, gates, and
 - Sigrun Cloudflare DO: semantic claim/fence/deadline/terminal state for admitted work.
 - GitHub Actions / Cloudflare schedule/workflow: wake and transport only.
 - VPS/provider workers: disposable execution capacity only.
+- `tools/reconcile_observer.py`: bounded allowlisted readback/projection only; provenance is derived from the controller/API request actually performed, never accepted from payload labels. It owns **no durable state or effects**.
 - `tools/reconcile_kernel.py`: pure deterministic policy only; it owns **no durable state**.
 - Tao: intent, budgets, policy, true authority unlocks, irreversible external effects. Never routine continuation.
 
@@ -30,6 +31,9 @@ Priority order:
 6. consume terminal evidence before launching unrelated next work;
 7. when actor capacity is free, select the highest-priority admitted unblocked demand deterministically;
 8. if no admitted demand exists, idle. Spare capacity never invents work.
+
+## Authority / provenance law
+A readback is authoritative because the observer itself fetched an allowlisted controller/API surface and bound the response bytes to that request URL and observation time. Caller- or payload-supplied fields such as `source_owner`, `provenance_ref`, receipt hashes, timestamps, or `self_attested=false` are not authority and must be ignored or rejected. A deterministic projection over invented provenance is still invented provenance.
 
 ## Determinism / evolution
 Same canonical snapshot + same policy version MUST produce the same plan and `plan_sha256`.
