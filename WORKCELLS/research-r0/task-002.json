@@ -1,0 +1,26 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-RESEARCH-CELL-R0-002",
+  "issue_number": 13,
+  "admitted": true,
+  "priority": 200,
+  "question": "Can GitHub Actions provide a deterministic recurring wake and machine-triggered next run without Tao as pacemaker?",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {
+      "url": "https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule",
+      "assertions": [
+        "Scheduled workflows will only run on the default branch",
+        "shortest interval you can run scheduled workflows is once every 5 minutes"
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event",
+      "assertions": [
+        "Create a workflow dispatch event",
+        "manually trigger a GitHub Actions workflow run",
+        "workflow_dispatch"
+      ]
+    }
+  ]
+}
