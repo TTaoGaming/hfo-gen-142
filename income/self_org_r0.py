@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 REPO = os.getenv("HFO_REPO", "TTaoGaming/hfo-gen-142")
 ISSUE = int(os.getenv("HFO_ISSUE", "7"))
-MODEL = os.getenv("HFO_OLLAMA_MODEL", "granite4.2:3b-q4_K_M")
+MODEL = os.getenv("HFO_OLLAMA_MODEL", "qwen3.5:2b-q4_K_M")
 NEURAL_TIMEOUT = float(os.getenv("HFO_NEURAL_TIMEOUT", "8"))
 CAPS = {x.strip() for x in os.getenv("HFO_CAPABILITIES", "public_web,github_read,local_shell,ollama").split(",") if x.strip()}
 API = "https://api.github.com"
@@ -56,7 +56,7 @@ def main():
     neural = {}
     try:
         prompt = "Choose ONE lane from this already-symbolically-eligible set. Optimize for fastest credible external income signal. Do not invent authority. Return JSON only: {selected_lane,rationale}.\n" + json.dumps(neural_pool)
-        resp = post_json("http://127.0.0.1:11434/api/chat", {"model":MODEL,"stream":False,"messages":[{"role":"user","content":prompt}],"options":{"temperature":0,"num_predict":64}})
+        resp = post_json("http://127.0.0.1:11434/api/chat", {"model":MODEL,"stream":False,"think":False,"messages":[{"role":"user","content":prompt}],"options":{"temperature":0,"num_predict":96}})
         neural = extract_json(resp.get("message",{}).get("content",""))
     except Exception as e: neural = {"error": type(e).__name__}
     candidate = next((x for x in neural_pool if x["lane"] == neural.get("selected_lane")), eligible[0])
