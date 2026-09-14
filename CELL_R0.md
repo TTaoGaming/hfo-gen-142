@@ -1,5 +1,9 @@
 # One small neurosymbolic cell
 
+For the current simplification, recovered champion evidence, cycle/takt measures,
+loadout experiment and implementation order, read
+[the measured operating loop](EVO_OPERATING_LOOP.md).
+
 The unit to reproduce is a bounded **Shinka job plus a task package**, not a VPS
 image full of new agent services. A VPS supplies capacity for that unit.
 

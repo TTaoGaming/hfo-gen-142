@@ -74,6 +74,10 @@ They cannot weaken the same result or recovery requirements.
 
 ## Larva invocation and result ABI
 
+The research/proposal/verifier loadout and telemetry interpretation are documented
+in [EVO_OPERATING_LOOP.md](EVO_OPERATING_LOOP.md). They populate the existing
+pinned manifest and receipts; they do not introduce another Larva ABI.
+
 Use these semantics as fields in the incumbent Workload/native invocation;
 do not create another envelope bus. Each required reference must resolve to
 immutable bytes or a current native authority record before execution.

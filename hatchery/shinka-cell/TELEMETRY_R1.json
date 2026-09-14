@@ -1,0 +1,50 @@
+{
+  "work_id": "packing-shinka-pdsa-20260914-r1",
+  "campaign_wall_seconds": 218.0,
+  "dispatched_requests": 4,
+  "returned_responses": 3,
+  "native_evaluated_proposals": 1,
+  "native_evaluation_receipts": [
+    "results/gen_2/results/metrics.json"
+  ],
+  "baseline_and_separate_replays_excluded": true,
+  "request_slots": [
+    {
+      "provider": "kimi",
+      "model": "k3-256k",
+      "state": "RETURNED",
+      "reserved_to_returned_seconds": 85.94
+    },
+    {
+      "provider": "google-ai-studio",
+      "model": "gemini-3.5-flash-lite",
+      "state": "RETURNED",
+      "reserved_to_returned_seconds": 2.502
+    },
+    {
+      "provider": "groq",
+      "model": "openai/gpt-oss-120b",
+      "state": "RETURNED",
+      "reserved_to_returned_seconds": 1.679
+    },
+    {
+      "provider": "openrouter",
+      "model": "nvidia/nemotron-3.5-lightning:free",
+      "state": "AMBIGUOUS_NO_RETRY",
+      "reserved_to_returned_seconds": null
+    }
+  ],
+  "evaluation_seconds": {
+    "replay-kimi/metrics.json": 11.79042983497493,
+    "results/gen_0/results/metrics.json": 4.8272410170175135,
+    "results/gen_2/results/metrics.json": 6.98467649705708
+  },
+  "independent_accepted_candidate_count": null,
+  "end_to_end_candidate_cycle_seconds": null,
+  "measured_takt_seconds": null,
+  "operator_interventions": null,
+  "verified_new_champions": 0,
+  "time_to_winner_seconds": null,
+  "claim_ceiling": "Historical receipt reduction, not live telemetry. Missing acceptance/phase timestamps remain unknown. Call-slot time includes admission overhead. Campaign duration is not candidate cycle time; takt is a demand target, not a measured latency.",
+  "source_sha256": "27c8d7249912e7b70466202625720dd1bba2747c720bd68f1736bd8f1428c69b"
+}
