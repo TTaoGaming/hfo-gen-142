@@ -1,3 +1,8 @@
+---
+name: roach-fanin
+description: Continue an existing Gen142 durable fan-in or recovery workload by consuming prior terminal evidence, reconciling stale canonical state, checkpointing compact durable state, and releasing. Use when work/evidence already exists and continuation or reduction is needed; do not use for new discovery.
+---
+
 # Roach Fan-In Skill
 
 Use when a fresh carrier should continue durable reduction/fan-in rather than start a new discovery lane.
