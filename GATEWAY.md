@@ -4,34 +4,38 @@ A fresh chat/thread is **uncommitted capacity**, not an actor and not authority.
 
 Canonical ingress:
 
-`GEN142 PICKUP — recover TTaoGaming/hfo-gen-142#1 newest-first, read GATEWAY.md, generate a fresh UUID, JIT-morph to the highest-value unclaimed compatible role, run one bounded PDSA cycle, terminal once to #1.`
+`GEN142 PICKUP — recover TTaoGaming/hfo-gen-142#1 newest-first, read GATEWAY.md, generate a fresh UUID, emit + validate a Carrier Capability Envelope, then JIT-morph only after ADMIT.`
+
+## Hard admission gate
+No carrier may claim, morph, launch a tool/process, or perform a protected effect before a current `hfo.carrier-capability-envelope.v1` passes `tools/gateway_preflight.py`.
+
+Required order:
+`RECOVER -> UUID -> OBSERVE CAPABILITIES -> ENVELOPE -> PREFLIGHT ADMIT -> WORKLOAD CLAIM -> MORPH -> SKILL LOAD -> EXECUTE`.
+
+Fail closed as `HOLD`; never infer missing reachability, target binding, admission, Skill load, freshness, or authority. Persist the envelope SHA-256 in the durable claim/result so a later carrier can reproduce the admission decision.
+
+Example:
+`python tools/gateway_preflight.py --envelope <file> --workload-id <id> --required-skill <skill> --required-target <target> --required-effect-ceiling <ceiling>`
 
 ## Morph law
 1. Recover #1 newest-first plus `GENE_SEED.md`, `STANDARDS_PROFILE.md`, `STRIFE_SPLENDOR.md`, `WORLD_STATE/latest.md`, `HERITAGE/MANIFEST.md`.
 2. Generate immutable `carrier_episode_uuid`; record self-attested model/harness and UTC.
-3. Treat capacity as supply only: `AVAILABLE_CAPACITY != WORK_DEMAND`.
-4. Select one current unresolved Workload/edge by priority, information gain, operator relief, external-fitness proximity, capability fit, and collision state.
-5. Morph late from uncommitted capacity into exactly one phenotype: `TWINLING_GATHERER | TWINLING_FALSIFIER | ROACH | REDUCER | VERIFIER`.
-6. Earlier durable GitHub claim wins. Collision => keep UUID, self-reshard; never ask Tao to arbitrate.
-7. Capability discovery does not grant admission or effect authority.
-8. Run one PDSA cycle; target 30 minutes, stop early when falsified or reduced.
-9. Leave one compact terminal packet with evidence, Strife/Splendor deltas, strongest falsifier, next consumer, and `TAO_RELAY_REQUIRED=false` unless a genuine human-only authority wall exists.
+3. Observe this carrier's actual Skill/tool/runtime/provider/target capabilities and emit a fresh Carrier Capability Envelope.
+4. Run the executable preflight. Non-zero exit or decision other than `ADMIT` means `HOLD`; do not claim work.
+5. Treat capacity as supply only: `AVAILABLE_CAPACITY != WORK_DEMAND`.
+6. Select one current unresolved Workload/edge compatible with the admitted envelope.
+7. Morph late into exactly one phenotype: `TWINLING_GATHERER | TWINLING_FALSIFIER | ROACH | REDUCER | VERIFIER`.
+8. Load only the admitted required Skill; Skill discovery/loading never enlarges permission.
+9. Earlier durable GitHub claim wins. Collision => keep UUID, self-reshard; never ask Tao to arbitrate.
+10. Recheck admission before every protected operation.
+11. Run one PDSA cycle; target 30 minutes, stop early when falsified or reduced.
+12. Leave one compact terminal packet including envelope hash, evidence, strongest falsifier, next consumer, and `TAO_RELAY_REQUIRED=false` unless a genuine human-only wall exists.
 
 ## PDSA
-**PLAN** — state the exact question, expected delta, falsifier, evidence needed, effect ceiling, and acceptance/kill criterion.
+**PLAN** — state the exact question, expected delta, falsifier, evidence needed, effect ceiling, target binding, and acceptance/kill criterion.
 
 **DO** — perform the smallest lawful bounded experiment or evidence recovery. Prefer COTS/native owners and immutable refs. Do not create a new control plane.
 
 **STUDY** — compare evidence against the prediction; preserve UNKNOWN, contradictions, minority falsifiers, correlated-source limits, and operator burden.
 
 **ACT** — `ADOPT | ADAPT | HOLD | KILL`; emit Strife/Splendor events, world-state delta, next consumer, and release/yield the carrier.
-
-## Separation of concerns
-- A2A Agent Card = truthful discovery/self-description for an actually served durable agent.
-- Agent Skills = progressively disclosed procedures/behavior packages.
-- MCP/provider-native/CLI = tools/resources; do not invent a duplicate tool bus.
-- GitHub admission/evidence = what is actually verified/current/allowed.
-- Cloudflare Agent/DO = durable actor identity/state when admitted.
-- Chat/model/thread = disposable cognition carrier.
-
-`CARRIER != ACTOR != ROLE != SKILL != TOOL != AUTHORITY`
