@@ -1,0 +1,132 @@
+{
+  "cycle": "GOAL_R1",
+  "observed_utc": "2026-09-14T04:14:26.232202Z",
+  "started_utc": "2026-09-14T03:52:46Z",
+  "deadline_utc": "2026-09-14T04:22:46Z",
+  "status": "ISOLATED_REPAIRS_VERIFIED_PRODUCTION_HOLD",
+  "live_provider_calls": 0,
+  "spending_caps_changed": false,
+  "production_deployments": 0,
+  "source_sha256_lf": {
+    "hatchery/pdsa-budget.mjs": "49135469186e6d42b4db3cd00bdc17d31c209ab9fb3f50d62a12c0987952dfb0",
+    "hatchery/pdsa-native-assay.mjs": "d6d93b706f3fa48b35e18e2834df045cc8af40097e6b1ec400557437978aef08",
+    "hatchery/shinka-cell/run.py": "cf032f3c2a050fe22a089051a9aebfb9bef65990b5bb8f40bdd342cf7701d720",
+    "hatchery/shinka-cell/checkpoint_assay.py": "0f9e093eb3fb9ba646a0e0bf65317e05f3879de33301cd6af0998bf123043f59",
+    "hatchery/shinka-cell/shinka-evaluation-checkpoint.patch": "1121a3433cc68524c5ecc0c97f012c31ee196a3da5cf5305abefe82f567e7c5e"
+  },
+  "shinka_module": {
+    "before_sha256": "0ae3308ebf16f910f82883d1d15255aa32622c5f0503017fd8d5a4d9108d1691",
+    "after_sha256": "4ea52abb2c46da529ea3e06fd51ba39918205820d05dfbd3cf5fb3df1602f6b3"
+  },
+  "patch_apply_exact_hash_verified": true,
+  "native_cancellation": {
+    "status": "PASS",
+    "runtime": "Miniflare/workerd",
+    "compatibility_date": "2026-09-02",
+    "production_compatibility_date": "2026-09-11",
+    "quota_wait_stop_dispatches": 0,
+    "inflight_stop_total_dispatches": 1,
+    "mocked_egress": true,
+    "live_provider_calls": 0
+  },
+  "regression_tests": {
+    "cancellation_passed": 5,
+    "recipe_and_telemetry_passed": 5
+  },
+  "recovery": {
+    "status": "PASS",
+    "live_provider_calls": 0,
+    "fixture_requests": 2,
+    "requests_before_kill": 1,
+    "requests_for_resumed_generation": 0,
+    "archive_before": [
+      [
+        "4080bc41-b947-4000-8c8f-1a8e90c40a17",
+        0
+      ]
+    ],
+    "archive_after": [
+      [
+        "4080bc41-b947-4000-8c8f-1a8e90c40a17",
+        0
+      ],
+      [
+        "2b899280-0a85-457a-8c2d-663f1551992b",
+        1
+      ],
+      [
+        "c35eaf18-e2cb-46c3-9f76-803ae113ce9c",
+        2
+      ]
+    ],
+    "caller_a_returncode": -9,
+    "caller_b_returncode": 0,
+    "terminal_replay_returncode": 0,
+    "independent_geometry": {
+      "1": {
+        "sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+        "radius": "154981966608313/500000000000000",
+        "containment_checks": 119,
+        "pair_checks": 7021
+      },
+      "2": {
+        "sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+        "radius": "154981966608313/500000000000000",
+        "containment_checks": 119,
+        "pair_checks": 7021
+      }
+    },
+    "elapsed_seconds": 53.9340193180833,
+    "operator_actions_during_run": 0,
+    "claim_ceiling": "Temporary patched Shinka copy; cached model responses; caller plus descendants killed after accepted checkpoint; two native evaluated generations and separate exact checker. Not live proposal recovery, distinct security principal, host failure or production deployment.",
+    "negative_cases": {
+      "missing-checkpoint": {
+        "exit": 1,
+        "reason": "RECOVERY_HOLD_NO_ACCEPTED_PROPOSAL",
+        "new_requests": 0
+      },
+      "changed-candidate": {
+        "exit": 1,
+        "reason": "RECOVERY_HOLD_CHECKPOINT_MISMATCH",
+        "new_requests": 0
+      },
+      "changed-evaluator": {
+        "exit": 1,
+        "reason": "RECOVERY_HOLD_CHECKPOINT_MISMATCH",
+        "new_requests": 0
+      }
+    },
+    "concurrent_caller_rejected": true
+  },
+  "system_package_unchanged": true,
+  "prior_experiments": [
+    {
+      "id": "checkpoint-goal-r1",
+      "status": "PASS",
+      "elapsed_seconds": 42.72188515891321,
+      "two_native_generations": true
+    },
+    {
+      "id": "checkpoint-goal-r2",
+      "status": "FAIL",
+      "reason": "Testing lock contention before kill allowed another proposal; request-count assertion failed",
+      "system_package_unchanged": true,
+      "live_provider_calls": 0
+    }
+  ],
+  "two_verified_fixture_generations": true,
+  "two_unattended_live_generations": "UNPROVEN",
+  "new_champions": 0,
+  "automatic_production_restart": "NOT_TESTED",
+  "approval_rejection": {
+    "action": "Persistent sudo installation of Shinka checkpoint patch",
+    "reason": "Remote persistent change, workspace routing concern and earlier source guard failure",
+    "installation_retried": false
+  },
+  "remaining": [
+    "Approve tested Oracle installation and lock-enabled configuration without starting inference",
+    "Current-version-guarded Cloudflare cancellation deployment and hosted verification",
+    "Joined supervisor restart, shared-account admission and two live verified generations after fresh admission"
+  ],
+  "claim_ceiling": "Cached responses, isolated VPS library copy, harness-driven replacement, separate geometry code. No live inference, production readiness, cross-host fencing, independent security principal or new champion."
+}

@@ -1,5 +1,10 @@
 """Configuration of the installed Shinka runner; no custom search loop."""
 import os
+if os.environ.get('SHINKA_EVAL_CHECKPOINT') == '1':
+    # Native single-writer exclusion for the opt-in Linux evaluation checkpoint.
+    import fcntl
+    _cell_lock = open('.shinka-cell.lock', 'a')
+    fcntl.flock(_cell_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
 os.environ.update(SHINKA_LLM_TIMEOUT='100',SHINKA_LLM_MAX_RETRIES='1',SHINKA_OPENAI_MAX_RETRIES='0',SHINKA_LLM_BACKOFF_MAX_TRIES='1',SHINKA_LLM_BACKOFF_MAX_TIME='100')
 from shinka.core import EvolutionConfig,ShinkaEvolveRunner
 from shinka.database import DatabaseConfig

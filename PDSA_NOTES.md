@@ -198,3 +198,23 @@ automation. Neither a new champion nor keeper acceptance was established here.
 being processed. **Splendor:** immutable snapshots and a short log expose the
 missing generation without another model request. Remaining blocker is lifecycle
 recovery, not evidence that more compute or more personas are needed.
+
+## Goal R1 — implement cancellation and recovery, 2026-09-14
+
+The bounded 30-minute stabilization mission produced native local workerd
+cancellation evidence and a tested opt-in Shinka accepted-proposal checkpoint.
+The isolated VPS assay completed two native generations after killing the caller
+and evaluator descendants, without re-requesting the interrupted proposal. Both
+results passed separate exact geometry checks and retained the incumbent.
+Missing or changed checkpoints and a competing caller were rejected.
+
+Details, exact source hashes, failed experiments and installation boundaries:
+[recovery report](hatchery/shinka-cell/RECOVERY_GOAL_R1.md) and
+[machine-readable receipt](hatchery/shinka-cell/GOAL_R1.json).
+
+B1 is now native-local verified, not hosted deployed. B2 has an isolated tested
+repair, not production installation or automatic supervisor recovery. Automatic
+approval review rejected persistent installation; the isolated test left the
+system package unchanged. Live model calls, cap changes and new champions were
+zero. Two verified fixture generations are proven; two unattended live
+generations still need the joined admitted acceptance test.

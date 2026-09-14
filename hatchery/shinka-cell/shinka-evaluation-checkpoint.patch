@@ -1,0 +1,122 @@
+--- a/shinka/core/async_runner.py
++++ b/shinka/core/async_runner.py
+@@ -4,6 +4,8 @@
+ """
+ 
+ import json
++import hashlib
++from types import SimpleNamespace
+ import asyncio
+ import logging
+ import shutil
+@@ -1241,6 +1243,15 @@
+ 
+             # Update state for resuming
+             await self._restore_resume_progress()
++            if os.environ.get("SHINKA_EVAL_CHECKPOINT") == "1":
++                persisted = set(await self.async_db.get_persisted_generation_ids_async())
++                for folder in Path(self.results_dir).glob("gen_*"):
++                    if not folder.name[4:].isdigit():
++                        continue
++                    generation = int(folder.name[4:])
++                    if generation not in persisted:
++                        self._read_eval_checkpoint(generation)
++
+         else:
+             # Generate or copy initial program only if NOT resuming
+             if (
+@@ -2612,6 +2623,9 @@
+             loop = asyncio.get_event_loop()
+ 
+             def sync_check_and_create_lock():
++                if os.environ.get("SHINKA_EVAL_CHECKPOINT") == "1" and Path(gen_dir).exists():
++                    self._read_eval_checkpoint(generation)
++                    return True
+                 if Path(lock_file).exists():
+                     return False
+                 Path(gen_dir).mkdir(parents=True, exist_ok=False)  # Fail if exists
+@@ -2736,7 +2750,24 @@
+         if getattr(self, "llm_selection", None) is not None:
+             model_sample_probs, model_posterior = self.llm_selection.select_llm()
+ 
+-        for attempt in range(self.evo_config.max_novelty_attempts):
++        checkpoint = None
++        if os.environ.get("SHINKA_EVAL_CHECKPOINT") == "1":
++            checkpoint_path = Path(exec_fname).parent / "accepted-proposal.json"
++            if checkpoint_path.exists():
++                checkpoint = self._read_eval_checkpoint(generation)
++                parent_program = SimpleNamespace(id=checkpoint["parent_id"])
++                archive_programs = [SimpleNamespace(id=x) for x in checkpoint["archive_ids"]]
++                top_k_programs = [SimpleNamespace(id=x) for x in checkpoint["top_k_ids"]]
++                code_diff = checkpoint["code_diff"]
++                meta_patch_data = checkpoint["meta_patch_data"]
++                code_embedding = checkpoint["code_embedding"]
++                api_costs = checkpoint["api_costs"]
++                embed_cost = checkpoint["embed_cost"]
++                novelty_total_cost = checkpoint["novelty_cost"]
++                proposal_started_at = checkpoint["proposal_started_at"]
++                proposal_accepted = True
++
++        for attempt in range(0 if checkpoint else self.evo_config.max_novelty_attempts):
+             for resample in range(self.evo_config.max_patch_resamples):
+                 try:
+                     # Sample parent and inspirations with fix mode detection
+@@ -2916,6 +2947,34 @@
+             meta_patch_data["meta_recommendations"] = meta_recs
+             meta_patch_data["meta_summary"] = meta_summary
+             meta_patch_data["meta_scratch_pad"] = meta_scratch
++
++        # Checkpoint only accepted proposals; never re-request an uncertain call.
++        if proposal_accepted and os.environ.get("SHINKA_EVAL_CHECKPOINT") == "1" and checkpoint is None:
++            checkpoint = {
++                "version": 1, "generation": generation,
++                "code_sha256": hashlib.sha256(Path(exec_fname).read_bytes()).hexdigest(),
++                "context": self._eval_checkpoint_context(),
++                "parent_id": parent_program.id,
++                "archive_ids": [p.id for p in archive_programs],
++                "top_k_ids": [p.id for p in top_k_programs],
++                "code_diff": code_diff, "meta_patch_data": meta_patch_data,
++                "code_embedding": code_embedding, "api_costs": api_costs,
++                "embed_cost": embed_cost, "novelty_cost": novelty_total_cost,
++                "proposal_started_at": proposal_started_at,
++            }
++            target = Path(exec_fname).parent / "accepted-proposal.json"
++            temporary = target.with_suffix(".tmp")
++            encoded = json.dumps(checkpoint).encode()
++            if len(encoded) > 262144:
++                raise RuntimeError("CHECKPOINT_TOO_LARGE")
++            with temporary.open("xb") as stream:
++                stream.write(encoded); stream.flush(); os.fsync(stream.fileno())
++            os.replace(temporary, target)
++            directory_fd = os.open(str(target.parent), os.O_RDONLY)
++            try:
++                os.fsync(directory_fd)
++            finally:
++                os.close(directory_fd)
+ 
+         # If we have an accepted proposal, submit it
+         if proposal_accepted:
+@@ -5015,6 +5074,23 @@
+         budgeted_generations = set(range(self.evo_config.num_generations))
+         return sorted(budgeted_generations - set(persisted_generations))
+ 
++    def _eval_checkpoint_context(self):
++        # This opt-in is intentionally limited to the pinned, data-only packing task.
++        names = ("run.py", "evaluate.py", "packing_generations.py", "parent.pck", "initial.py")
++        return {name: hashlib.sha256(Path(name).read_bytes()).hexdigest() for name in names}
++
++    def _read_eval_checkpoint(self, generation):
++        folder = Path(self.results_dir) / f"gen_{generation}"
++        target = folder / "accepted-proposal.json"
++        if not target.is_file() or target.stat().st_size > 262144:
++            raise RuntimeError("RECOVERY_HOLD_NO_ACCEPTED_PROPOSAL")
++        data = json.loads(target.read_bytes())
++        if (data.get("version") != 1 or data.get("generation") != generation
++                or data.get("context") != self._eval_checkpoint_context()
++                or data.get("code_sha256") != hashlib.sha256((folder / f"main.{self.lang_ext}").read_bytes()).hexdigest()):
++            raise RuntimeError("RECOVERY_HOLD_CHECKPOINT_MISMATCH")
++        return data
++
+     async def _restore_resume_progress(self) -> None:
+         """Restore progress counters from persisted database state."""
+         self.completed_generations = await self._count_completed_generations_from_db()

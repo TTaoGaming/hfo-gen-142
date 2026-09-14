@@ -4,3 +4,4 @@ packing_generations.py -text
 packing-fixture/* -text
 packing-fixture/refine.py whitespace=cr-at-eol
 shinka-cell/*.py -text
+shinka-cell/*.patch text eol=lf whitespace=-blank-at-eol
