@@ -74,6 +74,26 @@ def live_worker_routes(snapshot):
     return [x[1] for x in routes]
 
 
+def admitted_cleanup(snapshot):
+    out = []
+    for item in snapshot.get("cleanup_candidates", []):
+        if not isinstance(item, dict):
+            continue
+        if item.get("admitted") is not True or item.get("blocked") is True:
+            continue
+        cleanup_id = str(item.get("cleanup_id", "")).strip()
+        cleanup_ref = str(item.get("cleanup_ref", "")).strip()
+        resource_id = str(item.get("resource_id", "")).strip()
+        gate_receipt = str(item.get("gate_receipt_sha256", "")).strip()
+        action = str(item.get("action", "")).strip()
+        if not cleanup_id or not cleanup_ref or not resource_id or len(gate_receipt) != 64:
+            continue
+        if action not in {"DELETE_TEMP_DIR", "DELETE_CACHE_DIR", "REMOVE_WORKTREE"}:
+            continue
+        out.append((cleanup_id, cleanup_ref, item))
+    out.sort(key=lambda x: (x[0], x[1]))
+    return [x[2] for x in out]
+
 def plan(snapshot, decision, reason, action, tao=False, **detail):
     out = {
         "schema": "hfo.reconcile_plan.v0",
@@ -124,6 +144,8 @@ def evaluate(snapshot):
     dispatches = snapshot.get("dispatches", [])
     if not isinstance(dispatches, list):
         return hold(snapshot, "DISPATCH_LIST_INVALID")
+    if not isinstance(snapshot.get("cleanup_candidates", []), list):
+        return hold(snapshot, "CLEANUP_LIST_INVALID")
     active = [d for d in dispatches if isinstance(d, dict) and d.get("active") is True]
     if len(active) > 1:
         return hold(snapshot, "DUPLICATE_ACTIVE_DISPATCH", count=len(active))
@@ -152,6 +174,17 @@ def evaluate(snapshot):
             "terminal_ref": actor.get("terminal_ref"),
         })
 
+    cleanups = admitted_cleanup(snapshot)
+    if cleanups and phase in {"IDLE", "TERMINAL"}:
+        item = cleanups[0]
+        return plan(snapshot, "ACT", "ADMITTED_CLEANUP_READY", {
+            "kind": "CLEAN_RESOURCE",
+            "cleanup_id": item["cleanup_id"],
+            "cleanup_ref": item["cleanup_ref"],
+            "resource_id": item["resource_id"],
+            "cleanup_action": item["action"],
+            "gate_receipt_sha256": item["gate_receipt_sha256"],
+        })
     ready = admitted_demand(snapshot)
     if ready and phase in {"IDLE", "TERMINAL"}:
         item = ready[0]

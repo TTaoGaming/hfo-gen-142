@@ -19,6 +19,7 @@ class ReconcileKernelTests(unittest.TestCase):
             "demand": [],
             "dispatches": [],
             "worker_routes": [],
+            "cleanup_candidates": [],
             "human_boundary": {"active": False},
         }
 
@@ -132,6 +133,44 @@ class ReconcileKernelTests(unittest.TestCase):
         self.assertEqual(a["snapshot_sha256"], b["snapshot_sha256"])
         self.assertEqual(a["plan_sha256"], b["plan_sha256"])
 
+    def test_admitted_cleanup_runs_before_new_demand(self):
+        d = self.base()
+        d["cleanup_candidates"] = [{
+            "cleanup_id": "cleanup:a", "cleanup_ref": "cleanup-ref:a", "resource_id": "res:a",
+            "gate_receipt_sha256": "a" * 64, "action": "DELETE_TEMP_DIR",
+            "admitted": True, "blocked": False,
+        }]
+        d["demand"] = [{"work_ref": "work:next", "priority": 100, "admitted": True, "blocked": False}]
+        r = rk.evaluate(d)
+        self.assertEqual(r["action"]["kind"], "CLEAN_RESOURCE")
+        self.assertEqual(r["action"]["cleanup_id"], "cleanup:a")
+
+    def test_cleanup_is_deterministic_and_one_per_wake(self):
+        d = self.base()
+        d["cleanup_candidates"] = [
+            {"cleanup_id":"cleanup:z", "cleanup_ref":"ref:z", "resource_id":"res:z", "gate_receipt_sha256":"b"*64, "action":"DELETE_CACHE_DIR", "admitted":True, "blocked":False},
+            {"cleanup_id":"cleanup:a", "cleanup_ref":"ref:a", "resource_id":"res:a", "gate_receipt_sha256":"a"*64, "action":"DELETE_TEMP_DIR", "admitted":True, "blocked":False},
+        ]
+        a = rk.evaluate(copy.deepcopy(d))
+        b = rk.evaluate(copy.deepcopy(d))
+        self.assertEqual(a, b)
+        self.assertEqual(a["action"]["cleanup_id"], "cleanup:a")
+
+    def test_unadmitted_or_blocked_cleanup_is_not_routed(self):
+        d = self.base()
+        d["cleanup_candidates"] = [
+            {"cleanup_id":"cleanup:a", "cleanup_ref":"ref:a", "resource_id":"res:a", "gate_receipt_sha256":"a"*64, "action":"DELETE_TEMP_DIR", "admitted":False, "blocked":False},
+            {"cleanup_id":"cleanup:b", "cleanup_ref":"ref:b", "resource_id":"res:b", "gate_receipt_sha256":"b"*64, "action":"DELETE_TEMP_DIR", "admitted":True, "blocked":True},
+        ]
+        r = rk.evaluate(d)
+        self.assertEqual(r["decision"], "IDLE")
+
+    def test_malformed_cleanup_list_fails_closed(self):
+        d = self.base()
+        d["cleanup_candidates"] = {"not": "a list"}
+        r = rk.evaluate(d)
+        self.assertEqual(r["decision"], "HOLD")
+        self.assertEqual(r["reason"], "CLEANUP_LIST_INVALID")
 
 if __name__ == "__main__":
     unittest.main()
