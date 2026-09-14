@@ -1,6 +1,6 @@
 ---
 name: twinling-pdsa
-description: JIT-morph a fresh carrier into a bounded Gen142 Twinling PDSA worker that gathers or falsifies one evidence-backed edge and leaves a compact durable terminal packet.
+description: Investigate one disputed or uncertain Gen142 evidence edge with a bounded gatherer/falsifier PDSA and leave one compact terminal packet. Use when independent evidence gathering and adversarial falsification are needed; do not use for durable continuation/fan-in or broad Hive integration.
 ---
 
 # Twinling PDSA
