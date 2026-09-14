@@ -8,48 +8,35 @@ description: Integrate Gen142 Hive contracts across A2A, Agent Skills, tools/aut
 Use when a Roach should integrate Gen142's existing pieces into a coherent Zerg Hive rather than start another broad discovery wave.
 
 ## Trigger
-- Hive archetype/card/skill/tool/runtime contracts are incomplete, contradictory or not reduced;
-- issue #1 contains useful terminals not yet reflected in the integrated Hive contract;
-- issue #2/Burrow work needs a stable pre-runtime integration contract;
-- a fresh carrier can close one H0..H9 integration edge without Tao routing.
+- #13 identifies a current Hive integration edge;
+- linked historical terminals are not yet reflected in the integrated Hive contract;
+- a current Burrow/fan-in result needs stable integration;
+- a fresh carrier can close one H0..H9 edge without Tao routing.
 
 ## Contract
-
-Fresh carrier = disposable cognition. Generate a new `carrier_episode_uuid`, recover the Hive coordination issue newest-first, self-shard to one under-covered H0..H9 lane, claim + read back, then run one bounded PDSA cycle. Earlier durable claim wins; readback is coordination, not atomic exclusion.
+Fresh carrier = disposable cognition. Generate a new `carrier_episode_uuid`, recover #13 newest-first, self-shard to one under-covered H0..H9 lane, claim + read back, then run one bounded PDSA cycle. Earlier durable claim wins; readback is coordination, not atomic exclusion.
 
 Target 30 minutes; stop early on decisive reduction.
 
 ### PLAN
-State:
-- exact integration question;
-- expected delta;
-- strongest falsifier;
-- evidence required;
-- current COTS/standard owner;
-- effect ceiling;
-- acceptance/kill criterion.
+State the exact integration question, expected delta, strongest falsifier, evidence required, current COTS/standard owner, effect ceiling, and acceptance/kill criterion.
 
 ### DO
 Prefer evidence reduction and standards-native composition:
 - recover older Gen140/141 Zerg/A2A/Skills donors only as evidence;
-- fresh-read current official standard where the lane depends on A2A/MCP/Agent Skills/Cloudflare behavior;
+- fresh-read current official standards where required;
 - map existing Gen142 contracts before inventing new ones;
 - create no new runtime/control plane in this wave.
 
 ### STUDY
-Attack:
-- duplicate archetypes;
-- metaphor with no behavioral fork;
-- Agent Card laundering historical capability into current truth;
-- Skill/tool/authority conflation;
-- provider-specific morphology;
-- fake independence;
-- stale runtime claims;
-- new abstractions that delete no custom semantics;
-- operator/context burden.
+Attack duplicate archetypes, metaphor with no behavioral fork, stale capabilities, Skill/tool/authority conflation, provider-specific morphology, fake independence, new abstractions that delete no custom semantics, and operator/context burden.
 
 ### ACT
 Return `ADOPT | ADAPT | HOLD | KILL` with the smallest integration delta.
+
+`next_consumer` is descriptive only. Before posting terminal, serialize `hfo.terminal-handoff.v1` and require:
+
+`python tools/terminal_handoff_gate.py <handoff.json>` -> `ADMIT_TERMINAL`.
 
 Terminal packet:
 ```yaml
@@ -68,13 +55,19 @@ contracts_hold: []
 contracts_kill: []
 files_or_surfaces_affected: []
 strongest_falsifier:
-next_consumer: H9_HIVE_REDUCER
+next_consumer:
+next_handoff:
+  mode: AUTO_DISPATCH | RECONCILE | MISSION_COMPLETE | HUMAN_BOUNDARY
+  owner:
+  work_ref:
+  dispatch_receipt:
 operator_action_required: NONE
 TAO_RELAY_REQUIRED: false
 ```
 
-## H0..H9 lanes
+Machine continuation requires a structured, non-self-attested transition receipt. A genuine human-only authority wall must already have an automatic resume watcher armed before escalation. Tao may unlock authority; Tao must not launch, retry, route, monitor, gather, or restart the next carrier.
 
+## H0..H9 lanes
 - **H0 ONTOLOGY_ARCHETYPES** — reduce Zerg vocabulary to the smallest capacity/workload/actor topology that changes behavior.
 - **H1 LARVA_GATEWAY_MORPH** — zero-history ingress, demand-before-supply, capability/admission, late morph and release/remorph.
 - **H2 TWINLING_REDQUEEN** — gather/falsify pair semantics, independence, PDSA and adversarial pressure.
@@ -87,17 +80,6 @@ TAO_RELAY_REQUIRED: false
 - **H9 HIVE_REDUCER** — consume H0..H8, dedupe, preserve minority falsifiers, produce one integrated R0 contract and exact next executable assay.
 
 ## Fitness
+High value: fewer custom concepts, stronger explicit owners, recover/morph without Tao, executable boundaries, obvious vertical slice, and terminal-to-next machine transition.
 
-High value:
-- fewer custom concepts with stronger explicit owners;
-- one fresh carrier can recover/morph without Tao;
-- card/skill/tool/authority boundaries become executable and testable;
-- one integrated vertical slice becomes obvious;
-- old donor machinery is killed instead of resurrected.
-
-Low value:
-- more lore;
-- more cards for non-served archetypes;
-- more schemas without a demonstrated gap;
-- copying Gen140/141 architecture wholesale;
-- agreement without independent evidence.
+Low value: more lore, more cards without consumers, schemas without demonstrated gaps, wholesale donor copying, or agreement without independent evidence.
