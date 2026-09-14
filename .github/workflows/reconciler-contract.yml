@@ -6,14 +6,18 @@ on:
     paths:
       - 'DETERMINISTIC_RECONCILER_CONTRACT.md'
       - 'tools/reconcile_kernel.py'
+      - 'tools/reconcile_snapshot_guard.py'
       - 'tests/test_reconcile_kernel.py'
+      - 'tests/test_reconcile_snapshot_guard.py'
       - 'AGENTS.md'
       - '.github/workflows/reconciler-contract.yml'
   pull_request:
     paths:
       - 'DETERMINISTIC_RECONCILER_CONTRACT.md'
       - 'tools/reconcile_kernel.py'
+      - 'tools/reconcile_snapshot_guard.py'
       - 'tests/test_reconcile_kernel.py'
+      - 'tests/test_reconcile_snapshot_guard.py'
       - 'AGENTS.md'
       - '.github/workflows/reconciler-contract.yml'
 
@@ -30,11 +34,29 @@ jobs:
         with:
           python-version: '3.12'
       - name: Run deterministic reconciler regressions
-        run: python -m unittest tests.test_reconcile_kernel -v
+        run: python -m unittest tests.test_reconcile_kernel tests.test_reconcile_snapshot_guard -v
       - name: Assert controller remains a pure policy surface
         shell: bash
         run: |
           set -euo pipefail
           grep -q 'owns no queue, scheduler, lease, actor state, credentials, or effects' tools/reconcile_kernel.py
+          grep -q 'owns no queue, scheduler, lease, actor state, credentials, or effects' tools/reconcile_snapshot_guard.py
           grep -q 'Same canonical snapshot + same policy version MUST produce the same plan' DETERMINISTIC_RECONCILER_CONTRACT.md
-          ! grep -Eq 'requests\.|urllib|subprocess|socket|boto|cloudflare|github' tools/reconcile_kernel.py
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+
+          banned = {'requests', 'urllib', 'subprocess', 'socket', 'boto', 'boto3', 'cloudflare', 'github', 'httpx', 'aiohttp'}
+          for name in ('tools/reconcile_kernel.py', 'tools/reconcile_snapshot_guard.py'):
+              tree = ast.parse(Path(name).read_text(encoding='utf-8'))
+              for node in ast.walk(tree):
+                  if isinstance(node, ast.Import):
+                      roots = {alias.name.split('.')[0] for alias in node.names}
+                  elif isinstance(node, ast.ImportFrom):
+                      roots = {(node.module or '').split('.')[0]}
+                  else:
+                      continue
+                  bad = roots & banned
+                  if bad:
+                      raise SystemExit(f'{name}: forbidden effect/network import(s): {sorted(bad)}')
+          PY
