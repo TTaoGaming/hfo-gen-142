@@ -134,3 +134,67 @@ replace the hosted source from this local module.
 actual effect boundary. **Splendor:** the same deterministic falsifier that failed
 in N2 now passes, and a persistence-window test checks that cancellation does not
 wait for model completion. This is local repair evidence only.
+
+## Cycle N4 — final queue wrap-up, 2026-09-14
+
+**Plan:** inspect the preserved B2 recovery fixture read-only and close this
+four-message notes queue with a mission-command handoff. **Do:** inspected the
+Oracle r2d generation-1 directory to depth two, original before/after archive
+snapshots, and the first two recovery-log lines. No candidate/evaluation files
+were returned from that directory inspection. Both archive snapshots contain
+only the same generation-zero ID. The log still reports an existing generation-1
+directory and a missing generation when the generation budget ends.
+
+**Study:** B2 remains OPEN. The preserved fixture has no completed generation-one
+receipt to accept. Its separately cached test response is test equipment, not
+evidence that the interrupted generation finished or that a live provider call
+may be repeated. A zero exit and an existing directory cannot authorize success.
+Next B2 work must distinguish pre-dispatch, uncertain dispatch, retained response,
+evaluated result and accepted result, then continue only from proven native state.
+Do not delete the unfinished directory to make the runner retry blindly.
+
+**Act:** this operator-supplied four-cycle queue is now wrapped up. No recurring
+automation, background campaign or queued model allowance was created. Across
+N1–N4, live model requests and runtime deployments were zero. B1 has a local fix
+and five passing tests; B2–B5 remain unresolved. Native verification and deployment
+of B1 are still pending. No claim of improved hosted stability follows from this
+notes queue. Consumer: Sigrun's next admitted stabilization mission.
+
+### Mission command: target and acceptance boundary
+
+Tao and Sigrun set the mission intent, scientific objective, available quota,
+effect boundaries and promotion criteria. The hive should own bounded assignment,
+execution, recovery, independent verification, durable evidence and escalation.
+Sigrun supervises meaningful decisions; Tao must not become the per-step scheduler.
+This role allocation is the desired operating model, not a claim of a deployed
+supervisor or permission inherited by a persona.
+
+Compose the existing contract in this order:
+
+`compute -> Hatchery admission -> uncommitted Larva -> selected workload/loadout
+-> durable Roach actor + bounded carrier -> verified result + retained lesson`
+
+Cloudflare hosts durable identity/state and Workflow execution; the selected
+Kimi/Gemini/other adapter supplies cognition. MAPE-K/PDSA is the observe, decide,
+experiment, verify and learn behavior inside that lifecycle. Callsign, persona,
+model and tools remain replaceable manifest fields; they cannot change the
+evaluator, work identity or shared-account reservation. Stabilize primitives first,
+then compose researcher/proposer/verifier force packages and compare loadouts.
+
+**Factory acceptance remains:** one laptop-independent cell completes two
+consecutive verified generations, survives an interruption without replaying
+uncertain effects, respects account and resource bounds, and needs zero Tao
+routing/cleanup/context ferrying after admission. Until that joined test passes,
+the system is an experimental factory prototype, not an unattended swarm factory.
+
+Ordered handoff: (1) native no-provider cancellation replay and guarded B1
+deployment, (2) native B2 recovery classification/replay, (3) admitted algorithm
+isolation and shared-account/fence tests, (4) the two-generation acceptance run
+with phase/ACK and intervention telemetry, (5) repeat missions and loadout trials.
+Existing champion candidates remain valuable and separate from this incomplete
+automation. Neither a new champion nor keeper acceptance was established here.
+
+**Strife:** an unfinished directory was mistaken by the runner for work already
+being processed. **Splendor:** immutable snapshots and a short log expose the
+missing generation without another model request. Remaining blocker is lifecycle
+recovery, not evidence that more compute or more personas are needed.
