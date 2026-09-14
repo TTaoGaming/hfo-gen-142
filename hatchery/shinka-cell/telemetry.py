@@ -52,5 +52,6 @@ if __name__ == '__main__':
     path = Path(sys.argv[1])
     raw = path.read_bytes()
     result = reduce_receipt(json.loads(raw))
-    result['source_sha256'] = hashlib.sha256(raw).hexdigest()
+    result['source_sha256'] = hashlib.sha256(raw.replace(b'\r\n', b'\n')).hexdigest()
+    result['source_digest_encoding'] = 'UTF-8 with LF newlines, matching the committed JSON'
     print(json.dumps(result, indent=2))

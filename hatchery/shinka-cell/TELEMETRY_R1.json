@@ -46,5 +46,6 @@
   "verified_new_champions": 0,
   "time_to_winner_seconds": null,
   "claim_ceiling": "Historical receipt reduction, not live telemetry. Missing acceptance/phase timestamps remain unknown. Call-slot time includes admission overhead. Campaign duration is not candidate cycle time; takt is a demand target, not a measured latency.",
-  "source_sha256": "27c8d7249912e7b70466202625720dd1bba2747c720bd68f1736bd8f1428c69b"
+  "source_sha256": "5d96b2051724362f9fc875993a5f6b92835723aa573f4c164c05028b38890cc9",
+  "source_digest_encoding": "UTF-8 with LF newlines, matching the committed JSON"
 }
