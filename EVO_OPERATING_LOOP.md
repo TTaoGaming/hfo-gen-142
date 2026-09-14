@@ -37,7 +37,7 @@ automation is weaker. The recent Kimi pilot found no new champion.
 | Durable Roach identity, task state, reservations | Existing Cloudflare Agent/DO | Pilot admission exists; account-wide races remain unproven |
 | Campaign steps, waits, completion events | Existing Workflow | Native assay passed; complete scientific loop remains unjoined |
 | Agent-internal recoverable work | Agents SDK fibers if needed | Upstream capability; not deployed for this cell |
-| Parent selection, mutations, archive, lineage, viewer | ShinkaEvolve | Installed 0.0.7; bounded pilot ran; restart defect remains |
+| Parent selection, mutations, archive, lineage, viewer | ShinkaEvolve | Installed 0.0.7 with opt-in accepted-proposal recovery; installed-package fixture passed, unattended live recovery unproven |
 | Model latency/tokens/errors | AI Gateway for routed calls; native meter/DO receipts for Kimi | Not every vendor has a remaining-quota meter |
 | CPU/memory/lifetime | systemd and existing sandbox runtime | Algorithm sandbox admission unfinished |
 | Scientific truth | Frozen exact verifier + distinct acceptance | Never delegated to the proposal's own prose |
@@ -159,13 +159,168 @@ persona/vendor, and pipeline failures must be separated from algorithm quality.
 ## Stability and the next implementation boundary
 
 Current cell status: **bounded experimental prototype, not stable unattended
-evolution**. Genuine wins: finite pilot, exact checking, ambiguous-call stop and
-live quota reads. Open failures: unfinished generation recovery, isolated broader
-algorithms, complete phase/ACK telemetry, shared-account race and stale-fence
-assays. A successful bootstrap or quota probe does not close these failures.
+evolution**. The Oracle recovery patch is installed and its cached-response
+two-generation assay passed. Local native workerd cancellation passed; hosted
+cancellation remains outstanding. See `hatchery/shinka-cell/INSTALL_R1.json` and
+`RECOVERY_GOAL_R1.md`. These do not prove automatic production restart, useful
+live adaptation, algorithm isolation or shared-account fencing.
 
-Next implementation: close one interrupted generation using the existing archive
-and retained provider receipt, then complete two consecutive verified generations
-without Tao routing. Add the above timing fields to that same path. Preserve the
-already specified campaign budget. Only then admit repeat campaigns and compare
-more loadouts. Do not scale actor count or buy compute to mask recovery failure.
+## Overnight mission proposal — 2026-09-14
+
+Status: **PLAN ONLY; no new admission, provider calls, scheduler or runtime change**.
+Decision record within PR4, based on source revision
+`12436c52a32b7ead9e8c6f507475d0fcaa030d51`. Hindsight/insight are complete enough
+to select the next experiment; implementation, joined validation and integration
+remain open. Consumer and integrator: Sigrun's next expressly launched mission.
+The trigger is not installed by this plan.
+
+The desired outcome is a finite overnight search that produces retrievable,
+verified experiments and preserves any improvement without routine Tao routing.
+Eight hours is the planning window, not permission to extend an existing cap or
+renew allowances. Budget exhaustion can end it sooner. A champion is a desired
+scientific outcome, not a promised completion criterion.
+
+### Diagnosis from current code
+
+- `pdsa-budget.mjs` is a specific expired pilot: fixed work ID, five hard-coded
+  vendor slots, ten-minute deadline, and any provider error stops the mission.
+  Relabelling it or repeatedly resetting it cannot admit an overnight campaign.
+- `run.py` permits a six-field dictionary selecting `shell` or `full`. It cannot
+  invent a new search algorithm. Six total generations include the baseline.
+- `evaluate.py` always starts from one hash-pinned `parent.pck`. Recipe evolution
+  is possible, but discovered geometry does not automatically become the next
+  parent. The evaluator currently stops the mission when it finds an improvement.
+- `combined_score` retains the incumbent for every non-improving proposal. This
+  removes much of the feedback needed to distinguish failed approaches. Detailed
+  diagnostics exist, but their consumption by the next proposer is unverified.
+- Replacement is currently demonstrated by the test harness. The production
+  Cloudflare-to-carrier restart and completion path has not passed the joined test.
+
+Observed conclusion: the deployed/tested pieces are not yet an overnight cell.
+Inference to test: flat feedback and restricted mutations can explain weak search
+even when transport works. They do not establish that Kimi is an inferior model.
+Falsifier: matched manual/automated experiments using the same kernel, input,
+feedback and resource bounds show no meaningful difference in valid outcomes.
+
+### Smallest composition
+
+Build decisions: CONFIGURE_INCUMBENT, THIN_ADAPTER, ADMISSION_HARNESS.
+Keep the Hatchery/Larva ABI, one Cloudflare actor/Workflow, Shinka, native systemd
+limits, existing artifact storage and fixed exact verifier. No new orchestrator,
+queue, dashboard or persona framework is needed for this mission.
+
+| Responsibility | Proposed binding | Bedtime evidence |
+|---|---|---|
+| Mission, admission, one authoritative continuation | Existing Cloudflare DO/Workflow | Same work and budget survive caller loss; stop/expiry blocks dispatch |
+| Search and same-host process recovery | One Oracle Shinka cell under existing native supervisor | Complete process group stopped before one bounded replacement; no laptop launcher |
+| Proposals | Kimi plus a freshly verified alternate | Known task format, fresh pool evidence, all requests share the admitted ledger |
+| Geometry acceptance | Fixed checker; OVH verifier if its current route is proved | Exact candidate bytes verified outside candidate execution and acknowledged durably |
+| Morning result | Existing artifacts, receipts and telemetry reducer | Report retrievable with caller gone; true failures and unknowns retained |
+
+For the first night there is one search writer. OVH verification is not permission
+to run a second independent proposer against the same account or archive. A
+same-host verifier is an explicit lower-assurance option, not a distinct carrier
+claim. Cross-host failover stays disabled until fencing is tested.
+
+Workflow retry configuration must be explicit: Cloudflare documents default
+step retries. A durable wake is not authorization to repeat inference. Reserve
+before dispatch, retain uncertain reservations, and reconcile before proceeding.
+Use the existing Workflow for logical continuation and systemd for process
+containment; neither may independently restart the same logical attempt.
+Reference: https://developers.cloudflare.com/workflows/build/sleeping-and-retrying/
+
+### Make the scientific loop useful
+
+Recover and reproduce one actual champion-producing manual workflow as the
+control. Keep its algorithm, starting artifact and measured result available;
+do not compare open-ended manual algorithm design to automated parameter tuning
+and call that a model-quality test.
+
+First-night search should use trusted, reviewed kernels with distinct hypotheses,
+bounded seed trials and a matched control. Kimi spends calls on proposing or
+revising hypotheses; CPU trials do not each require a new inference call. The
+next proposal must receive the prior verified result and useful failure metrics.
+Deduplicate the canonical recipe together with parent, evaluator and seed set.
+An additional seed is a replication, not a new algorithm.
+
+Keep exact valid radius as the championship criterion. Feasibility residuals,
+search progress and diversity may guide exploration in separate diagnostics;
+none may substitute for valid geometry or inflate a champion score. Failed
+experiments should state what was tested and what their measured outcome rules
+out, rather than merely emitting another retained-incumbent PASS.
+
+For compounding improvements, the controller must select a verified artifact as
+the next immutable parent and bind its hash in a new admitted generation. Do not
+overwrite `parent.pck` under an existing checkpoint or weaken its hash guard.
+Separate campaign-best retention from the choice of diverse next-search parents.
+If this transition is not implemented, label the first night as fixed-parent
+multistart search and stop on the first verified improvement as currently defined.
+
+Open-ended generated algorithm execution requires the already planned isolated
+candidate capability and its rejection tests. It is a separate readiness target.
+Do not silently call the current two-kernel parameter search unrestricted MOME
+or claim that personas/web access alone widen its executable search space.
+
+### Budget, cadence and overnight dispositions
+
+Fresh admission must bind the mission, deadline, allowed models, source/input/
+verifier hashes, existing request/USD/quota/resource ceilings, reserve floor and
+stop policy. Preserve every smaller existing cap; no paid fallback, implicit
+reset, provider retry loop or allowance multiplication across VPSs. The proposed
+overnight window itself grants no calls. Unknown quota is not free capacity.
+
+Cadence is completion-driven: finish evaluation and verification, persist the
+result, then admit the next eligible experiment. Kimi need not be called every
+minute. Derive the desired number of verified experiments from a live calibration
+and the admitted budget, not from the 59-second cached-response test. If the
+available budget supports only a short run, disclose that before launch; do not
+pad eight hours with duplicate tests or silently replenish it. Predeclared CPU
+work may continue after model budget exhaustion only within its own admission.
+
+| Event | Proposed first-night disposition |
+|---|---|
+| Malformed or invalid candidate | Record rejection; consume its actual call allowance; next distinct admitted experiment may proceed |
+| Known provider refusal | Disable that lane for the campaign; use only an already admitted alternate with remaining capacity |
+| Uncertain model outcome | Retain reservation and stop new model dispatch; no blind retry or refund; independently admitted CPU work may finish |
+| Caller loss after accepted checkpoint | Supervisor terminates the whole owned process group; one bounded same-host replacement uses that checkpoint |
+| Missing checkpoint, hash mismatch, ownership uncertainty | Stop affected work and preserve evidence |
+| New verified best | Preserve artifact and verifier receipt; continue only if verified-parent continuation was admitted and tested; otherwise stop-on-win |
+| Deadline, resource/quota reserve or output limit reached | Stop admission, settle/retain pending state, terminate owned work within limits, produce terminal report |
+| No admitted work left | End or sleep until an already authorized event; do not invent work, renew budget or poll identical errors |
+
+### Bedtime acceptance and implementation order
+
+1. Join the current Cloudflare admission/cancellation and Oracle installed
+   recovery path. The first delivery is one real model proposal, numerical
+   evaluation, separate verifier receipt and durable terminal disposition.
+   Recover the existing carrier binding rather than introduce a second launcher.
+2. Complete two genuine live feedback generations within fresh admission. The
+   second consumes the first result; cached responses, baseline rows and duplicate
+   experiments do not count. Measure phase times and operator interventions.
+3. Inject caller interruption, invalid output, duplicate delivery, provider
+   failure and exhausted admission on that same deployed route. Safe deterministic
+   fixtures may test destructive error branches without spending more model calls.
+   Prove no repeated uncertain effects and no acceptance of stale or invalid work.
+4. Disconnect the laptop and run a proposed 60-90 minute supervised soak within
+   approved bounds. Any routine manual restart, repair, approval or context ferry
+   fails the autonomy criterion. A safe early stop proves containment, not useful
+   operation for the entire soak. Require stable forward progress as well.
+5. Freeze the night manifest, exact deadline and remaining budget. Launch once
+   only after the prior evidence passes. Keep the existing process/resource limits
+   and one search writer. Morning report must survive laptop/caller loss.
+
+Suggested engineering checkpoint: after the first focused implementation block,
+show a joined live verified disposition, not more independent readiness demos.
+If that cannot be shown, the precise remaining edge determines the next block.
+Useful overnight readiness is better estimated as several focused engineering
+hours plus a soak than promised in 30-60 minutes. This is an estimate; no launch
+date follows from this planning record. Do not buy compute until measurements
+show queued admitted evaluations waiting on saturated CPU or memory.
+
+Morning output: starting/ending best artifact hashes and valid radii, number of
+distinct hypotheses and seed replications, verified dispositions and failures,
+gain or no gain, calls/known usage by pool, phase/cycle times, recovery events,
+operator interventions, exact stop reason, and one next scientific experiment.
+Heartbeat-only success is excluded. No champion is an honest result; no verified
+experiments is a failed usefulness test. With zero champions, time-to-first-win
+is censored and cost per champion is undefined, not zero.
