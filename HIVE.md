@@ -1,12 +1,14 @@
 # Gen142 Zerg Hive — Integrated Target
 
+**Status: architecture/acceptance contract, not an active work queue.** Current operational truth and demand are selected from GitHub issue #13 newest-first. This file must not launch a wave by itself.
+
 Purpose: integrate the surviving Gen142 pieces into one standards-native, COTS-owned swarm organism that a fresh carrier can enter through one gateway without Tao manually re-explaining or routing the system.
 
 ## Target loop
 
-`GATEWAY -> UNCOMMITTED_CAPACITY -> WORKLOAD_SELECT -> CAPABILITY_ADMISSION -> JIT_MORPH -> SKILL_LOAD -> TOOL_USE -> DURABLE_ACTOR/BURROW -> PDSA -> EVIDENCE -> REDUCE -> CONSUMER_ACK -> RELEASE/REMORPH`
+`GATEWAY -> UNCOMMITTED_CAPACITY -> WORKLOAD_SELECT -> CAPABILITY_ADMISSION -> JIT_MORPH -> SKILL_LOAD -> TOOL_USE -> DURABLE_ACTOR/BURROW -> PDSA -> EVIDENCE -> REDUCE -> CONSUMER_ACK -> MACHINE_HANDOFF -> RELEASE/REMORPH`
 
-The Hive is the composition of this loop. It is not one giant agent and it is not permission to build a second orchestration stack.
+The Hive is the composition of this loop. It is not one giant agent and it is not permission to build a second orchestration stack. `RELEASE/REMORPH` is valid only after `hfo.terminal-handoff.v1` passes `tools/terminal_handoff_gate.py`; prose `next_consumer` is not a state transition.
 
 ## Hard ontology
 
@@ -43,9 +45,7 @@ Prefer the platform owner directly:
 
 ## Hive representation rule
 
-Do not create one A2A Agent Card per metaphor.
-
-Most Zerg terms are **capacity archetypes, workload phenotypes, procedures, or platform-owned mechanisms**, not independently served agents. Only a durable live endpoint with truthful runtime facts earns an Agent Card.
+Do not create one A2A Agent Card per metaphor. Most Zerg terms are capacity archetypes, workload phenotypes, procedures, or platform-owned mechanisms, not independently served agents. Only a durable live endpoint with truthful runtime facts earns an Agent Card.
 
 Examples:
 - Larva -> capacity archetype / gateway state, usually no Agent Card.
@@ -72,7 +72,8 @@ A Hive claim is not earned by documents alone. R0 requires one vertical slice in
 9. the work emits evidence in the Gen142 interoperability profile and is reduced into canonical Strife/Splendor/world-state/heritage state;
 10. a distinct downstream consumer records a ConsumerAck or explicit rejection;
 11. duplicate accepted effects = 0;
-12. Lenovo and Tao are not routine runtime dependencies.
+12. Lenovo and Tao are not routine runtime dependencies;
+13. terminal-to-next work transition has controller/API-observed, non-self-attested evidence and requires no Tao launch/retry/routing action.
 
 ## Integration discipline
 
@@ -83,7 +84,8 @@ A Hive claim is not earned by documents alone. R0 requires one vertical slice in
 - `AGENT_CARD_CLAIM != CAPABILITY_ADMISSION != EFFECT_AUTHORITY`.
 - `HEARTBEAT != USEFUL_WORK`.
 - `CAPACITY != DEMAND`.
+- `HUMAN_BOUNDARY != MANUAL_CONTINUATION`: Tao may unlock authority, but an automatic resume watcher must already be armed.
 
 ## Current phase
 
-The next Roach wave is an **integration/reduction wave**, not implementation theater. It should formalize the capacity archetype map, A2A/Card/Skill/Tool boundaries, runtime owner map, Burrow continuation contract, and one smallest R0 Hive vertical slice. Cloudflare runtime remains unproven until independently assayed.
+Select current work only from #13. Historical Hive/Roach waves are donor evidence, not launch instructions. The highest-value integration seam remains one live vertical slice proving `terminal A -> machine dispatch -> B -> verified terminal/ConsumerAck` with Tao hot-loop actions = 0; do not fan out merely because capacity exists.
