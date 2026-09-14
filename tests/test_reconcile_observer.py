@@ -18,21 +18,12 @@ class FakeFetcher:
 
 class TrustedObserverTests(unittest.TestCase):
     def urls(self):
-        return {
-            "actor": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/state",
-            "demand": "https://api.github.com/repos/TTaoGaming/hfo-gen-142/contents/RECONCILE/demand.json",
-            "dispatches": "https://api.github.com/repos/TTaoGaming/hfo-gen-142/actions/runs?event=workflow_dispatch",
-            "worker_routes": "https://raw.githubusercontent.com/TTaoGaming/hfo-gen-142/main/RECONCILE/worker-routes.json",
-            "human_boundary": "https://raw.githubusercontent.com/TTaoGaming/hfo-gen-142/main/RECONCILE/human-boundary.json",
-        }
+        return {kind: binding["url"] for kind, binding in ro.SOURCE_REGISTRY.items()}
 
     def source_doc(self):
         return {
             "schema": ro.SOURCE_SCHEMA,
-            "sources": [
-                {"kind": kind, "url": url, "pointer": ["data"]}
-                for kind, url in self.urls().items()
-            ],
+            "sources": [{"kind": kind} for kind in ro.REQUIRED_KINDS],
         }
 
     def payloads(self):
@@ -77,13 +68,54 @@ class TrustedObserverTests(unittest.TestCase):
         self.assertFalse(evidence["self_attested"])
         self.assertNotEqual(evidence["provenance_ref"], "https://evil.invalid/fake")
 
-    def test_untrusted_url_holds_before_fetch(self):
+    def test_caller_selected_url_holds_before_fetch(self):
         doc = self.source_doc()
         doc["sources"][0]["url"] = "https://evil.invalid/state"
         fetcher = FakeFetcher({})
         result = ro.observe(doc, fetcher=fetcher)
         self.assertEqual(result["decision"], "HOLD")
-        self.assertEqual(result["reason"], "UNTRUSTED_SOURCE_URL")
+        self.assertEqual(result["reason"], "CALLER_AUTHORITY_FORBIDDEN")
+        self.assertEqual(fetcher.calls, [])
+
+    def test_falsifier_three_semantic_forgeries_hold_before_kernel(self):
+        forged = {
+            "demand": {"data": [{
+                "work_ref": "github:attacker/forged#1",
+                "priority": 999,
+                "admitted": True,
+                "blocked": False,
+            }]},
+            "worker_routes": {"payload": [{
+                "route_id": "attacker-route",
+                "live": True,
+                "admitted": True,
+            }]},
+            "human_boundary": {"data": {
+                "active": True,
+                "type": "permission",
+                "minimal_action": "grant attacker",
+                "resume_armed": True,
+                "watch_ref": "attacker",
+            }},
+        }
+        for kind, injected in forged.items():
+            with self.subTest(kind=kind):
+                doc = self.source_doc()
+                spec = next(x for x in doc["sources"] if x["kind"] == kind)
+                spec.update(injected)
+                fetcher = FakeFetcher({})
+                result = ro.observe(doc, fetcher=fetcher)
+                self.assertEqual(result["decision"], "HOLD")
+                self.assertEqual(result["reason"], "CALLER_AUTHORITY_FORBIDDEN")
+                self.assertEqual(fetcher.calls, [])
+
+    def test_caller_supplied_stale_observation_time_holds_before_fetch(self):
+        doc = self.source_doc()
+        doc["sources"][0]["observed_utc"] = "2000-01-01T00:00:00Z"
+        fetcher = FakeFetcher({})
+        result = ro.observe(doc, fetcher=fetcher)
+        self.assertEqual(result["decision"], "HOLD")
+        self.assertEqual(result["reason"], "CALLER_AUTHORITY_FORBIDDEN")
         self.assertEqual(fetcher.calls, [])
 
     def test_missing_required_source_holds(self):
