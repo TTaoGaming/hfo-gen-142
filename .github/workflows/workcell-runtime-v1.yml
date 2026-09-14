@@ -1,0 +1,55 @@
+name: workcell-runtime-v1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'WORKCELLS/research-r0/*.json'
+      - 'WORKCELL_STANDARD_V1.md'
+      - 'tools/workcell_runtime_v1.py'
+      - 'tools/select_research_workitem.py'
+      - 'tools/research_cell_r0.py'
+      - 'tools/terminal_handoff_gate.py'
+      - 'tests/test_select_research_workitem.py'
+      - 'tests/test_workcell_runtime_v1.py'
+      - '.github/workflows/workcell-runtime-v1.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
+
+permissions:
+  contents: read
+  issues: write
+  actions: write
+
+concurrency:
+  group: workcell-runtime-v1
+  cancel-in-progress: false
+
+jobs:
+  cell:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Contract regressions
+        run: python -m unittest tests.test_select_research_workitem tests.test_workcell_runtime_v1 -v
+      - name: Run exactly one WorkItem
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python tools/workcell_runtime_v1.py
+          --task-dir WORKCELLS/research-r0
+          --issue 13
+          --workflow workcell-runtime-v1.yml
+          --outdir "$RUNNER_TEMP/workcell-runtime-v1"
+      - name: Durable runtime receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workcell-runtime-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/workcell-runtime-v1/
+          retention-days: 7
