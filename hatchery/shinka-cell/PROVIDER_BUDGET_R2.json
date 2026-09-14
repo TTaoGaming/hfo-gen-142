@@ -1,0 +1,38 @@
+{
+  "status": "METER_DEPLOYED_CAMPAIGN_BUDGET_PREPARED_NOT_RUNNING",
+  "scope": "One shared campaign across both VPSs, never one allowance per host",
+  "max_wall_seconds": 3600,
+  "max_calls": {"kimi": 2, "google-ai-studio": 2, "groq": 1, "openrouter": 0},
+  "max_inflight_per_provider": 1,
+  "automatic_provider_retries": 0,
+  "paid_fallback": false,
+  "kimi": {
+    "minimum_remaining_fraction_each_window": 0.2,
+    "quota_max_age_seconds": 300,
+    "observed_utc": "2026-09-14T03:15:09.377Z",
+    "http_status": 200,
+    "long_window": {"limit": 100, "used": 42, "remaining": 58, "reset_utc": "2026-09-19T08:10:11.745785Z"},
+    "five_hour_window": {"limit": 100, "remaining": 100, "reset_utc": "2026-09-14T07:10:11.745785Z"},
+    "planning_spendable_long_window_percentage_points": 38,
+    "pacing": "Spread remaining quota above the 20% reserve over time to reset; about 7.3 percentage points per day at this observation, shared with all other account use",
+    "calls_per_quota_unit": "UNKNOWN: percentages are not request counts; measure usage around bounded campaigns before setting a continuous cadence",
+    "guard_ceiling": "Existing pilot checks fresh quota and the 20% floor. Forecast reservation and account-wide enforcement across every caller are not yet proven. This file does not claim to implement them."
+  },
+  "free_lanes": {
+    "google-ai-studio": {"role": "Alternative algorithms and mutations", "models_with_prior_canary_pass": ["gemini-3.5-flash-lite", "gemini-3.5-flash"], "remaining_quota": "UNKNOWN"},
+    "groq": {"role": "Small diverse mutation", "models_with_prior_canary_pass": ["openai/gpt-oss-20b", "openai/gpt-oss-120b"], "remaining_quota": "UNKNOWN"},
+    "openrouter": {"role": "Held pending reconciliation", "reason": "One prior model canary passed, another returned 429; later packing dispatch timed out with uncertain outcome", "remaining_quota": "UNKNOWN"}
+  },
+  "free_canary_window_utc": "2026-09-14T00:23:02.758Z/2026-09-14T00:24:48.397Z",
+  "free_lane_policy": "Prior canary success is not current quota proof. Stop the affected lane on quota/rate errors; retain uncertain effects without replay. No automatic transfer into a paid lane.",
+  "runtime_change": {
+    "version": "651323d0-a1a3-41dd-82a4-6379d08c5175",
+    "rollback_version": "35301c95-7f5f-4d14-8191-90afc49830f9",
+    "route": "GET /vps/quota",
+    "owner": "Existing actor observeQuota method; five-minute cached meter",
+    "authenticated_get": 200,
+    "unauthenticated_get": 404,
+    "authenticated_post": 405,
+    "inference_calls_added": 0
+  }
+}

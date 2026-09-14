@@ -5,6 +5,8 @@
   "max_live_cells": 1,
   "max_kimi_calls": 2,
   "max_free_calls_total": 3,
+  "fleet_wide_vendor_allocation": {"kimi": 2, "google-ai-studio": 2, "groq": 1, "openrouter": 0},
+  "quota_policy": "PROVIDER_BUDGET_R2.json",
   "paid_fallback": false,
   "automatic_provider_retries": 0,
   "genome": "Executable packing search algorithms in an isolated candidate runtime",

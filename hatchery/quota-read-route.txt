@@ -1,0 +1,8 @@
+// Inserted immediately before the existing /canary/status route.
+// Uses the existing authenticated VPS boundary and quota meter only.
+// Legacy inference pause, call budgets, secrets and schedules are unchanged.
+    if (url.pathname === "/vps/quota") {
+      if (!vpsProxyAuthorized(request, env)) return new Response("not found", {status:404});
+      if (request.method !== "GET") return new Response("method not allowed", {status:405,headers:{Allow:"GET"}});
+      return Response.json(await getContainer(env.GEN141_CELL, ACTIVE_CELL).observeQuota(), {headers:{"Cache-Control":"no-store"}});
+    }

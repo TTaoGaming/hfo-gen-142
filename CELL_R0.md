@@ -72,6 +72,24 @@ provider usage and the ambiguous OpenRouter request remain separate evidence.
 
 ### Second PDSA: recovery before a broader campaign
 
+Quota follow-up: the legacy `/vps/kimi/*` proxy returned a locally generated 503
+while inference was paused; it did not contact Kimi's quota endpoint. An
+authenticated GET-only `/vps/quota` route now calls the existing `observeQuota`
+method independently of inference admission. It returned HTTP 200 at
+2026-09-14T03:15:09.377Z: 58/100 remaining in the longer window and 100/100 in the
+five-hour window. Unauthorized GET and authenticated POST returned 404 and 405.
+The meter retains its five-minute cache; no model call was made for this check.
+
+`PROVIDER_BUDGET_R2.json` assigns the next five-call campaign across both hosts:
+two Kimi, two Gemini and one Groq. OpenRouter receives no new slot pending
+reconciliation. The existing 20% Kimi reserve leaves 38 percentage points above
+the floor in the longer window, approximately 7.3 points per day until its reset
+at that observation. Those are quota units, not a known number of calls. Other
+account use consumes the same pool. A sustained call cadence requires measured
+usage and shared admission; this planning artifact does not enable a loop or
+prove enforcement across other callers. Earlier Gemini/Groq canaries passed,
+but their remaining account quotas are unknown.
+
 The operator requested both broader algorithms and a longer campaign. The next
 campaign is specified in `hatchery/shinka-cell/CAMPAIGN_R2.json`: up to one hour,
 one cell, at most two Kimi calls and three free calls, with no paid fallback.
