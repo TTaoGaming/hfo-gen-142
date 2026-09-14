@@ -81,3 +81,6 @@ A burrow may be marked `CLOUDFLARE_LIVE` only after one admitted assay demonstra
 6. no Tao context ferry/routine restart is required.
 
 Use Cloudflare-native Agent/DO state and Workflows/Fibers where appropriate. Do not build another HFO persistence/runtime layer unless an exact native gap is evidenced.
+
+## Current gateway requirement
+For new pickups, follow `GATEWAY.md`: generate the carrier UUID, emit the current Carrier Capability Envelope, and run the gateway preflight before taking a burrow. A failed preflight means `HOLD`. Record the preflight envelope hash in the burrow checkpoint.

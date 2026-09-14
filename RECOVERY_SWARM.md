@@ -3,7 +3,11 @@
 Parent coordination: GitHub issue #1.
 
 ## Carrier contract
-Every carrier creates a fresh UUID, reads #1 newest-first, claims one under-covered lane, and checkpoints once when terminal. Tao does not route workers manually.
+Every carrier creates a fresh UUID, reads #1 newest-first and `GATEWAY.md`, emits a fresh Carrier Capability Envelope, and passes `tools/gateway_preflight.py` before claiming a lane. Tao does not route workers manually.
+
+If preflight does not return `ADMIT`, the carrier records `HOLD` and does not claim or execute the workload.
+
+The claim includes the returned `envelope_sha256`, admitted Skill, target binding when required, and effect ceiling.
 
 Formation types:
 - TWINLING_GATHERER — recover strongest donor evidence.
@@ -14,11 +18,15 @@ Formation types:
 Claim format:
 ```yaml
 carrier_episode_uuid: <fresh UUID>
+envelope_sha256: <preflight receipt hash>
 parent: TTaoGaming/hfo-gen-142#1
 formation: TWINLING_GATHERER | TWINLING_FALSIFIER | ROACH | REDUCER
 lane: <one lane>
 claim_utc: <UTC>
-claim_ceiling: READ_RESEARCH_AND_INTERNAL_GITHUB_EVIDENCE_ONLY
+admitted_skill: <skill or null>
+target_binding: <binding or null>
+effect_ceiling: <current workload ceiling>
+claim_ceiling: <bounded claim>
 ```
 
 ## Self-shard lanes
@@ -50,6 +58,7 @@ Never publish secrets or private personal data into this public repo.
 ## Terminal comment
 ```yaml
 carrier_episode_uuid:
+envelope_sha256:
 formation:
 lane:
 sources_examined: []
@@ -60,6 +69,7 @@ strongest_falsifier:
 recommended_manifest_refs: []
 world_state_delta:
 next_consumer:
+effect_ceiling:
 claim_ceiling:
 ```
 
