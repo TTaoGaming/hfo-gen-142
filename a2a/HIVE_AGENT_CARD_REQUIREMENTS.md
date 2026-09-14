@@ -2,13 +2,19 @@
 
 Status: design/admission requirements only. No Gen142 Agent Card is `LIVE` until an actual durable endpoint is served and independently assayed.
 
+Baseline normative release: **A2A 1.0.0** as observed 2026-09-14. Re-read the current released specification/TCK before promotion to LIVE.
+
 ## Purpose
 
-Use the current official A2A Agent Card format for truthful discovery of an actually served durable Hive/Sigrun actor. Do not invent an HFO identity schema and do not publish stale heritage as current runtime capability.
+Use the official A2A Agent Card format for truthful discovery of an actually served durable Hive/Sigrun actor. Do not invent an HFO identity schema and do not publish stale heritage as current runtime capability.
+
+A disposable cloud thread/carrier is not represented by an Agent Card. Per-episode execution capability belongs in `schemas/carrier-capability-envelope-v1.schema.json`.
 
 ## Materialization rule
 
-Before writing or serving a candidate card, the producing Roach must fresh-read the current official A2A specification and SDK/TCK surface. Pin the spec/release used in the evidence receipt.
+Before writing or serving a card, the producing Roach must fresh-read the current official A2A specification and SDK/TCK surface. Pin the release used in the evidence receipt.
+
+Start from `a2a/agent-card-evidence.template.yaml`. Materialize JSON only when required fields have current evidence.
 
 Materialize card fields from two evidence classes:
 
@@ -19,9 +25,27 @@ Historical or aspirational capability remains omitted/HOLD.
 
 ## Hard boundary
 
-`AGENT_CARD_CLAIM != CAPABILITY_ADMISSION != EFFECT_AUTHORITY != EVALUATOR_TRUTH`
+`AGENT_CARD_CLAIM != CARRIER_CAPABILITY != CAPABILITY_ADMISSION != EFFECT_AUTHORITY != EVALUATOR_TRUTH`
 
 A card is discovery/self-description. It never grants protected-effect permission.
+
+## A2A 1.0 field contract
+
+Required core card facts for Gen142 promotion:
+- `name`
+- `description`
+- `supportedInterfaces`
+- `version`
+- `capabilities`
+- `defaultInputModes`
+- `defaultOutputModes`
+- `skills`
+
+Each served interface must truthfully provide `url`, `protocolBinding`, and `protocolVersion`. `version` is the agent/service version; `protocolVersion` is the A2A protocol version for that interface.
+
+When authentication is actually required, current fields are `securitySchemes` plus `securityRequirements`. Do not copy pre-1.0 field shapes into a Gen142 card.
+
+Every advertised A2A skill must have current evidence for at least `id`, `name`, `description`, and `tags`. An A2A advertised skill is discovery metadata; an Agent Skills `SKILL.md` package is procedural cognition. They may align semantically but are not the same artifact.
 
 ## Hive design
 
@@ -33,7 +57,7 @@ Most internal morphology is represented through workload/Skill selection:
 - Roach: Skill + Burrow continuity; card only if it is independently served as a durable agent.
 - Reducer/Verifier/Queen: card only if realized as independently served durable actors/services.
 
-A single durable Sigrun/Hive actor may advertise a small coherent set of current Agent Skills and late-morph internally by Workload.
+A single durable Sigrun/Hive actor may advertise a small coherent set of current capabilities and late-morph internally by Workload.
 
 ## Required evidence matrix
 
@@ -50,26 +74,19 @@ strongest_falsifier:
 runtime_readback_ref:
 ```
 
-Fields that depend on runtime facts must remain `HOLD` until live readback exists.
+Fields that depend on runtime facts remain `HOLD` until live readback exists.
 
-## Candidate acceptance
+## Promotion ladder
 
-A candidate card is promotion-ready only when:
-1. it validates against the current pinned A2A contract/tooling where available;
-2. required runtime facts come from the served endpoint/build, not heritage prose;
-3. every advertised Skill maps to a real current Skill package/procedure;
-4. current tool reachability/admission is separately tested;
-5. no private endpoints, credentials, or sensitive control-plane information leak;
-6. a fresh distinct client can discover the card and successfully invoke at least one advertised no-effect capability;
-7. unsupported capability is rejected/HOLD rather than silently fabricated;
-8. protected-effect authority remains separate.
+A card may become `LIVE` only when:
+1. an actual served endpoint is independently read back;
+2. the well-known card is served at `/.well-known/agent-card.json`;
+3. required runtime facts come from the served endpoint/build, not heritage prose;
+4. upstream A2A validation/TCK checks relevant to declared interfaces/capabilities pass;
+5. every advertised skill maps to a real current served capability/procedure;
+6. a fresh distinct client successfully invokes at least one advertised no-effect skill;
+7. hostile unsupported-capability requests fail closed;
+8. a distinct ConsumerAck exists;
+9. protected-effect authority remains separately enforced.
 
-## Expected artifact
-
-The Hive integration wave should eventually produce:
-- `a2a/agent-card.candidate.json` — only after current-spec recovery and field evidence;
-- an evidence matrix for every nontrivial field;
-- a conformance/hostile-fixture receipt;
-- a `LIVE | HOLD` disposition.
-
-Do not create a fake URL or security configuration merely to make candidate JSON structurally complete.
+Do not create fake URL, security, protocol or capability values merely to make JSON structurally complete.
