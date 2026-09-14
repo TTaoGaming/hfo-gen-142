@@ -39,16 +39,31 @@ async function pdsaBudget(cell,env,input){
    if(!m||Number(m.pricing?.prompt)!==0||Number(m.pricing?.completion)!==0)throw Error('PRICE_HOLD');
   }
   if(Date.now()+95000>s.deadline_ms)throw Error('DEADLINE_HOLD');
-  row.dispatched=true;await save(); // Reservation survives transport ambiguity.
   const google=row.provider==='google-ai-studio';
   const query=google?{contents:[{role:'user',parts:[{text:input.messages.map(m=>m.role+': '+m.content).join('\n\n')}]}],generationConfig:{maxOutputTokens:8192,candidateCount:1}}:
    {model:row.model,messages:input.messages,max_tokens:8192,temperature:1,stream:false,...(row.provider==='openrouter'?{provider:{max_price:{prompt:0,completion:0},allow_fallbacks:false}}:{})};
-  let timer;
-  const {r,b}=await Promise.race([(async()=>{
+  const send=async()=>{
    const r=row.provider==='kimi'?await fetch('https://api.kimi.ai/coding/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${env.KIMI_API_KEY}`},body:JSON.stringify(query),redirect:'manual',signal:AbortSignal.timeout(90000)}):
     await env.AI.gateway('hfo-gen-140-cloudflare').run({provider:row.provider,endpoint:google?`v1beta/models/${row.model}:generateContent`:'chat/completions',headers:{'cf-aig-byok-alias':'default','cf-aig-skip-cache':'true','cf-aig-max-attempts':'1','cf-aig-request-timeout':'90000'},config:{maxAttempts:1,requestTimeout:90000},query});
    return {r,b:await dailyJson(r)};
-  })(),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('AMBIGUOUS_TIMEOUT')),95000);})]).finally(()=>clearTimeout(timer));
+  };
+  let pending,dispatchError;
+  await cell.ctx.blockConcurrencyWhile(async()=>{
+   try{
+   const current=await cell.ctx.storage.get(PDSA_KEY);
+   if(!current||current.stop_requested||current.state!=='RUNNING')throw Error('STOP_BEFORE_DISPATCH');
+   row.dispatched=true; // Persist reservation before starting transport.
+   await cell.ctx.storage.put(PDSA_KEY,s);
+   await env.CELL_STATE.put(PDSA_KEY+'.json',JSON.stringify(s));
+   if(Date.now()+95000>s.deadline_ms)throw Error('DEADLINE_HOLD');
+   // Start transport before releasing the stop/dispatch gate, but do not await
+   // its response here: stop must remain available while a call is in flight.
+   pending=send();pending.catch(()=>{});
+   }catch(e){dispatchError=e;} // Do not reset the DO for an expected refusal.
+  });
+  if(dispatchError)throw dispatchError;
+  let timer;
+  const {r,b}=await Promise.race([pending,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('AMBIGUOUS_TIMEOUT')),95000);})]).finally(()=>clearTimeout(timer));
   row.http_status=r.status;row.model_returned=google?b.modelVersion:b.model;
   row.usage=google?b.usageMetadata:b.usage;
   if(!r.ok||row.model_returned!==row.model)throw Error('PROVIDER_OR_IDENTITY_HOLD');

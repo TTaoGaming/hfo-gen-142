@@ -98,3 +98,39 @@ Blocker delta: B1 `SUSPECTED -> REPRODUCED_LOCAL`; B2–B5 unchanged and not re-
 The next campaign remains unstarted. **Strife:** durable status can disagree with
 effect history. **Splendor:** a deterministic mock isolated the failure without
 using quota. This is diagnostic progress, not improved runtime stability.
+
+## Cycle N3 — 2026-09-14T03:37:26Z
+
+**Plan:** make the narrow B1 repair and preserve the incident as a mandatory
+regression. **Do:** the existing stop/dispatch gate now checks durable stop state,
+persists the reservation and starts transport before releasing the gate. It waits
+for the provider response outside that gate, so cancellation remains available
+while a call is in flight. Expected refusals are caught inside the callback and
+handled afterward: an escaping callback exception can reset a Durable Object
+according to [Cloudflare's state API](https://developers.cloudflare.com/durable-objects/api/state/).
+
+**Study:** all **5 local tests pass**. The N2 quota-wait incident changed from one
+mock dispatch after stop to zero. Repeated/new requests after that stop also
+dispatch zero. A new persistence-window test establishes the other ordering:
+if dispatch already owns the gate, transport starts before stop is acknowledged;
+the response may complete later without reopening admission. The original
+in-flight, replay, exhaustion and uncertain-completion checks still pass.
+The B1 test is now always enabled; `PDSA_STOP_RACE_ASSAY` is no longer needed.
+Source hashes and result are in `hatchery/shinka-cell/PDSA_N3.json`.
+
+**Blocker delta:** B1 `REPRODUCED_LOCAL -> LOCAL_FIX_VERIFIED_HOSTED_HOLD`.
+No live provider calls, hosted deployment or allowance changes occurred. The mock
+serializer is not the Cloudflare runtime. Native event/input-gate behavior,
+eviction, persistence failure and the 30-second concurrency-callback deadline
+still need their own evidence before deployment. B2–B5 remain open; no scientific
+generation recovery or autonomous stability is inferred from these five tests.
+
+**Act / next queued cycle:** inspect B2's unfinished generation metadata read-only
+and classify what can resume from retained evidence without inference. B1 still
+requires a native no-provider replay and current-version guarded deployment. Do not blindly
+replace the hosted source from this local module.
+
+**Strife:** checking a stop flag before asynchronous work does not protect the
+actual effect boundary. **Splendor:** the same deterministic falsifier that failed
+in N2 now passes, and a persistence-window test checks that cancellation does not
+wait for model completion. This is local repair evidence only.

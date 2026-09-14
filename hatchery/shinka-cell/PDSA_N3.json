@@ -1,0 +1,29 @@
+{
+  "cycle": "N3",
+  "observed_utc": "2026-09-14T03:37:26Z",
+  "status": "B1_LOCAL_FIX_VERIFIED_HOSTED_HOLD",
+  "source_path": "hatchery/pdsa-budget.mjs",
+  "before_source_sha256_lf": "26250613a5946b3fb223c32adc038361da24b74f0fa9eb63c5414697f542b4cb",
+  "after_source_sha256_lf": "49135469186e6d42b4db3cd00bdc17d31c209ab9fb3f50d62a12c0987952dfb0",
+  "before_receipt": "PDSA_N2.json",
+  "stop_during_quota": {
+    "stop_ack": true,
+    "calls_at_stop": 0,
+    "calls_after_release_before_fix": 1,
+    "calls_after_release_after_fix": 0,
+    "final_state": "STOPPED_BY_EVALUATOR"
+  },
+  "test_result": {"passed": 5, "failed": 0, "exit_code": 0},
+  "coverage": [
+    "Five slots, replay, concurrent requests and stopped admission",
+    "Uncertain completion stops subsequent dispatch",
+    "In-flight response cannot reopen stopped admission",
+    "Stop during quota checking prevents dispatch, including repeated input",
+    "Stop during persistence acknowledges after send starts but before response completes"
+  ],
+  "live_provider_calls": 0,
+  "runtime_deployments": 0,
+  "claim_ceiling": "Local serialized mock fixture only. No workerd/hosted cancellation, eviction, R2 failure, fleet reservation or scientific recovery proof.",
+  "remaining_blockers": ["B1 native runtime verification and guarded deployment", "B2 generation recovery", "B3 algorithm isolation", "B4 shared-account/fence admission", "B5 complete cycle timing and acceptance"],
+  "next_notes_cycle": "Inspect B2 native unfinished-generation metadata read-only; keep B1 deployment blocked until native no-provider verification."
+}
