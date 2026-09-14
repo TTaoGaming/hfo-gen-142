@@ -1,45 +1,39 @@
 # Gen142 World State — latest
 
-Observed: 2026-09-13 UTC. Partial recovery projection only.
+Observed: 2026-09-14T11:32Z. Partial current projection; claims are scope-bounded.
 
 ## Recovery surfaces
 - Public repo: `TTaoGaming/hfo-gen-142`
-- Primary coordination: issue #1
-- Protocol: `RECOVERY_SWARM.md`
+- Recovery/evidence coordination: issue #1
+- Durable Roach/Burrow fan-in and G1/G2 evidence: issue #2
+- Hive integration/reduction: issue #3 and `HIVE_R0.md`
 - Slow identity: `GENE_SEED.md`
 
 ## Infrastructure
-- GitHub access: LIVE in current carrier.
-- Google Drive access: LIVE in current carrier.
-- Lenovo/Desktop Commander: OFFLINE by operator action; treat unavailable.
-- Cloudflare runtime: STALE_UNKNOWN pending fresh probe.
-- Oracle VPS: STALE_UNKNOWN pending fresh probe.
-- OVH VPS: STALE_UNKNOWN pending fresh probe.
-- WorldWeaver.dev projection: STALE_UNKNOWN pending fresh probe.
+- GitHub: LIVE for repository evidence, workflows, issues and current carrier mutations.
+- Cloudflare G1 durability/idempotency: SCOPED_PASS. One deterministic no-effect work survived caller replacement and Worker redeploy; duplicate effect replay admitted exactly one effect. This is not 24/7 Evo proof.
+- Oracle VPS: LIVE. Desktop Commander ping/process path is live; host `thrud-a1-free-20260830`, ARM64. Existing self-hosted Actions runner `hfo-gen140-oracle-r1` executed a bounded no-effect GEN142 contract-read assay successfully via GEN140 donor workflow run `34838622253`.
+- GEN142 Oracle Actions dispatch: HOLD_REGISTRATION_BOUNDARY. `.github/workflows/oracle-cell-r0.yml` exists, but GEN142 runs `34838663934` and `34838690159` remain queued because no eligible self-hosted runner is attached to this repository.
+- OVH VPS: DEGRADED. Registered and pingable, but process execution has intermittently returned `Not connected`; do not use as primary cell until stabilized/re-assayed.
+- Lenovo: NOT_REQUIRED for the positive Oracle substrate assay; do not treat it as a trusted hot-state dependency.
+- Legacy Sigrun/Kimi actor path: QUARANTINED pending replacement; prior work remained `WAITING_WORKER` with repeated recovery/alarm cycling and no terminal result.
+- WorldWeaver custom domain: agent access remains BROKEN_OR_ENVIRONMENTALLY_UNREACHABLE; raw GitHub mirror is the recovery fallback.
 
-## High-value donors to test
-- Gen140 #401 — minimal COTS-owned organism / ablation gate.
-- Gen140 #407 — Cloudflare-native model-path/runtime evidence.
-- Gen140 #334/#375 — hatchery and durable-actor invariants; architecture itself is untrusted.
-- Gen140 #338 — evolution/evaluator separation and COTS bakeoff.
-- Gen140 #447 — external-fitness competition campaign.
-- Google Drive — `GEN130_GENE_SEED_README.md`, `Sigrun lifeboat hfo gen 130`, `HFO_GEN132_ALL_CAPSULES_BUNDLE.md`, heritage notes and Gleipnir material.
+## Current runtime contract
+`WORKLOAD != CAPACITY != CARRIER != ACTOR != PHENOTYPE != SKILL != TOOL != AUTHORITY != EVIDENCE`.
 
-## Active work
-1. Recovery swarm self-shards from #1.
-2. Gather/falsify candidate genes from GitHub + Drive.
-3. Reducer compresses only surviving genes into small canonical files.
-4. Fresh probes rebuild actual Cloudflare/VPS world state.
-5. No execution fan-out until one small laptop-free cell is proven.
+Minimal intended hot path: `Cloudflare Agent/DO -> AgentWorkflow -> admitted VPS work cell -> reducer/ConsumerAck`; GitHub is institutional evidence/recovery, not concurrent hot state after Cloudflare promotion.
 
-## Current blockers
-- Laptop is not a trusted substrate for hot state.
-- Prior generations contain conflicting and stale architecture.
-- Independent worker fan-out is not yet proven from this carrier; do not claim agents are running merely because a queue exists.
+## Gate status
+- G1 Cloudflare durability/idempotency: SCOPED_PASS.
+- G2 admitted/default-path VPS execution with Lenovo unavailable: HOLD. Oracle work-cell substrate itself is PASS; missing GEN142 runner attachment/registration is now the exact blocking boundary.
+- G3 two-generation COTS evolution cell with frozen evaluator, runtime/dependency fingerprint, bounded disk, durable lineage, restart/resume, zero duplicate accepted effects, zero Tao routing: HOLD until G2 drains.
 
 ## Next edges
-1. Build `HERITAGE/MANIFEST.md` from high-value donor pointers.
-2. Recover memory/identity genes before further autonomy work.
-3. Probe Cloudflare and VPS from non-laptop surfaces.
+1. Register/attach one dedicated Oracle self-hosted runner to `TTaoGaming/hfo-gen-142` (default `self-hosted,Linux,ARM64` labels are enough for first drain).
+2. Let existing queued `GEN142 Oracle Cell R0` drain and independently read back the Oracle/aarch64 receipt.
+3. If PASS, promote G2 only within that scope and immediately run one bounded G3 evolution cell on Oracle.
+4. Stabilize/re-assay OVH, then use it as verifier/challenger rather than duplicating the Oracle phenotype.
+5. Scale Burrows/cells only after measured evaluator/information gain; do not revive the old multi-lane Kimi colony by default.
 
-Operator action required: NONE for recovery research.
+Operator/admin action currently required: authorize/provide one GEN142 self-hosted runner registration path. No Tao routing is required after that runner is attached.
