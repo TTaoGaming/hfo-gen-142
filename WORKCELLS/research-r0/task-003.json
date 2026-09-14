@@ -1,0 +1,27 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-RESEARCH-CELL-R0-003",
+  "issue_number": 13,
+  "admitted": true,
+  "priority": 100,
+  "question": "Can a research cell durably report its result and preserve a receipt in GitHub without Tao gathering it?",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {
+      "url": "https://docs.github.com/en/rest/issues/comments#create-an-issue-comment",
+      "assertions": [
+        "Create an issue comment",
+        "201",
+        "Issues"
+      ]
+    },
+    {
+      "url": "https://docs.github.com/en/actions/tutorials/store-and-share-data",
+      "assertions": [
+        "upload-artifact",
+        "retention-days",
+        "SHA256 digest"
+      ]
+    }
+  ]
+}
