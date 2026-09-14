@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/TTaoGaming/hfo-gen-142/main/schemas/carrier-capability-envelope-v1.schema.json",
+  "title": "Gen142 Carrier Capability Envelope v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "carrier_episode_uuid", "observed_utc", "harness", "skills", "capabilities", "authority", "admission"],
+  "properties": {
+    "schema": {"const": "hfo.carrier-capability-envelope.v1"},
+    "carrier_episode_uuid": {"type": "string", "format": "uuid"},
+    "observed_utc": {"type": "string", "format": "date-time"},
+    "fresh_until": {"type": ["string", "null"], "format": "date-time"},
+    "harness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["product", "model", "execution_surface"],
+      "properties": {
+        "product": {"type": "string", "minLength": 1},
+        "model": {"type": "string", "minLength": 1},
+        "reasoning": {"type": ["string", "null"]},
+        "execution_surface": {"type": "string", "minLength": 1}
+      }
+    },
+    "skills": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["discovered", "loaded"],
+      "properties": {
+        "catalog_ref": {"type": ["string", "null"]},
+        "discovered": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "loaded": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "validation": {"enum": ["PASS", "HOLD", "FAIL", "UNKNOWN"]}
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "reachable", "admission"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "reachable": {"enum": ["PROVEN", "FAILED", "UNKNOWN"]},
+          "admission": {"enum": ["ADMITTED", "HOLD", "DENIED", "UNKNOWN"]},
+          "target_binding": {"type": ["string", "null"]},
+          "evidence_ref": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["effect_ceiling"],
+      "properties": {
+        "effect_ceiling": {"type": "string", "minLength": 1},
+        "protected_effects": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "authority_ref": {"type": ["string", "null"]}
+      }
+    },
+    "admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["workload_id", "decision", "reasons"],
+      "properties": {
+        "workload_id": {"type": "string", "minLength": 1},
+        "decision": {"enum": ["ADMIT", "HOLD", "DENY"]},
+        "reasons": {"type": "array", "items": {"type": "string"}},
+        "required_skill": {"type": ["string", "null"]},
+        "required_target": {"type": ["string", "null"]}
+      }
+    },
+    "limitations": {"type": "array", "items": {"type": "string"}}
+  }
+}
