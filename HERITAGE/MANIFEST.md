@@ -26,8 +26,7 @@ Ablation question: what measurable failure returns if we delete this gene? If no
 
 ## Standardized Strife/Splendor intake
 
-- Canonical event schema: `schemas/strife-splendor-event-v1.schema.json`.
-- Validated seed: `HERITAGE/STRIFE_SPLENDOR_SEED_V1.jsonl` (12 STRIFE + 2 SPLENDOR).
+- Canonical event schema: `schemas/strife-splendor-event-v1.schema.json`.- Validated seed: `HERITAGE/STRIFE_SPLENDOR_SEED_V1.jsonl` (12 STRIFE + 2 SPLENDOR).
 - Every evidence item carries an exact content SHA-256 and claim ceiling.
 - Legacy Gen137 formal axes (`port`, `dependability`, `control_deviation`, violated invariant/guard) are preserved as namespaced tags in v1; do not fork a second ontology merely to carry them.
 - Archive evidence never becomes `ADOPTED` merely because it was important or repeated. Promotion still requires falsification, corroboration, consumption, and current fit.
@@ -42,3 +41,13 @@ Historical names included Book of Blood, heritage/reliquary, failure-antibody re
 - `architecture_sprawl_and_duplicate_ownership`: hints without atomic claim/lease permit undeclared duplicate reconstruction and manual reconciliation.
 
 Promotion target is not a larger corpus. A remembered failure must eventually compile into a smallest forcing function, regression/admission check, recovery assay, or other measurable selection pressure; otherwise it remains `REFERENCE` heritage.
+
+## Promoted Gen137 virtual-actor donors — 2026-09-14
+
+- `HFO_VIRTUAL_ACTOR_COMPOUND_AI_RUNTIME_V1` — **ADAPT**: durable actor != carrier, event-sourced heritage, verified history, operator outside execution loop.
+- `hfo_lineage_reputation.py` + tests — **ADOPT/ADAPT**: deterministic external-evidence reputation reducer; self-praise ignored; hard negatives quarantined; supersession preserves history.
+- virtual-actor rehydration anchor gate — **REFERENCE/ADAPT NEXT**: rejects chat-memory authority, pointer substitution, stale germline and operator-restatement dependency.
+- durable actor profile pack / Sigrun CROWN-CoALA profile — **REFERENCE/ADAPT NEXT**: identity/memory shape survives carrier replacement; current mission and effect authority remain outside the durable profile.
+- `hfo_capability_market_gate.py` + tests — **ADOPT/ADAPT**: removes Tao from market-eligible worker routing; requires qualified evidence-backed bids, forbids bidder self-award, and blocks population growth when operator touches per verified effect are not improving.
+
+These donors close a Gen142 regression: actor/carrier separation survived, but explicit lineage-reputation and compounding skill state had not yet been re-promoted into the current repository.

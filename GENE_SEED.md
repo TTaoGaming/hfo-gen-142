@@ -46,3 +46,13 @@ Fresh carriers start at GitHub issue #1, read `RECOVERY_SWARM.md`, `GENE_SEED.md
 
 ## Ablation rule
 Every proposed gene must answer: what measurable failure returns if this gene is removed? If the answer is nothing, kill it.
+## Virtual actor compounding law
+
+`VIRTUAL_ACTOR != CARRIER_EPISODE`.
+
+Durable actors persist identity, lineage, heritage, skills, reputation/admission and verified history across replaceable model/harness/process/provider carriers. Carrier death or substitution must not reset learned evidence.
+
+Skill/reputation promotion requires independent evidence or an external world receipt; self-report cannot promote. Cross-actor skill transfer preserves donor/version/provenance and must be reassayed in the recipient.
+
+See `VIRTUAL_ACTOR_COMPOUNDING.md` and `tools/hfo_lineage_reputation.py`.
+Market-eligible work uses evidence-backed capability bids and trusted selection; Tao does not manually choose workers. Scale only when operator touches per verified world effect are non-increasing. See `tools/hfo_capability_market_gate.py`.
