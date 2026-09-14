@@ -78,6 +78,10 @@ The research/proposal/verifier loadout and telemetry interpretation are document
 in [EVO_OPERATING_LOOP.md](EVO_OPERATING_LOOP.md). They populate the existing
 pinned manifest and receipts; they do not introduce another Larva ABI.
 
+The bounded implementation projection, immutable task prefix and per-generation
+context delta are described in [WORK_CELL.md](WORK_CELL.md). Its scoped assays
+do not grant general workload admission or overnight operation.
+
 Use these semantics as fields in the incumbent Workload/native invocation;
 do not create another envelope bus. Each required reference must resolve to
 immutable bytes or a current native authority record before execution.

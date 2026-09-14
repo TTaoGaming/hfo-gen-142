@@ -31,6 +31,14 @@ A single autonomous competition/evolution cell must run **two consecutive genera
 
 Until that passes, the correct swarm size is **one**.
 
+Scoped evidence, 2026-09-14: the [work-cell projection](WORK_CELL.md) completed
+two admitted numerical recipes through Shinka, recovered one killed caller using
+systemd, and obtained separate Cloudflare geometry checks plus native Workflow
+acceptance in 29.01 seconds. [Exact receipt](hatchery/shinka-cell/WORK_CELL_R1.json).
+This used zero model calls and found no champion. The live Kimi attempt timed
+out and remains a retained uncertain reservation. Overnight neural evolution,
+general workloads and multi-host concurrency are not established by this assay.
+
 ## Recovery posture
 
 Gen140/141 are donor/evidence archives, not templates to copy wholesale. Import only proven components by immutable reference. Secrets, personal data, local machine state, and private operational details do not belong in this public repository.

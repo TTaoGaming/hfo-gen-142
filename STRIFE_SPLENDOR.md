@@ -40,6 +40,37 @@ STRIFE and SPLENDOR can both yield genes. A failure may yield a safety invariant
 
 Reducers should prefer a law that appears independently across age bands only when the underlying failures/evidence are genuinely distinct. Repetition within one copied lineage is not independent proof.
 
+## Work-cell cycle — 2026-09-14
+
+Consumer: the next admitted Hatchery/Larva workload and its supervisor.
+Evidence: [WORK_CELL_R1.json](hatchery/shinka-cell/WORK_CELL_R1.json).
+
+- **Strife: available quota did not imply timely Kimi completion.** The first
+  request exceeded the existing 90-second transport bound. Its reservation stayed
+  spent/uncertain and no inference retry occurred. Shinka nevertheless waited
+  for an unavailable next proposal and attempted one futile process replacement.
+  Cure: terminate the owned caller on a handoff error, close the native job as
+  rejected, and exclude exit 78 from systemd restart. A network-disabled native
+  falsifier now exercises that actual supervisor path and proves child cleanup.
+- **Strife: an entire system message was mistaken for immutable context.**
+  Shinka randomly selects rewrite-format suffixes. After successful checkpoint
+  recovery, the changed suffix correctly triggered the overly broad hash guard.
+  Cure: pin the task prefix in the manifest and preserve the varying suffix as
+  another system message in the bounded delta. Two format variants replay the
+  exact fixed prefix while preserving every instruction byte and role.
+- **Strife: Workflow completion is not result acceptance.** A rejected result
+  also yields a completed native Workflow. The supervisor now checks the nested
+  acceptance verdict and result hash; an actual native-process fixture with a
+  completed-but-rejected result exits 78 and closes once.
+- **Splendor: one finite input-driven cell closed two generations.** Native
+  systemd replaced a killed caller; installed Shinka recovered its accepted
+  checkpoint; two distinct eight-trial recipes reached separate Cloudflare exact
+  geometry checks and native Workflow acceptance in 29.01 seconds. There were
+  zero model calls and zero operator interventions during this repaired run.
+  Both artifacts retained the incumbent. This proves a bounded work-cell
+  primitive, not a champion, overnight neural evolution or general multi-host ABI
+  conformance. Keep one active writer and preserve the unproven boundaries.
+
 ## Public/private rule
 
 The public Gen142 repo contains sanitized reductions only. For private heritage, publish the lesson, age band, immutable content hash/opaque evidence ID, confidence, and disposition without leaking private repo names/content or secrets. Full private source lookup belongs to an authorized private index/hot state.

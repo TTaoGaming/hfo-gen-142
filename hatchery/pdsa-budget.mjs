@@ -2,10 +2,11 @@
 // Existing DO owns the reservation; existing AI Gateway owns free-provider transport.
 const PDSA_KEY='packing-shinka-pdsa-20260914-r1';
 const PDSA_LANES=[['kimi','k3-256k'],['google-ai-studio','gemini-3.5-flash-lite'],['groq','openai/gpt-oss-120b'],['openrouter','nvidia/nemotron-3.5-lightning:free'],['kimi','k3-256k']];
-async function pdsaBudget(cell,env,input){
- if(input===null)return await cell.ctx.storage.get(PDSA_KEY)??{state:'NOT_STARTED'};
+async function pdsaBudget(cell,env,input,admissionKey=null){
+ const key=admissionKey??PDSA_KEY;
+ if(input===null)return await cell.ctx.storage.get(key)??{state:'NOT_STARTED'};
  if(input==='stop'){
-  let stopped=false;await cell.ctx.blockConcurrencyWhile(async()=>{const s=await cell.ctx.storage.get(PDSA_KEY);if(s){s.stop_requested=true;s.state='STOPPED_BY_EVALUATOR';await cell.ctx.storage.put(PDSA_KEY,s);await env.CELL_STATE.put(PDSA_KEY+'.json',JSON.stringify(s));stopped=true;}});return {stopped};
+  let stopped=false;await cell.ctx.blockConcurrencyWhile(async()=>{const s=await cell.ctx.storage.get(key);if(s){s.stop_requested=true;s.state='STOPPED_BY_EVALUATOR';await cell.ctx.storage.put(key,s);await env.CELL_STATE.put(key+'.json',JSON.stringify(s));stopped=true;}});return {stopped};
  }
  const serialized=JSON.stringify(input);
  if(serialized.length>32000||input.model!=='packing-cell'||!Array.isArray(input.messages)||input.messages.length>8)
@@ -13,19 +14,20 @@ async function pdsaBudget(cell,env,input){
  if(input.messages.some(m=>!['user','system','assistant'].includes(m.role)||typeof m.content!=='string'))return {error:{message:'MESSAGE_HOLD'}};
  const hash=await vpsHash(serialized);let acquired=false,s,row,existing;
  await cell.ctx.blockConcurrencyWhile(async()=>{
-  s=await cell.ctx.storage.get(PDSA_KEY);
+  s=await cell.ctx.storage.get(key);
   if(!s){
+   if(admissionKey)return;
    if(Date.now()>Date.parse('2026-09-14T04:00:00Z'))return;
    s={state:'RUNNING',started_ms:Date.now(),deadline_ms:Date.now()+600000,rows:[],retries:0,max_calls:5};
   }
   existing=s.rows.find(r=>r.input_sha256===hash);
-  if(existing||s.state!=='RUNNING'||Date.now()>=s.deadline_ms||s.rows.length>=5||s.rows.some(r=>r.state==='RESERVED'))return;
+  if(existing||s.state!=='RUNNING'||Date.now()>=s.deadline_ms||s.rows.length>=Math.min(5,s.max_calls)||s.rows.some(r=>r.state==='RESERVED'))return;
   const [provider,model]=PDSA_LANES[s.rows.length];
   row={slot:s.rows.length,provider,model,input_sha256:hash,state:'RESERVED',reserved_utc:new Date().toISOString()};
-  s.rows.push(row);await cell.ctx.storage.put(PDSA_KEY,s);acquired=true;
+  s.rows.push(row);await cell.ctx.storage.put(key,s);acquired=true;
  });
  if(!acquired)return existing?.response??{error:{message:existing?.state??'BUDGET_OR_PENDING_HOLD'}};
- async function save(){await cell.ctx.blockConcurrencyWhile(async()=>{const current=await cell.ctx.storage.get(PDSA_KEY);if(current?.stop_requested){s.stop_requested=true;s.state='STOPPED_BY_EVALUATOR';}await cell.ctx.storage.put(PDSA_KEY,s);await env.CELL_STATE.put(PDSA_KEY+'.json',JSON.stringify(s));});}
+ async function save(){await cell.ctx.blockConcurrencyWhile(async()=>{const current=await cell.ctx.storage.get(key);if(current?.stop_requested){s.stop_requested=true;s.state='STOPPED_BY_EVALUATOR';}await cell.ctx.storage.put(key,s);await env.CELL_STATE.put(key+'.json',JSON.stringify(s));});}
  try{
   await save();
   if(row.provider==='kimi'){
@@ -50,11 +52,11 @@ async function pdsaBudget(cell,env,input){
   let pending,dispatchError;
   await cell.ctx.blockConcurrencyWhile(async()=>{
    try{
-   const current=await cell.ctx.storage.get(PDSA_KEY);
+   const current=await cell.ctx.storage.get(key);
    if(!current||current.stop_requested||current.state!=='RUNNING')throw Error('STOP_BEFORE_DISPATCH');
    row.dispatched=true; // Persist reservation before starting transport.
-   await cell.ctx.storage.put(PDSA_KEY,s);
-   await env.CELL_STATE.put(PDSA_KEY+'.json',JSON.stringify(s));
+   await cell.ctx.storage.put(key,s);
+   await env.CELL_STATE.put(key+'.json',JSON.stringify(s));
    if(Date.now()+95000>s.deadline_ms)throw Error('DEADLINE_HOLD');
    // Start transport before releasing the stop/dispatch gate, but do not await
    // its response here: stop must remain available while a call is in flight.
@@ -69,11 +71,11 @@ async function pdsaBudget(cell,env,input){
   if(!r.ok||row.model_returned!==row.model)throw Error('PROVIDER_OR_IDENTITY_HOLD');
   const content=google?(b.candidates?.[0]?.content?.parts??[]).filter(x=>!x.thought).map(x=>x.text??'').join(''):b.choices?.[0]?.message?.content;
   if(typeof content!=='string'||!content.trim()||content.length>24000)throw Error('CONTENT_HOLD');
-  row.response={id:PDSA_KEY+'-'+row.slot,object:'chat.completion',created:Math.floor(Date.now()/1000),model:row.model,choices:[{index:0,finish_reason:'stop',message:{role:'assistant',content}}],usage:google?{prompt_tokens:b.usageMetadata?.promptTokenCount??0,completion_tokens:b.usageMetadata?.candidatesTokenCount??0,total_tokens:b.usageMetadata?.totalTokenCount??0}:b.usage};
+  row.response={id:key+'-'+row.slot,object:'chat.completion',created:Math.floor(Date.now()/1000),model:row.model,choices:[{index:0,finish_reason:'stop',message:{role:'assistant',content}}],usage:google?{prompt_tokens:b.usageMetadata?.promptTokenCount??0,completion_tokens:b.usageMetadata?.candidatesTokenCount??0,total_tokens:b.usageMetadata?.totalTokenCount??0}:b.usage};
   row.state='RETURNED';row.finished_utc=new Date().toISOString();
-  if(s.rows.length===5)s.state='CALL_BUDGET_EXHAUSTED';await save();return row.response;
+  if(s.rows.length===Math.min(5,s.max_calls))s.state='CALL_BUDGET_EXHAUSTED';await save();return row.response;
  }catch(e){
-  row.state=e.message==='AMBIGUOUS_TIMEOUT'?'AMBIGUOUS_NO_RETRY':'HOLD_NO_RETRY';
+  row.state=row.dispatched&&row.http_status===undefined?'AMBIGUOUS_NO_RETRY':'HOLD_NO_RETRY';
   row.reason=e.message;row.response={error:{message:row.state}};s.state='STOPPED';await save();return row.response;
  }
 }

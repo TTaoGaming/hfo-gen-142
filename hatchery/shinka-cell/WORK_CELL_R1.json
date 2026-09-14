@@ -1,0 +1,290 @@
+{
+  "status": "HOSTED_INPUT_CELL_PASS_LIVE_MODEL_CELL_HOLD",
+  "observed_utc": "2026-09-14T05:42:19.448925+00:00",
+  "authorization": "Operator requested autonomous work-cell implementation; preserve caps; stop Codex below 10 percent remaining; live calls require fresh admission.",
+  "cases": {
+    "live_kimi": {
+      "work_id": "gen142-work-cell-20260914-r1",
+      "exit": 1,
+      "elapsed_seconds": 177.95714015793055,
+      "supervisor": {
+        "work_id": "gen142-work-cell-20260914-r1",
+        "episodes": [
+          {
+            "episode_id": "8f382a81e9b140358a2334da290d8a8c",
+            "started_utc": "2026-09-14T05:24:55Z",
+            "restored_generations": [],
+            "state": "RUNNING"
+          },
+          {
+            "episode_id": "0aa93bb9eda24dbf881faf8ffbb8fe80",
+            "started_utc": "2026-09-14T05:27:44Z",
+            "restored_generations": [],
+            "state": "RUNNING"
+          }
+        ]
+      },
+      "verified_generations": 0,
+      "provider_requests_dispatched": 1,
+      "call_rows": [
+        {
+          "slot": 0,
+          "provider": "kimi",
+          "model": "k3-256k",
+          "input_sha256": "0bd21be9bfd010fd355fda785442eb233c432e408db7e4b3b0d94b1273d8657d",
+          "state": "HOLD_NO_RETRY",
+          "reserved_utc": "2026-09-14T05:25:05.899Z",
+          "dispatched": true,
+          "reason": "The operation was aborted due to timeout"
+        }
+      ],
+      "native_status": "complete",
+      "native_output_status": "rejected",
+      "result_sha256": "8a22b4ddb1fe7cf79c71345f7e10cc43a2c6dfe8a438a2c59ceb12de8487b0fb"
+    },
+    "context_falsifier": {
+      "work_id": "gen142-work-cell-input-20260914-r1",
+      "exit": 78,
+      "elapsed_seconds": 24.957699911901727,
+      "supervisor": {
+        "work_id": "gen142-work-cell-input-20260914-r1",
+        "episodes": [
+          {
+            "episode_id": "55f24a988bda46b0a657f5c283292feb",
+            "started_utc": "2026-09-14T05:32:55Z",
+            "restored_generations": [],
+            "state": "INTERRUPTED_FOR_RECOVERY_ASSAY",
+            "caller_exit": -9
+          },
+          {
+            "episode_id": "f0fb098dbd5e4473adaca98c5ae96f00",
+            "started_utc": "2026-09-14T05:33:08Z",
+            "restored_generations": [],
+            "state": "FAILED",
+            "verified_generations": [
+              1
+            ],
+            "reason": "PROVIDER_HOLD",
+            "error": "PROVIDER_HOLD",
+            "native_status": "complete"
+          }
+        ]
+      },
+      "verified_generations": 1,
+      "provider_requests_dispatched": 0,
+      "call_rows": [],
+      "native_status": "complete",
+      "native_output_status": "rejected",
+      "result_sha256": "ce16f45da119593009984a9ecb5b4efd7e44d92a1d252d8d160c1e290753a8b6"
+    },
+    "repaired_input_cell": {
+      "work_id": "gen142-work-cell-input-20260914-r2",
+      "exit": 0,
+      "elapsed_seconds": 29.011330132139847,
+      "supervisor": {
+        "work_id": "gen142-work-cell-input-20260914-r2",
+        "episodes": [
+          {
+            "episode_id": "361aac96ae6249efa6b6a032a6162182",
+            "started_utc": "2026-09-14T05:37:12Z",
+            "restored_generations": [],
+            "state": "INTERRUPTED_FOR_RECOVERY_ASSAY",
+            "caller_exit": -9
+          },
+          {
+            "episode_id": "0649ef7c8935483ca156e7b3aee44c66",
+            "started_utc": "2026-09-14T05:37:25Z",
+            "restored_generations": [],
+            "state": "COMPLETED",
+            "verified_generations": [
+              1,
+              2
+            ],
+            "native_status": "complete"
+          }
+        ]
+      },
+      "verified_generations": 2,
+      "provider_requests_dispatched": 0,
+      "call_rows": [],
+      "native_status": "complete",
+      "native_output_status": "completed",
+      "result_sha256": "780945b1243ed45a45e9ad517c0d4a7362d76395659399276e4ecf951a1ec538"
+    }
+  },
+  "hosted": {
+    "compute_label": "oracle",
+    "durable_owner": "existing Cloudflare DO + R2 + NativeJob AgentWorkflow",
+    "source_files_sha256": {
+      "supervisor.py": "3fdcc69ebcda1bee75f50b20f5b133e37426cb878605b99451e4eccecd605c12",
+      "context.py": "8d0069dfbf470c82b769f20a4345d129d32ab8bdc9a64a2c4e3a8bdb76d01d8f",
+      "run.py": "ceabb60f9bf1f566fda4cccfc8ee6b9a1121477587468b236d5f8be4e5d93a1c",
+      "evaluate.py": "63aca8d6bc4655d2cd9e977f6900619e8bc0f271946da7d07bb4fa2f49cffcc8",
+      "packing_generations.py": "65f7687f574fcc157e4ee9111d6d7d7c548f63a08a61dfa0adf9a07909e670aa",
+      "parent.pck": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517"
+    },
+    "manifest_sha256": "dbb2605a247c325fee215e27ec68fcf918d43c3b972de9f3a7bdc34ba461e1ed",
+    "context_sha256": "08003e44ecd1bd6d20c8cfca45e518fadc84b24231cb702f61c84269f2769914",
+    "context_prefix_sha256": "18688bc4b65c4f2c50bd2d85f4bf044605a1358c5090826a8ea36840d2532f2a",
+    "context_use_count": 2,
+    "last_delta_bytes": 2551,
+    "input_rows": [
+      {
+        "slot": 0,
+        "source": "admitted-input",
+        "state": "INPUT_RETURNED",
+        "input_sha256": "1096f13c21fccacf32b7980520aa905618dbebd472deca3b221c6b4a174c0666",
+        "proposal_sha256": "9c102993e591b5d980fd9e2bb0a8b4fe0c0c863dd89f50c11b3b3403efd1c2f2",
+        "returned_utc": "2026-09-14T05:37:22.821Z"
+      },
+      {
+        "slot": 1,
+        "source": "admitted-input",
+        "state": "INPUT_RETURNED",
+        "input_sha256": "3b61a0f969f3a20cca675e4f3d196b31ca408bb654b5e4da6be998b447c1e539",
+        "proposal_sha256": "704f74697b406513da62ceafbd7ca359582f01e110774b14e5e238431fdf51ad",
+        "returned_utc": "2026-09-14T05:37:32.783Z"
+      }
+    ],
+    "generations": [
+      {
+        "generation": 1,
+        "program_sha256": "4dae5f288d261973fd5205618ccdf0805792c1512118de8455f012f8fb653640",
+        "artifact_sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+        "artifact_ref": "work-cell/artifact/8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+        "submission_sha256": "27878fde727415403ad579bab06d1bc3f6ed6de248506f38c6398c37fd422678",
+        "proof": {
+          "radius": "0.3099639332166260",
+          "winner": false,
+          "containment_checks": 119,
+          "pair_checks": 7021,
+          "scale_digits": 18,
+          "verifier": "cloudflare-integer-geometry-v1"
+        },
+        "metrics": {
+          "reason": "COMPLETE",
+          "trial_count": 8,
+          "radius": "0.3099639332166260",
+          "winner": false
+        },
+        "verified_utc": "2026-09-14T05:37:32.202Z"
+      },
+      {
+        "generation": 2,
+        "program_sha256": "1bb75a3cf6332e757e1f47cf4a2f6732f2f1c1e2b93b4e9e8b70f9a1c00b09fd",
+        "artifact_sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+        "artifact_ref": "work-cell/artifact/8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+        "submission_sha256": "d9be76e2c752eadf8291cdb8b8cc0887f88e4dfd1080946e0c1d4f204397b34a",
+        "proof": {
+          "radius": "0.3099639332166260",
+          "winner": false,
+          "containment_checks": 119,
+          "pair_checks": 7021,
+          "scale_digits": 18,
+          "verifier": "cloudflare-integer-geometry-v1"
+        },
+        "metrics": {
+          "reason": "COMPLETE",
+          "trial_count": 8,
+          "radius": "0.3099639332166260",
+          "winner": false
+        },
+        "verified_utc": "2026-09-14T05:37:36.081Z"
+      }
+    ],
+    "archive": [
+      {
+        "id": "0a70dc08-4e07-40ff-aca1-7b389a9ae218",
+        "generation": 0,
+        "parent_id": null,
+        "correct": 1,
+        "combined_score": 0.309963933216626
+      },
+      {
+        "id": "39e209e7-213e-4ebb-a69d-00b5215cddc1",
+        "generation": 1,
+        "parent_id": "0a70dc08-4e07-40ff-aca1-7b389a9ae218",
+        "correct": 1,
+        "combined_score": 0.309963933216626
+      },
+      {
+        "id": "8e727200-023a-486f-9879-fa49745efcb0",
+        "generation": 2,
+        "parent_id": "0a70dc08-4e07-40ff-aca1-7b389a9ae218",
+        "correct": 1,
+        "combined_score": 0.309963933216626
+      }
+    ],
+    "memory": {
+      "last_verified_generation": 2,
+      "best_artifact_sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+      "last_result": {
+        "reason": "COMPLETE",
+        "trial_count": 8,
+        "radius": "0.3099639332166260",
+        "winner": false
+      }
+    },
+    "unit_readback": "LoadState=not-found\nActiveState=inactive\nSubState=dead\n",
+    "operator_interventions_during_repaired_run": 0,
+    "provider_requests": 0,
+    "native_output_sha256": "780945b1243ed45a45e9ad517c0d4a7362d76395659399276e4ecf951a1ec538"
+  },
+  "telemetry": {
+    "wall_seconds_including_restart": 29.011330132139847,
+    "verified_dispositions": 2,
+    "seconds_per_verified_disposition": 14.505665066069923,
+    "evaluation_seconds": {
+      "1": 2.037341659190133,
+      "2": 2.281174826901406
+    },
+    "trial_count": 16,
+    "champions": 0,
+    "time_to_champion": "CENSORED_NO_WIN",
+    "provider_cost_of_uncertain_kimi_request": "UNKNOWN",
+    "provider_prompt_cache_hits": "UNKNOWN"
+  },
+  "cloudflare": {
+    "version": "504b3080-a51d-44f5-b07c-35ba70675c3b",
+    "version_number": 55,
+    "exact_source_tail_readback": true,
+    "source_readback_utc": "2026-09-14T05:41:26.106Z",
+    "rollback_version": "651323d0-a1a3-41dd-82a4-6379d08c5175",
+    "bindings_preserved": 9
+  },
+  "local_source_lf_sha256": {
+    "hatchery/pdsa-budget.mjs": "fb881e2e5d9506c9b016ebc1f3409cf7a2e3545b062b575773bdf85ebb77a281",
+    "hatchery/work-cell.mjs": "a9a95496c62fff91c32dd356d5356597fc5935af74091bcda54345c4ed236354",
+    "hatchery/shinka-cell/supervisor.py": "a1e1b8e455924a32c8bdd5988e3cdb3b79ca62603fc4a683b306121e449e7a38",
+    "hatchery/shinka-cell/context.py": "8d0069dfbf470c82b769f20a4345d129d32ab8bdc9a64a2c4e3a8bdb76d01d8f"
+  },
+  "supervisor_falsifiers": {
+    "status": "PASS",
+    "cases": [
+      {
+        "case": "provider-hold",
+        "exit": 78,
+        "child_gone": true,
+        "closeout_count": 1,
+        "elapsed_seconds": 0.6129457841161638
+      },
+      {
+        "case": "rejected-native-result",
+        "exit": 78,
+        "child_gone": true,
+        "closeout_count": 1,
+        "elapsed_seconds": 0.5053695370443165
+      }
+    ],
+    "live_provider_calls": 0,
+    "supervisor_sha256": "a1e1b8e455924a32c8bdd5988e3cdb3b79ca62603fc4a683b306121e449e7a38"
+  },
+  "source_scope_note": "Hosted success used supervisor 3fdcc69e; current a1e1b8e adds explicit native-result verdict/hash checks. The current supervisor passed both native POSIX falsifiers. Evaluator and installed Shinka patch were unchanged.",
+  "claim_ceiling": "One finite same-host input-driven cell completed two distinct numerical recipes through native Shinka, with one systemd checkpoint recovery and separate Cloudflare geometry acceptance. No model-driven feedback success, champion, overnight soak, general profile admission, cross-host migration or three-host parity.",
+  "remaining": [
+    "Kimi request exceeded existing 90-second transport limit; no retry or allowance refund.",
+    "Source-pinned fixed input recipes are not live neural mutations.",
+    "Generic workload/profile admission and cross-host fencing remain unproven.",
+    "No new overnight model budget admitted."
+  ]
+}
