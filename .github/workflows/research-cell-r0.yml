@@ -4,8 +4,10 @@ on:
   push:
     branches: [main]
     paths:
-      - 'WORKCELLS/research-r0/task.json'
+      - 'WORKCELLS/research-r0/*.json'
       - 'tools/research_cell_r0.py'
+      - 'tools/select_research_workitem.py'
+      - 'tests/test_select_research_workitem.py'
       - 'tools/terminal_handoff_gate.py'
       - '.github/workflows/research-cell-r0.yml'
   workflow_dispatch:
@@ -15,9 +17,14 @@ on:
 permissions:
   contents: read
   issues: write
+  actions: write
+
+concurrency:
+  group: research-cell-r0
+  cancel-in-progress: false
 
 env:
-  TASK: WORKCELLS/research-r0/task.json
+  TASK_DIR: WORKCELLS/research-r0
   ISSUE: '13'
 
 jobs:
@@ -30,49 +37,106 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Detect durable retirement receipt
-        id: prior
+      - name: Validate deterministic selector
+        run: python -m unittest tests.test_select_research_workitem -v
+
+      - name: Discover exactly one unretired WorkItem
+        id: select
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          work_id="$(python -c 'import json; print(json.load(open("WORKCELLS/research-r0/task.json"))["work_id"])')"
-          spec_sha="$(sha256sum "$TASK" | awk '{print $1}')"
-          marker="<!-- hfo-research-cell-r0:${work_id}:${spec_sha} -->"
-          existing="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${ISSUE}/comments" --jq ".[] | select(.body | contains(\"${marker}\")) | .html_url" | head -n1 || true)"
-          echo "work_id=$work_id" >> "$GITHUB_OUTPUT"
-          echo "spec_sha=$spec_sha" >> "$GITHUB_OUTPUT"
-          echo "marker=$marker" >> "$GITHUB_OUTPUT"
-          if [ -n "$existing" ]; then
-            echo "retired=true" >> "$GITHUB_OUTPUT"
-            echo "ack_url=$existing" >> "$GITHUB_OUTPUT"
-          else
-            echo "retired=false" >> "$GITHUB_OUTPUT"
-          fi
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${ISSUE}/comments" --jq '.[].body' > "$RUNNER_TEMP/retirement-ledger.txt"
+          python tools/select_research_workitem.py "$TASK_DIR" "$RUNNER_TEMP/retirement-ledger.txt" "$RUNNER_TEMP/selection.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          s=json.loads((Path(os.environ['RUNNER_TEMP'])/'selection.json').read_text())
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as f:
+              f.write(f"selected={'true' if s['selected'] else 'false'}\n")
+              f.write(f"selection_sha={s['selection_sha256']}\n")
+              if s['selected']:
+                  w=s['selected_work']
+                  f.write(f"task_path={w['task_path']}\nwork_id={w['work_id']}\nspec_sha={w['spec_sha256']}\nmarker={w['marker']}\n")
+          PY
 
       - name: Tool-based research
-        if: steps.prior.outputs.retired != 'true'
+        if: steps.select.outputs.selected == 'true'
+        env:
+          TASK: ${{ steps.select.outputs.task_path }}
         run: python tools/research_cell_r0.py "$TASK" "$RUNNER_TEMP/research-cell"
 
       - name: Report to GitHub and obtain ConsumerAck
-        if: steps.prior.outputs.retired != 'true'
+        if: steps.select.outputs.selected == 'true'
         id: ack
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-          MARKER: ${{ steps.prior.outputs.marker }}
+          MARKER: ${{ steps.select.outputs.marker }}
         run: |
           set -euo pipefail
-          body="$(cat "$RUNNER_TEMP/research-cell/report.md")"$'\n\n'"$MARKER"
+          body="$(cat "$RUNNER_TEMP/research-cell/report.md")"$'\n\n'"Selection SHA256: `${{ steps.select.outputs.selection_sha }}`"$'\n\n'"$MARKER"
           response="$(jq -n --arg body "$body" '{body:$body}' | gh api "repos/${GITHUB_REPOSITORY}/issues/${ISSUE}/comments" --method POST --input -)"
           echo "url=$(jq -r .html_url <<<"$response")" >> "$GITHUB_OUTPUT"
           echo "id=$(jq -r .id <<<"$response")" >> "$GITHUB_OUTPUT"
 
+      - name: Reconcile remaining demand
+        if: steps.select.outputs.selected == 'true'
+        id: next
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${ISSUE}/comments" --jq '.[].body' > "$RUNNER_TEMP/post-ack-ledger.txt"
+          python tools/select_research_workitem.py "$TASK_DIR" "$RUNNER_TEMP/post-ack-ledger.txt" "$RUNNER_TEMP/next-selection.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          s=json.loads((Path(os.environ['RUNNER_TEMP'])/'next-selection.json').read_text())
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as f:
+              f.write(f"selected={'true' if s['selected'] else 'false'}\n")
+              if s['selected']:
+                  w=s['selected_work']; f.write(f"work_id={w['work_id']}\ntask_path={w['task_path']}\n")
+          PY
+
+      - name: Machine dispatch next wake
+        if: steps.select.outputs.selected == 'true' && steps.next.outputs.selected == 'true'
+        id: dispatch
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          endpoint="https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/research-cell-r0.yml/dispatches"
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/actions/workflows/research-cell-r0.yml/dispatches" -f ref=main > "$RUNNER_TEMP/dispatch-response.json"
+          python - <<'PY'
+          import hashlib, json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          work_ref=f"github:{os.environ['GITHUB_REPOSITORY']}:{os.environ['NEXT_PATH']}"
+          base={
+            'receipt_type':'github_workflow_dispatch','owner':'github-actions',
+            'receipt_id':f"{os.environ['GITHUB_RUN_ID']}:{os.environ['GITHUB_RUN_ATTEMPT']}:{os.environ['NEXT_WORK_ID']}",
+            'status':'ACCEPTED','observed_utc':datetime.now(timezone.utc).isoformat().replace('+00:00','Z'),
+            'provenance_ref':f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/actions/workflows/research-cell-r0.yml/dispatches",
+            'self_attested':False,'work_ref':work_ref,
+          }
+          base['receipt_sha256']=hashlib.sha256(json.dumps(base,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+          p=Path(os.environ['RUNNER_TEMP'])/'research-cell'; p.mkdir(parents=True,exist_ok=True)
+          (p/'dispatch-receipt.json').write_text(json.dumps(base,indent=2))
+          PY
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NEXT_WORK_ID: ${{ steps.next.outputs.work_id }}
+          NEXT_PATH: ${{ steps.next.outputs.task_path }}
+
       - name: Terminal handoff and retire
-        if: steps.prior.outputs.retired != 'true'
+        if: steps.select.outputs.selected == 'true'
         env:
           ACK_URL: ${{ steps.ack.outputs.url }}
+          NEXT_SELECTED: ${{ steps.next.outputs.selected }}
         run: |
           python - <<'PY'
           import json, os
@@ -80,25 +144,29 @@ jobs:
           out=Path(os.environ['RUNNER_TEMP'])/'research-cell'
           result=json.loads((out/'result.json').read_text())
           handoff={
-            'schema':'hfo.terminal-handoff.v1', 'mission_id':result['work_id'],
-            'actor_id':'research-cell-r0', 'terminal_state':'PASS',
-            'tao_relay_required':False, 'operator_action_required':'NONE',
-            'next':{'mode':'MISSION_COMPLETE'}, 'mission_complete':True,
+            'schema':'hfo.terminal-handoff.v1','mission_id':result['work_id'],
+            'actor_id':'research-cell-r0','terminal_state':'PASS',
+            'tao_relay_required':False,'operator_action_required':'NONE',
             'verifier_receipt':{'result_sha256':result['result_sha256'],'source_count':len(result['sources'])},
             'consumer_ack':{'type':'github_issue_comment','url':os.environ['ACK_URL']},
           }
+          if os.environ.get('NEXT_SELECTED') == 'true':
+              receipt=json.loads((out/'dispatch-receipt.json').read_text())
+              handoff['next']={'mode':'AUTO_DISPATCH','owner':'github-actions','work_ref':receipt['work_ref'],'dispatch_receipt':receipt}
+          else:
+              handoff.update({'next':{'mode':'MISSION_COMPLETE'},'mission_complete':True})
           (out/'handoff.json').write_text(json.dumps(handoff,indent=2))
           PY
           python tools/terminal_handoff_gate.py "$RUNNER_TEMP/research-cell/handoff.json"
 
       - name: Durable receipt artifact
-        if: steps.prior.outputs.retired != 'true'
+        if: steps.select.outputs.selected == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: research-cell-${{ github.run_id }}
+          name: research-cell-${{ github.run_id }}-${{ github.run_attempt }}-${{ steps.select.outputs.work_id }}
           path: ${{ runner.temp }}/research-cell/
           retention-days: 7
 
-      - name: Retired cell no-op
-        if: steps.prior.outputs.retired == 'true'
-        run: echo "RETIRED_ALREADY_ACKED ${{ steps.prior.outputs.ack_url }}"
+      - name: No admitted work no-op
+        if: steps.select.outputs.selected != 'true'
+        run: echo "NO_ADMITTED_UNRETIRED_WORK"
