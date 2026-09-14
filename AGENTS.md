@@ -34,6 +34,8 @@ Every carrier entering this repository must assume prior state can be stale, con
 - Tao relay defaults false. Escalate only named human authority boundaries: secret/OAuth/2FA/payment/permission/protected merge/irreversible external submit.
 - Before declaring terminal, materialize `hfo.terminal-handoff.v1` and require `python tools/terminal_handoff_gate.py <handoff.json>` -> `ADMIT_TERMINAL`.
 - `next_consumer` prose is not a handoff. With `TAO_RELAY_REQUIRED=false`, terminal work must already contain an automatic dispatch/reconcile receipt or verified mission-complete evidence. Generic `Tao decide/launch/check` is invalid.
+- Transition evidence must be structured, provenance-bound, and `self_attested=false`; the producer cannot mint proof that its own next transition happened merely by writing prose or an arbitrary receipt string.
+- `HUMAN_BOUNDARY != MANUAL_CONTINUATION`. Before escalating a real authority wall, record the failed machine attempt and arm an automatic resume watcher. Tao may unlock authority; Tao must not launch, retry, route, monitor, gather, check back, or restart the next carrier.
 
 ## Battlefield / income forcing
 - Read `BATTLEFIELD_SELECTION_STANDARD.md` before scouting, recommending, or attacking any external leaderboard, competition, benchmark, challenge, case-study target, or income lane.
