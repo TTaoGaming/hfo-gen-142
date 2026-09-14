@@ -126,6 +126,13 @@ class BattlefieldGateTests(unittest.TestCase):
         self.assertNotEqual(rc, 0)
         self.assertEqual(out["verdict"], "KILL_PROXY")
 
+    def test_demo_without_external_verifier_killed(self):
+        card = base_card()
+        card["prestige"]["independent_verifier"] = False
+        rc, out = verdict(card)
+        self.assertNotEqual(rc, 0)
+        self.assertEqual(out["verdict"], "KILL_DEMO")
+
     def test_no_income_path_killed(self):
         card = base_card()
         card["commercial"]["demand_evidence_urls"] = []
