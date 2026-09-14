@@ -9,7 +9,7 @@ Modes:
 
 This tool never selects a model by itself, grants a lease, sends/spends/publishes,
 or creates provider effects. It emits deterministic admission decisions for the
-REGINLEIF/reference-monitor path.
+current durable-owner/reference-monitor path after upstream authority admission.
 """
 from __future__ import annotations
 
@@ -19,7 +19,6 @@ import sys
 from pathlib import Path
 from typing import Any
 
-TRUSTED_SELECTORS = {"HFO_GEN142_REGINLEIF", "HFO_REFERENCE_MONITOR"}
 REQUIRED_JOB_FIELDS = (
     "job_id",
     "objective_id",
@@ -110,7 +109,7 @@ def evaluate_job(payload: dict[str, Any]) -> dict[str, Any]:
         return deny(
             "BLOCK_OPERATOR_MANUAL_WORKER_SELECTION",
             "eligible job must use capability discovery/bidding; operator is not the worker router",
-            "STRIFE-ALPHA-011-OPERATOR-AS-MESSAGE-BUS",
+            "gen142.strife.operator-message-bus.v1",
         )
     if market_eligible and job.get("allocation_mode") != "CONTRACT_NET_TOP_K":
         return deny("BLOCK_CAPABILITY_MARKET_BYPASS", "eligible job requires CONTRACT_NET_TOP_K allocation")
@@ -159,8 +158,18 @@ def evaluate_selection(payload: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(selection, dict):
         raise ValueError("selection object required")
     selector = selection.get("selector_actor_id")
-    if selector not in TRUSTED_SELECTORS:
-        return deny("BLOCK_UNTRUSTED_CAPABILITY_SELECTOR", "selection must be owned by REGINLEIF/reference monitor")
+    if not _present(selector):
+        return deny("BLOCK_MISSING_CAPABILITY_SELECTOR", "selector_actor_id required")
+    authority_receipts = selection.get("selector_authority_receipts")
+    if (
+        selection.get("selector_authority_admitted") is not True
+        or not isinstance(authority_receipts, list)
+        or not authority_receipts
+    ):
+        return deny(
+            "BLOCK_UNADMITTED_CAPABILITY_SELECTOR",
+            "selector authority must be admitted upstream by the current durable state owner",
+        )
     winners = selection.get("winner_bid_ids")
     if not isinstance(winners, list):
         raise ValueError("winner_bid_ids must be a list")
@@ -169,9 +178,13 @@ def evaluate_selection(payload: dict[str, Any]) -> dict[str, Any]:
     if selection.get("selected_bid_is_qualified") is not True and winners:
         return deny("BLOCK_SELECTED_UNQUALIFIED_BID", "winner lacks current qualification")
     if selection.get("bidder_selected_itself") is True:
-        return deny("BLOCK_BIDDER_SELF_AWARD", "bidder cannot be its own trusted selector")
-    return allow("SELECTION_ADMITTED", winner_count=len(winners))
-
+        return deny("BLOCK_BIDDER_SELF_AWARD", "bidder cannot be its own admitted selector")
+    return allow(
+        "SELECTION_ADMITTED",
+        winner_count=len(winners),
+        selector_actor_id=selector,
+        selector_authority_receipts=authority_receipts,
+    )
 
 def evaluate_scale(payload: dict[str, Any]) -> dict[str, Any]:
     scale = payload.get("scale")
@@ -193,7 +206,7 @@ def evaluate_scale(payload: dict[str, Any]) -> dict[str, Any]:
         return deny(
             "BLOCK_SCALE_OPERATOR_PAIN_NOT_IMPROVING",
             f"operator touches/world-effect current={current} baseline={baseline} ceiling={admitted_ceiling}",
-            "STRIFE-ALPHA-007-OPERATOR-VISIBLE-SURFACE-SPRAWL",
+            "gen142.strife.duplicate-activation-heritage.v1",
         )
     return allow("SCALE_CANDIDATE_ADMITTED", current_population=current_population, proposed_population=proposed_population)
 

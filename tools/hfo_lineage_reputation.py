@@ -43,27 +43,43 @@ def reduce_reputation(events: list[dict[str, Any]]) -> dict[str, Any]:
     invalid: list[str] = []
     ignored: list[str] = []
     resolved: set[str] = set()
+    valid_supersessions: set[str] = set()
     by_id: dict[str, dict[str, Any]] = {}
 
-    # First pass discovers immutable event IDs and explicit later supersessions.
+    # First pass establishes the immutable event set only.
     for event in ordered:
         event_id = str(event.get("event_id", "<missing>"))
         if event_id in by_id:
             invalid.append(f"{event_id}: duplicate event_id")
             continue
         by_id[event_id] = event
-        if event.get("event_class") == "SUPERSESSION":
-            context = event.get("context") or {}
-            targets = context.get(
-                "resolves_event_ids", context.get("resolves_event_id", [])
-            )
-            if isinstance(targets, str):
-                targets = [targets]
-            if isinstance(targets, list):
-                resolved.update(
-                    target for target in targets if isinstance(target, str) and target
-                )
 
+    # Only externally evidenced, effect-admitted later supersessions can resolve history.
+    for event_id, event in by_id.items():
+        if event.get("event_class") != "SUPERSESSION":
+            continue
+        evidence_class = event.get("evidence_class")
+        effect_allowed = event.get("reputation_effect_allowed", True)
+        if (
+            event.get("candidate_can_self_award") is not False
+            or evidence_class not in POSITIVE_EXTERNAL
+            or effect_allowed is False
+        ):
+            continue
+        context = event.get("context") or {}
+        targets = context.get("resolves_event_ids", context.get("resolves_event_id", []))
+        if isinstance(targets, str):
+            targets = [targets]
+        if not isinstance(targets, list):
+            continue
+        valid_supersessions.add(event_id)
+        for target in targets:
+            if not isinstance(target, str) or target not in by_id or target == event_id:
+                continue
+            target_time = str(by_id[target].get("observed_utc", ""))
+            supersession_time = str(event.get("observed_utc", ""))
+            if target_time and supersession_time and supersession_time >= target_time:
+                resolved.add(target)
     positive: list[str] = []
     neutral: list[str] = []
     process_learning: list[str] = []
@@ -75,7 +91,10 @@ def reduce_reputation(events: list[dict[str, Any]]) -> dict[str, Any]:
             continue
 
         if event.get("event_class") == "SUPERSESSION":
-            neutral.append(event_id)
+            if event_id in valid_supersessions:
+                neutral.append(event_id)
+            else:
+                ignored.append(f"{event_id}: supersession lacks admitted external evidence")
             continue
         if event_id in resolved:
             continue
@@ -134,7 +153,7 @@ def reduce_reputation(events: list[dict[str, Any]]) -> dict[str, Any]:
         eligibility = "ELIGIBLE_FOR_TASK_ROUTING"
 
     return {
-        "schema_id": "hfo.gen142.lineage.reputation_digest.v1",
+        "projection_type": "LINEAGE_REPUTATION_DIGEST",
         "eligibility": eligibility,
         "positive_event_ids": positive,
         "neutral_event_ids": neutral,
@@ -181,3 +200,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

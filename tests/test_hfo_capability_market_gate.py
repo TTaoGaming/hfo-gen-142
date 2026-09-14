@@ -62,6 +62,7 @@ class JobGateTests(unittest.TestCase):
         result = mod.evaluate_job({"job": j})
         self.assertEqual(result["code"], "BLOCK_OPERATOR_MANUAL_WORKER_SELECTION")
         self.assertEqual(result["downstream_effect_budget"], 0)
+        self.assertEqual(result["strife_id"], "gen142.strife.operator-message-bus.v1")
 
     def test_neural_broadcast_is_denied(self) -> None:
         j = job(); j["broadcast_to_all_neural_actors"] = True
@@ -90,9 +91,11 @@ class BidGateTests(unittest.TestCase):
 
 
 class SelectionGateTests(unittest.TestCase):
-    def test_reginleif_can_select_one_qualified_winner(self) -> None:
+    def test_admitted_durable_owner_can_select_one_qualified_winner(self) -> None:
         payload = {"selection": {
-            "selector_actor_id": "HFO_GEN142_REGINLEIF",
+            "selector_actor_id": "HFO/4/SIGRUN/7/7",
+            "selector_authority_admitted": True,
+            "selector_authority_receipts": ["receipt:do-owner:1"],
             "winner_bid_ids": ["B1"],
             "same_mutable_workpiece": True,
             "selected_bid_is_qualified": True,
@@ -100,19 +103,23 @@ class SelectionGateTests(unittest.TestCase):
         }}
         self.assertEqual(mod.evaluate_selection(payload)["state"], "ALLOW")
 
-    def test_untrusted_selector_is_denied(self) -> None:
+    def test_unadmitted_selector_is_denied(self) -> None:
         payload = {"selection": {
             "selector_actor_id": "HFO_GEN137_THRUD",
+            "selector_authority_admitted": False,
+            "selector_authority_receipts": [],
             "winner_bid_ids": ["B1"],
             "same_mutable_workpiece": True,
             "selected_bid_is_qualified": True,
             "bidder_selected_itself": False,
         }}
-        self.assertEqual(mod.evaluate_selection(payload)["code"], "BLOCK_UNTRUSTED_CAPABILITY_SELECTOR")
+        self.assertEqual(mod.evaluate_selection(payload)["code"], "BLOCK_UNADMITTED_CAPABILITY_SELECTOR")
 
     def test_two_winners_same_workpiece_are_denied(self) -> None:
         payload = {"selection": {
-            "selector_actor_id": "HFO_REFERENCE_MONITOR",
+            "selector_actor_id": "HFO/4/SIGRUN/7/7",
+            "selector_authority_admitted": True,
+            "selector_authority_receipts": ["receipt:do-owner:2"],
             "winner_bid_ids": ["B1", "B2"],
             "same_mutable_workpiece": True,
             "selected_bid_is_qualified": True,
@@ -134,6 +141,7 @@ class ScaleGateTests(unittest.TestCase):
         result = mod.evaluate_scale(payload)
         self.assertEqual(result["code"], "BLOCK_SCALE_OPERATOR_PAIN_NOT_IMPROVING")
         self.assertEqual(result["state"], "DENY")
+        self.assertEqual(result["strife_id"], "gen142.strife.duplicate-activation-heritage.v1")
 
     def test_population_growth_requires_real_world_effect_sample(self) -> None:
         payload = {"scale": {

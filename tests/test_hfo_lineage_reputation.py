@@ -10,7 +10,6 @@ spec.loader.exec_module(mod)
 
 
 BASE = {
-    "schema_id": "hfo.gen142.lineage.reputation_event.v1",
     "lineage_id": "HFO_GEN137_SIGRUN",
     "callsign": "SIGRUN",
     "observed_utc": "2026-08-22T00:00:00Z",
@@ -93,6 +92,37 @@ class LineageReputationTests(unittest.TestCase):
         self.assertEqual(result["eligibility"], "ELIGIBLE_FOR_TASK_ROUTING")
         self.assertIn("h", result["resolved_event_ids"])
         self.assertEqual(result["active_adverse_event_ids"], [])
+
+    def test_self_report_supersession_cannot_release_quarantine(self):
+        hard = event(
+            "h", "EVAL_INTEGRITY_FAILURE", "MECHANICAL_INTEGRITY_DIFF", "HARD_NEGATIVE"
+        )
+        self_release = event(
+            "s",
+            "SUPERSESSION",
+            "CANDIDATE_SELF_REPORT_ONLY",
+            "NEUTRAL",
+            context={"resolves_event_id": "h"},
+            observed_utc="2026-08-22T01:00:00Z",
+        )
+        result = mod.reduce_reputation([hard, self_release])
+        self.assertEqual(result["eligibility"], "QUARANTINED")
+        self.assertEqual(result["active_adverse_event_ids"], ["h"])
+        self.assertNotIn("h", result["resolved_event_ids"])
+        self.assertTrue(any("supersession lacks admitted external evidence" in x for x in result["ignored"]))
+
+    def test_supersession_cannot_resolve_future_event(self):
+        resolution = event(
+            "s", "SUPERSESSION", "INDEPENDENT_VERIFIER", "NEUTRAL",
+            context={"resolves_event_id": "h"}, observed_utc="2026-08-22T01:00:00Z",
+        )
+        hard = event(
+            "h", "EVAL_INTEGRITY_FAILURE", "MECHANICAL_INTEGRITY_DIFF", "HARD_NEGATIVE",
+            observed_utc="2026-08-22T02:00:00Z",
+        )
+        result = mod.reduce_reputation([hard, resolution])
+        self.assertEqual(result["eligibility"], "QUARANTINED")
+        self.assertNotIn("h", result["resolved_event_ids"])
 
     def test_reduction_is_deterministic_under_input_order(self):
         a = event("a", "VERIFIED_COOPERATION", "INDEPENDENT_VERIFIER", "POSITIVE")
