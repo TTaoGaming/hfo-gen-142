@@ -176,6 +176,10 @@ def evaluate(card):
     if t["direction"] not in {"maximize", "minimize"} or t["open_to_user"] is not True:
         return fail("KILL_INELIGIBLE_BATTLEFIELD")
 
+    if card["mission_class"] in {"prestige_crown", "case_study"}:
+        if p["independent_verifier"] is not True or p["durable_public_evidence"] is not True:
+            return fail("KILL_DEMO", reason="external_verifier_or_public_evidence_missing")
+
     if card["mission_class"] == "prestige_crown":
         if p["tier"] not in {"A", "B"}:
             return fail("KILL_PROXY", reason="prestige_tier_below_floor")
