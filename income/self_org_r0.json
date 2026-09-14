@@ -1,0 +1,29 @@
+{
+  "schema": "hfo.gen142.income-self-org.v1",
+  "control_issue": 7,
+  "goal": "qualified_conversations_and_income",
+  "effect_ceiling": "NO_EXTERNAL_SEND",
+  "fanout_limit": 32,
+  "reducer_min_terminals": 12,
+  "laws": [
+    "WORK_DEMAND_BEFORE_CAPACITY",
+    "SYMBOLIC_GATES_BEFORE_NEURAL_ADVICE",
+    "NEURAL_ADVICE_CANNOT_WIDEN_AUTHORITY",
+    "CLAIM_ONE_LANE_THEN_READ_BACK",
+    "EARLIER_DURABLE_CLAIM_WINS",
+    "TERMINAL_ONCE",
+    "UNKNOWN_REMAINS_UNKNOWN"
+  ],
+  "lanes": {
+    "I0": {"mission":"Upwork API/current policy and VPS independence","priority":100,"phenotype":"LING"},
+    "I1": {"mission":"marketplace economics and live buyer demand","priority":85,"phenotype":"LING"},
+    "I2": {"mission":"direct/referral/agency acquisition evidence","priority":80,"phenotype":"LING"},
+    "I3": {"mission":"remote employment channels and role families","priority":75,"phenotype":"LING"},
+    "I4": {"mission":"proposal/bid conversion evidence","priority":90,"phenotype":"LING"},
+    "I5": {"mission":"video proof evidence and buyer fatigue falsification","priority":70,"phenotype":"TWINLING"},
+    "I6": {"mission":"code/demo/case-study proof artifact evidence","priority":95,"phenotype":"TWINLING"},
+    "I7": {"mission":"career SSOT inventory across Drive/GitHub","priority":98,"phenotype":"ROACH"},
+    "I8": {"mission":"optimization/public-proof inventory and buyer translation","priority":96,"phenotype":"ROACH"},
+    "I9": {"mission":"deduplicate and reduce terminals into one 7-day playbook","priority":110,"phenotype":"REDUCER","requires_terminals":12}
+  }
+}
