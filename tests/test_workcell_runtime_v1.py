@@ -22,19 +22,18 @@ class WorkCellRuntimeTest(unittest.TestCase):
         self.assertEqual(self.gate(handoff), 0)
         self.assertEqual(handoff["next"]["mode"], "MISSION_COMPLETE")
 
-    def test_auto_dispatch_handoff_passes(self):
+    def test_scheduled_reconcile_handoff_passes(self):
         receipt = {
-            "receipt_type": "github_workflow_dispatch", "owner": "github-actions",
-            "receipt_id": "1:1:W2", "status": "ACCEPTED",
+            "receipt_type": "github_actions_watch", "owner": "github-actions",
+            "receipt_id": "workflow:123", "status": "ARMED",
             "observed_utc": "2026-09-14T22:00:00Z",
-            "provenance_ref": "https://api.github.com/repos/x/y/actions/workflows/workcell-runtime-v1.yml/dispatches",
+            "provenance_ref": "https://api.github.com/repos/x/y/actions/workflows/workcell-runtime-v1.yml",
             "receipt_sha256": "b" * 64, "self_attested": False,
-            "work_ref": "github:x/y:WORKCELLS/research-r0/w2.json",
         }
         result = {"work_id": "W1", "result_sha256": "a" * 64, "sources": [{}]}
         handoff = runtime.build_handoff(result, "https://github.com/x/y/issues/1#issuecomment-1", receipt)
         self.assertEqual(self.gate(handoff), 0)
-        self.assertEqual(handoff["next"]["mode"], "AUTO_DISPATCH")
+        self.assertEqual(handoff["next"]["mode"], "RECONCILE")
 
     def test_unknown_worker_schema_fails_closed(self):
         with self.assertRaises(RuntimeError):
