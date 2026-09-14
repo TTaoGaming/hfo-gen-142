@@ -21,6 +21,18 @@ Every carrier entering this repository must assume prior state can be stale, con
 - Do not expose secrets, personal data, credentials, private host details, or inherited sensitive Gen140/141 state in this public repository.
 - Do not make Tao the hot-loop router, janitor, memory bus, or collision resolver.
 
+## Holon mission-command forcing
+- Read `HOLON_MISSION_COMMAND_CONTRACT.md` before creating or executing autonomous mission work.
+- Durable `actor_id` is identity; model/provider/harness/host/chat is a disposable `carrier_id`. Never collapse the two.
+- GitHub `TTaoGaming/hfo-gen-142#13` is the recovery/rendezvous surface and deployed `hfo-sigrun-va-r0` remains semantic claim/fence/deadline/terminal owner unless an explicit migration assay retires it.
+- Provider/model is a leaf donor, never a scheduler/control plane. `FRONTIER_REQUIRED` work fails closed; no silent local/Ollama downgrade.
+- Domain is agnostic by default. AI reliability/AI engineering is not the default work domain; selecting any domain requires explicit mission intent or `domain_agnostic` scouting.
+- Rehydrate/probe/repair before build. Do not recreate a capability merely because the current carrier forgot it.
+- A remembered failure is not protection until compiled into a forcing function/regression/admission assay.
+- Before executing a holon mission, `python tools/holon_gate.py <mission.json>` must return `ADMIT`.
+- VPS leaf execution should pass through `ops/vps_exec_guard.py`; that wrapper is bounded execution only and must never acquire semantic lease/queue ownership.
+- Tao relay defaults false. Escalate only named human authority boundaries: secret/OAuth/2FA/payment/permission/protected merge/irreversible external submit.
+
 ## Promotion rule
 `PROPOSAL -> EXECUTION RECEIPT -> INDEPENDENT FALSIFICATION -> VERIFIED RESULT -> CONSUMER ACK`
 
