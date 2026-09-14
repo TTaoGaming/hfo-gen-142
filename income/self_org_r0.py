@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
-import json, os, re, sys, uuid, urllib.request
+import base64, json, os, re, sys, uuid, urllib.request
 from datetime import datetime, timezone
 
 REPO = os.getenv("HFO_REPO", "TTaoGaming/hfo-gen-142")
 ISSUE = int(os.getenv("HFO_ISSUE", "7"))
 MODEL = os.getenv("HFO_OLLAMA_MODEL", "qwen3.5:2b-q4_K_M")
-NEURAL_TIMEOUT = float(os.getenv("HFO_NEURAL_TIMEOUT", "8"))
+NEURAL_TIMEOUT = float(os.getenv("HFO_NEURAL_TIMEOUT", "15"))
 CAPS = {x.strip() for x in os.getenv("HFO_CAPABILITIES", "public_web,github_read,local_shell,ollama").split(",") if x.strip()}
 API = "https://api.github.com"
-RAW = "https://raw.githubusercontent.com"
 UA = {"User-Agent": "gen142-income-selforg-r0"}
 
 def get_json(url):
     req = urllib.request.Request(url, headers=UA)
     with urllib.request.urlopen(req, timeout=15) as r: return json.load(r)
+
+def load_config():
+    obj = get_json(f"{API}/repos/{REPO}/contents/income/self_org_r0.json?ref=main")
+    return json.loads(base64.b64decode(obj["content"]))
 
 def post_json(url, payload):
     data = json.dumps(payload).encode()
@@ -27,7 +30,7 @@ def extract_json(text):
     except Exception: return {}
 
 def main():
-    config = get_json(f"{RAW}/{REPO}/main/income/self_org_r0.json")
+    config = load_config()
     comments = get_json(f"{API}/repos/{REPO}/issues/{ISSUE}/comments?per_page=100")
     bodies = [c.get("body", "") for c in comments]
     occupancy = {k: 0 for k in config["lanes"]}
