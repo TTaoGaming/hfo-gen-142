@@ -47,6 +47,15 @@ Every carrier entering this repository must assume prior state can be stale, con
 - Spare capacity never creates demand. Unknown/contradictory state fails closed. An active dispatch suppresses duplicate dispatch. A true human boundary must have machine resume armed before Tao is asked to unlock it.
 - Candidate controller policies evolve offline by trace replay/failure injection/canary/soak; promotion must not widen authority or add a new state owner.
 
+## Standard WorkCell forcing
+- Read `WORKCELL_STANDARD_V1.md` before creating recurring autonomous work.
+- Do not create or copy a workflow per task/cell. `.github/workflows/workcell-runtime-v1.yml` is the shared R1 heartbeat/transport surface.
+- New research demand is data: add an admitted versioned WorkItem under `WORKCELLS/research-r0/`; the shared runtime deterministically selects exactly one item per wake.
+- `tools/workcell_runtime_v1.py` owns only stateless orchestration glue: select -> allowlisted worker -> ConsumerAck -> terminal gate -> one next dispatch or retire. It owns no durable queue, lease, actor state, authority, or model policy.
+- Worker schemas are allowlisted in code. A WorkItem may never inject an arbitrary command or executable.
+- A completed WorkItem is retired only by durable GitHub ConsumerAck bound to `work_id + spec_sha256`; legacy retirement markers remain readable to prevent replay during migration.
+- Normal runtime requires `tao_hot_loop_actions=0`. Tao may create/approve intent and unlock true authority boundaries, but must not poll, route, relaunch, gather, retry, or choose the next WorkItem.
+
 ## Deterministic janitor forcing
 - Read `DETERMINISTIC_JANITOR_CONTRACT.md` before removing runtime residue.
 - Cleanup is a bounded leaf effect selected by the existing reconciler; it is not a neural janitor, scheduler, or second state owner.
@@ -56,6 +65,7 @@ Every carrier entering this repository must assume prior state can be stale, con
 - Unknown ownership, live TTL, active lease, pending consumer, self-attested terminal evidence, dirty worktree, path escape, or identity mismatch fails closed.
 - `DELETE_RESIDUE != DELETE_HISTORY`: GitHub evidence, actor state, verifier receipts, ConsumerAck, lineage, and public proof are never janitor targets.
 - Routine cleanup is swarm work. `routine_cleanup_actions_by_tao` targets zero.
+
 ## Battlefield / income forcing
 - Read `BATTLEFIELD_SELECTION_STANDARD.md` before scouting, recommending, or attacking any external leaderboard, competition, benchmark, challenge, case-study target, or income lane.
 - Every external target MUST have a machine-readable `battlefield.v1` card conforming to `schemas/battlefield.v1.schema.json`.
