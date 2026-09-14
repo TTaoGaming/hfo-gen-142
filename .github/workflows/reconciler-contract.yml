@@ -6,14 +6,18 @@ on:
     paths:
       - 'DETERMINISTIC_RECONCILER_CONTRACT.md'
       - 'tools/reconcile_kernel.py'
+      - 'tools/reconcile_observer.py'
       - 'tests/test_reconcile_kernel.py'
+      - 'tests/test_reconcile_observer.py'
       - 'AGENTS.md'
       - '.github/workflows/reconciler-contract.yml'
   pull_request:
     paths:
       - 'DETERMINISTIC_RECONCILER_CONTRACT.md'
       - 'tools/reconcile_kernel.py'
+      - 'tools/reconcile_observer.py'
       - 'tests/test_reconcile_kernel.py'
+      - 'tests/test_reconcile_observer.py'
       - 'AGENTS.md'
       - '.github/workflows/reconciler-contract.yml'
 
@@ -30,7 +34,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Run deterministic reconciler regressions
-        run: python -m unittest tests.test_reconcile_kernel -v
+        run: python -m unittest tests.test_reconcile_kernel tests.test_reconcile_observer -v
       - name: Assert controller remains a pure policy surface
         shell: bash
         run: |
@@ -38,3 +42,12 @@ jobs:
           grep -q 'owns no queue, scheduler, lease, actor state, credentials, or effects' tools/reconcile_kernel.py
           grep -q 'Same canonical snapshot + same policy version MUST produce the same plan' DETERMINISTIC_RECONCILER_CONTRACT.md
           ! grep -Eq 'requests\.|urllib|subprocess|socket|boto|cloudflare|github' tools/reconcile_kernel.py
+      - name: Assert observer authority is fixed and fail-closed
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'CF_STATUS_URL = "https://hfo-sigrun-va-r0.tommytai3.workers.dev/status"' tools/reconcile_observer.py
+          grep -q 'ROUTE_PR = 5' tools/reconcile_observer.py
+          grep -q 'SVA_TOKEN_MISSING' tools/reconcile_observer.py
+          grep -q 'OBSERVATION_STALE' tools/reconcile_observer.py
+          ! grep -Eq 'add_argument\([^)]*(url|source_ref|authority)' tools/reconcile_observer.py
