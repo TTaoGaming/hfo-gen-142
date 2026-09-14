@@ -98,7 +98,8 @@ jobs:
           with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as f:
               f.write(f"selected={'true' if s['selected'] else 'false'}\n")
               if s['selected']:
-                  w=s['selected_work']; f.write(f"work_id={w['work_id']}\ntask_path={w['task_path']}\n")
+                  w=s['selected_work']
+                  f.write(f"work_id={w['work_id']}\ntask_path={w['task_path']}\n")
           PY
 
       - name: Machine dispatch next wake
@@ -107,9 +108,10 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          NEXT_WORK_ID: ${{ steps.next.outputs.work_id }}
+          NEXT_PATH: ${{ steps.next.outputs.task_path }}
         run: |
           set -euo pipefail
-          endpoint="https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/research-cell-r0.yml/dispatches"
           gh api --method POST "repos/${GITHUB_REPOSITORY}/actions/workflows/research-cell-r0.yml/dispatches" -f ref=main > "$RUNNER_TEMP/dispatch-response.json"
           python - <<'PY'
           import hashlib, json, os
@@ -127,10 +129,6 @@ jobs:
           p=Path(os.environ['RUNNER_TEMP'])/'research-cell'; p.mkdir(parents=True,exist_ok=True)
           (p/'dispatch-receipt.json').write_text(json.dumps(base,indent=2))
           PY
-        env:
-          GH_TOKEN: ${{ github.token }}
-          NEXT_WORK_ID: ${{ steps.next.outputs.work_id }}
-          NEXT_PATH: ${{ steps.next.outputs.task_path }}
 
       - name: Terminal handoff and retire
         if: steps.select.outputs.selected == 'true'
