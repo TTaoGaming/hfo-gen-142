@@ -37,7 +37,7 @@ jobs:
           set -euo pipefail
           for file in GATEWAY.md .agents/skills/twinling-pdsa/SKILL.md; do
             grep -q 'hfo-gen-142#13' "$file"
-            if grep -q 'hfo-gen-142#1' "$file"; then
+            if grep -Eq 'hfo-gen-142#1([^0-9]|$)' "$file"; then
               echo "stale canonical trunk pointer in $file"
               exit 1
             fi
