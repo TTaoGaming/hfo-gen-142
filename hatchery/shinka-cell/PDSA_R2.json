@@ -1,0 +1,40 @@
+{
+  "recorded_utc": "2026-09-14T02:35:58Z",
+  "status": "HOLD_RECOVERY_AND_ALGORITHM_SANDBOX",
+  "live_provider_calls": 0,
+  "new_champion": false,
+  "timeout_repair": {
+    "installed_on": "Oracle execution host",
+    "before_sha256": "c32d0682ac0c572d01dc10b49887cb54eb7d6b6ba760ba74c132465a1366266b",
+    "after_sha256": "c4adcc085fbf4ec53f7fddfb5b46237e3fa5b8b6ea6b8b04ddc93805d113ce9c",
+    "evaluation_limit_seconds": 50,
+    "fresh_evaluation_after_90_second_proposal": "Before killed; after running",
+    "expired_60_second_evaluation": "Killed before and after"
+  },
+  "resume_repair": {
+    "installed_on": "Oracle execution host",
+    "before_sha256": "153a6e1b9a7bdb673767bd3109de085c2f4e60cae07a0107858c5318f7557fed",
+    "after_sha256": "0ae3308ebf16f910f82883d1d15255aa32622c5f0503017fd8d5a4d9108d1691",
+    "generation_zero_retained_without_duplication": true,
+    "full_recovery": false
+  },
+  "recovery_fixture": {
+    "attempt": "r2d",
+    "network": "PrivateNetwork; cached response served on loopback only",
+    "fault": "Caller process group killed during proposal",
+    "archive_generations_before": [0],
+    "archive_generations_after": [0],
+    "caller_b_exit": 0,
+    "assay_exit": 1,
+    "failure": "Generation 1 already being processed or directory exists; generation budget exhausted with generation 1 missing",
+    "claim_ceiling": "Baseline preservation only; no complete recovery, provider-effect recovery or host-crash proof"
+  },
+  "local_only_change": "Stop-on-winner state survives late provider completion; three local adapter tests passed; not deployed",
+  "scars": [
+    "Separate proposal latency from evaluation lifetime",
+    "Generation-zero archives are existing runs",
+    "Runner exit zero is insufficient: require the expected generation and evaluation receipt",
+    "Preserve unfinished work and ambiguous provider effects; never blindly retry",
+    "A planned longer campaign is not a running campaign"
+  ]
+}

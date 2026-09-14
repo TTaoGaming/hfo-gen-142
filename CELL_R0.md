@@ -70,6 +70,34 @@ provider usage and the ambiguous OpenRouter request remain separate evidence.
 
 ## Reuse boundary and next experiment
 
+### Second PDSA: recovery before a broader campaign
+
+The operator requested both broader algorithms and a longer campaign. The next
+campaign is specified in `hatchery/shinka-cell/CAMPAIGN_R2.json`: up to one hour,
+one cell, at most two Kimi calls and three free calls, with no paid fallback.
+It has **not started**. Executable algorithm proposals require an isolated runtime;
+the current data-only evaluator remains the only admitted candidate execution path.
+
+Zero-provider tests found two defects in the installed Shinka 0.0.7 code. Its
+scheduler charged proposal latency against the evaluation timeout: a 90-second
+proposal caused a fresh evaluation to be killed despite its separate 50-second
+limit. The small `shinka-timeout.patch` uses the evaluation start timestamp. A
+before/after child-process assay shows a fresh evaluation survives and an expired
+evaluation is still killed. `shinka-resume.patch` recognizes an archive containing
+only generation zero instead of creating another baseline on restart.
+
+Recovery is still **HOLD**. After killing the caller during a cached proposal,
+the corrected runner retained the original baseline but skipped the existing
+unfinished generation directory and exited without generation one. A zero exit
+code therefore does not prove a completed generation. We preserve that directory
+and do not add blind replay of a possibly billed request. The fixture used no live
+provider and does not establish real provider-effect or whole-host recovery.
+
+The local provider adapter also has a regression-tested fix retaining a stop
+request across an already dispatched response. That change is not yet deployed.
+No new champion, live provider call, or additional compute purchase resulted from
+this cycle. Evidence and remaining holds are in `hatchery/shinka-cell/PDSA_R2.json`.
+
 This is a working bounded pilot, **not yet a reliable cloneable deployment**.
 The next test must close the missing evaluator receipt, reject malformed proposal
 envelopes without another model call, prove stop-on-winner, and recover the native

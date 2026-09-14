@@ -1,0 +1,23 @@
+--- a/shinka/launch/scheduler.py
++++ b/shinka/launch/scheduler.py
+@@ -343,13 +343,18 @@
+             return False  # Should not happen with slurm
+         else:
+             if isinstance(job.job_id, ProcessWithLogging):
++                evaluation_start = (
++                    getattr(job, "evaluation_started_at", None)
++                    or getattr(job, "evaluation_submitted_at", None)
++                    or job.start_time
++                )
+                 if (
+                     isinstance(self.config, LocalJobConfig)
+                     and self.config.time
+-                    and job.start_time
++                    and evaluation_start
+                 ):
+                     timeout = parse_time_to_seconds(self.config.time)
+-                    if time.time() - job.start_time > timeout:
++                    if time.time() - evaluation_start > timeout:
+                         if self.verbose:
+                             logger.warning(
+                                 f"Process {job.job_id.pid} exceeded "

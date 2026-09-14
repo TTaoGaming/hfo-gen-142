@@ -1,0 +1,32 @@
+{
+  "status": "PREPARED_NOT_ADMITTED_OR_STARTED",
+  "operator_intent": "Both broader algorithms and a longer campaign",
+  "max_wall_seconds": 3600,
+  "max_live_cells": 1,
+  "max_kimi_calls": 2,
+  "max_free_calls_total": 3,
+  "paid_fallback": false,
+  "automatic_provider_retries": 0,
+  "genome": "Executable packing search algorithms in an isolated candidate runtime",
+  "immutable_truth": {
+    "parent_sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+    "baseline_radius": "0.3099639332166260",
+    "minimum_improvement": "0.00000001",
+    "verification": "Exact rational containment and pair-distance checks outside candidate execution"
+  },
+  "candidate_boundary": [
+    "No network or provider credentials",
+    "Read-only inputs and root filesystem; no host control socket",
+    "Non-root process; fixed CPU, RAM, process, output and lifetime limits",
+    "Candidate cannot modify evaluator, admission or promotion rules"
+  ],
+  "stop_conditions": ["Verified improvement", "Wall deadline", "Call budget exhausted", "Ambiguous provider outcome", "Failed execution or admission guard"],
+  "launch_holds": [
+    "Oracle Docker installation awaiting explicit infrastructure approval",
+    "Algorithm adapter and isolation assays not implemented or passed",
+    "Fresh mission admission not created; do not reset the prior mission",
+    "Unfinished generation recovery remains unresolved"
+  ],
+  "provider_policy": "Require fresh availability and quota evidence; quarantine the prior ambiguous OpenRouter request rather than replaying it",
+  "claim_ceiling": "Planning artifact, not a runtime configuration or authorization to clone account allowances"
+}

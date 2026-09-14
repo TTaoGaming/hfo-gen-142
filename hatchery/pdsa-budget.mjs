@@ -5,7 +5,7 @@ const PDSA_LANES=[['kimi','k3-256k'],['google-ai-studio','gemini-3.5-flash-lite'
 async function pdsaBudget(cell,env,input){
  if(input===null)return await cell.ctx.storage.get(PDSA_KEY)??{state:'NOT_STARTED'};
  if(input==='stop'){
-  let stopped=false;await cell.ctx.blockConcurrencyWhile(async()=>{const s=await cell.ctx.storage.get(PDSA_KEY);if(s&&!s.rows.some(r=>r.state==='RESERVED')){s.state='STOPPED_BY_EVALUATOR';await cell.ctx.storage.put(PDSA_KEY,s);await env.CELL_STATE.put(PDSA_KEY+'.json',JSON.stringify(s));stopped=true;}});return {stopped};
+  let stopped=false;await cell.ctx.blockConcurrencyWhile(async()=>{const s=await cell.ctx.storage.get(PDSA_KEY);if(s){s.stop_requested=true;s.state='STOPPED_BY_EVALUATOR';await cell.ctx.storage.put(PDSA_KEY,s);await env.CELL_STATE.put(PDSA_KEY+'.json',JSON.stringify(s));stopped=true;}});return {stopped};
  }
  const serialized=JSON.stringify(input);
  if(serialized.length>32000||input.model!=='packing-cell'||!Array.isArray(input.messages)||input.messages.length>8)
@@ -25,7 +25,7 @@ async function pdsaBudget(cell,env,input){
   s.rows.push(row);await cell.ctx.storage.put(PDSA_KEY,s);acquired=true;
  });
  if(!acquired)return existing?.response??{error:{message:existing?.state??'BUDGET_OR_PENDING_HOLD'}};
- async function save(){await cell.ctx.storage.put(PDSA_KEY,s);await env.CELL_STATE.put(PDSA_KEY+'.json',JSON.stringify(s));}
+ async function save(){await cell.ctx.blockConcurrencyWhile(async()=>{const current=await cell.ctx.storage.get(PDSA_KEY);if(current?.stop_requested){s.stop_requested=true;s.state='STOPPED_BY_EVALUATOR';}await cell.ctx.storage.put(PDSA_KEY,s);await env.CELL_STATE.put(PDSA_KEY+'.json',JSON.stringify(s));});}
  try{
   await save();
   if(row.provider==='kimi'){
