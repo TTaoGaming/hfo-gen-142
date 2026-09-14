@@ -1,0 +1,188 @@
+{
+  "status": "TWO_VERIFIED_GENERATIONS",
+  "generations": [
+    {
+      "generation": 1,
+      "parent_sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+      "accepted_sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+      "kernel_sha256": "05df7964b5397e979e2bad4b209edf864c5b0124c61f918f0985d416d58261f4",
+      "evaluator_sha256": "65f7687f574fcc157e4ee9111d6d7d7c548f63a08a61dfa0adf9a07909e670aa",
+      "verdict": "RETAINED",
+      "verification": {
+        "radius": "154981966608313/500000000000000",
+        "containment_checks": 119,
+        "pair_checks": 7021,
+        "min_wall_slack": "6900348342138445053061/50000000000000000000000000000000",
+        "min_pair_slack": "12398550680295224175167/50000000000000000000000000000000"
+      },
+      "provider_calls": 0,
+      "retries": 0,
+      "search": {
+        "history": [
+          {
+            "label": "normalized_parent",
+            "radius": 0.30996393321662596,
+            "elapsed": 0.0008774860762059689
+          },
+          {
+            "label": "restart0_beta100",
+            "radius": 0.3087669604798683,
+            "elapsed": 0.07661139615811408
+          },
+          {
+            "label": "restart0_beta1000",
+            "radius": 0.3098441688939479,
+            "elapsed": 0.23580046999268234
+          },
+          {
+            "label": "restart0_beta10000",
+            "radius": 0.30995554388542773,
+            "elapsed": 0.385455439100042
+          },
+          {
+            "label": "restart1_beta100",
+            "radius": 0.30876695875365634,
+            "elapsed": 0.4606698660645634
+          },
+          {
+            "label": "restart1_beta1000",
+            "radius": 0.3098441701731773,
+            "elapsed": 0.6230189600028098
+          },
+          {
+            "label": "restart1_beta10000",
+            "radius": 0.30995554466508224,
+            "elapsed": 0.8049160270020366
+          },
+          {
+            "label": "restart2_beta100",
+            "radius": 0.30876695925628483,
+            "elapsed": 0.8829060329589993
+          },
+          {
+            "label": "restart2_beta1000",
+            "radius": 0.3098441683276542,
+            "elapsed": 1.0966950340662152
+          },
+          {
+            "label": "restart2_beta10000",
+            "radius": 0.3099555448445175,
+            "elapsed": 1.3454916721675545
+          },
+          {
+            "label": "restart3_beta100",
+            "radius": 0.3087669585869778,
+            "elapsed": 1.4417896810919046
+          },
+          {
+            "label": "restart3_beta1000",
+            "radius": 0.3098441635006579,
+            "elapsed": 1.754869352094829
+          },
+          {
+            "label": "restart3_beta10000",
+            "radius": 0.30995554477356385,
+            "elapsed": 2.048027088167146
+          }
+        ],
+        "best_radius": 0.309963933216626,
+        "provider_calls": 0,
+        "retries": 0,
+        "elapsed": 2.048048528144136,
+        "method": "spherical-shell multistart smooth minimax; fixed origin"
+      }
+    },
+    {
+      "generation": 2,
+      "parent_sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+      "accepted_sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+      "kernel_sha256": "05df7964b5397e979e2bad4b209edf864c5b0124c61f918f0985d416d58261f4",
+      "evaluator_sha256": "65f7687f574fcc157e4ee9111d6d7d7c548f63a08a61dfa0adf9a07909e670aa",
+      "verdict": "RETAINED",
+      "verification": {
+        "radius": "154981966608313/500000000000000",
+        "containment_checks": 119,
+        "pair_checks": 7021,
+        "min_wall_slack": "6900348342138445053061/50000000000000000000000000000000",
+        "min_pair_slack": "12398550680295224175167/50000000000000000000000000000000"
+      },
+      "provider_calls": 0,
+      "retries": 0,
+      "search": {
+        "history": [
+          {
+            "label": "normalized_parent",
+            "radius": 0.30996393321662596,
+            "elapsed": 0.0008758059702813625
+          },
+          {
+            "label": "restart0_beta100",
+            "radius": 0.3087669604798683,
+            "elapsed": 0.07698247907683253
+          },
+          {
+            "label": "restart0_beta1000",
+            "radius": 0.3098441688939479,
+            "elapsed": 0.23750764108262956
+          },
+          {
+            "label": "restart0_beta10000",
+            "radius": 0.30995554388542773,
+            "elapsed": 0.38733637100085616
+          },
+          {
+            "label": "restart1_beta100",
+            "radius": 0.30876695863084824,
+            "elapsed": 0.46302344207651913
+          },
+          {
+            "label": "restart1_beta1000",
+            "radius": 0.3098441698255633,
+            "elapsed": 0.6178524850402027
+          },
+          {
+            "label": "restart1_beta10000",
+            "radius": 0.3099555443500905,
+            "elapsed": 0.7945957169868052
+          },
+          {
+            "label": "restart2_beta100",
+            "radius": 0.30876695744099575,
+            "elapsed": 0.8778945989906788
+          },
+          {
+            "label": "restart2_beta1000",
+            "radius": 0.30984417025333866,
+            "elapsed": 1.0993997720070183
+          },
+          {
+            "label": "restart2_beta10000",
+            "radius": 0.30995554239627987,
+            "elapsed": 1.3315590179990977
+          },
+          {
+            "label": "restart3_beta100",
+            "radius": 0.30876696017376204,
+            "elapsed": 1.4259957340545952
+          },
+          {
+            "label": "restart3_beta1000",
+            "radius": 0.309844169580043,
+            "elapsed": 1.7497814770322293
+          },
+          {
+            "label": "restart3_beta10000",
+            "radius": 0.3099555446243776,
+            "elapsed": 2.032567424001172
+          }
+        ],
+        "best_radius": 0.309963933216626,
+        "provider_calls": 0,
+        "retries": 0,
+        "elapsed": 2.0325862639583647,
+        "method": "spherical-shell multistart smooth minimax; fixed origin"
+      }
+    }
+  ],
+  "scope": "Finite CPU refinement; not LLM-driven MOME or unattended orchestration."
+}

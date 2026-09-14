@@ -180,4 +180,5 @@ string is still an untrusted claim until its native authority resolves.
 The strongest unresolved falsifiers are cross-host shared-account races,
 stale-fence commits and ambiguous provider completion after host loss. G2/G3
 implementers must demonstrate the corresponding native behavior before adoption.
-No new Skill, served endpoint, deployment or autonomous cell is created here.
+The contract itself creates no autonomous cell. The bounded implementation and
+current deployment evidence are documented in [Hatchery deployment](HATCHERY_DEPLOYMENT.md).

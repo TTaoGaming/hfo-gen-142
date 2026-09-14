@@ -1,0 +1,30 @@
+{
+  "observed_utc": "2026-09-14T01:34:01.074549+00:00",
+  "scope": "finite bootstrap and CPU packing assay",
+  "cloudflare_version": "0ff3e57f-e492-4dce-afea-33a791149dcc",
+  "workflow_id": "gen142-hatchery-g1-20260914-r1",
+  "workflow_status": "complete",
+  "consumer_ack": {
+    "consumer": "fixed-output-oracle",
+    "output_sha256": "ee2538a35bfe57e6c4a830e5ff00382345e972fcb3d90a88214bbb63745134fa",
+    "verdict": "accepted",
+    "utc": "2026-09-14T01:26:13.331Z"
+  },
+  "accepted_effect_count": 1,
+  "duplicate": "REPLAYED",
+  "conflict": "REJECTED",
+  "packing_local_geometry_replay": [
+    {
+      "generation": 1,
+      "sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+      "geometry": "PASS"
+    },
+    {
+      "generation": 2,
+      "sha256": "8ed8148be615d06c4bf37bf8fe5715248923486b93ab36d2d49b3d503b9da517",
+      "geometry": "PASS"
+    }
+  ],
+  "independent_principal_review": "NOT_PROVEN",
+  "full_gen142_g3": "NOT_PROVEN"
+}
