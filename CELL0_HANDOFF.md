@@ -3,10 +3,10 @@
 State: CHECKPOINTED_FOR_FRESH_CARRIER
 Observed: 2026-09-14
 Owner surface: `TTaoGaming/hfo-gen-142`
-Trunk: issue #6
+Historical Cell-0 evidence root: issue #6; current Gen142 trunk: issue #13
 
 ## Recovery order
-1. Read issue #6 newest-first.
+1. Read issue #13 newest-first; use issue #6 only for historical Cell-0 evidence.
 2. Read this file.
 3. Read `cell0/src/index.js` and `cell0/wrangler.jsonc` from `main`.
 4. Probe actual tools/authority; do not inherit a prior carrier UUID or authority.
@@ -57,4 +57,4 @@ Do not add architecture. Run the next reliability gate on the existing Cell-0:
 Only after the reliability gate passes, add exactly one new capability: one model call producing schema-validated judgment from the observed GitHub change. No swarm, evolution, A2A, custom scheduler, or second control plane until a measured Cell-0 failure justifies it.
 
 ## Pickup contract
-Fresh carrier: generate a fresh carrier episode UUID; recover issue #6 + this file newest-first; probe actual tools; preserve the minimal Cell-0 architecture; run one bounded PDSA reliability cycle; checkpoint evidence back to #6 and update this file only when canonical state materially changes. `TAO_RELAY_REQUIRED=false`.
+Fresh carrier: generate a fresh carrier episode UUID; recover issue #13 newest-first; consult issue #6 + this file only for Cell-0 historical evidence; probe actual tools; preserve the minimal Cell-0 architecture; run one bounded PDSA reliability cycle; checkpoint evidence back to #6 and update this file only when canonical state materially changes. `TAO_RELAY_REQUIRED=false`.

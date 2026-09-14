@@ -41,3 +41,22 @@ def test_unloaded_required_skill_fails_closed():
     r=run(x)
     assert r.returncode!=0
     assert json.loads(r.stdout)['reason']=='SKILL_NOT_LOADED'
+
+
+def test_recovery_topology_has_one_current_trunk():
+    import re
+    surfaces = [
+        'README.md','AGENTS.md','GATEWAY.md','GENE_SEED.md','KNOWLEDGE_PROTOCOL.md',
+        'WORLD_STATE/latest.md','BATON_PASS.md','RECOVERY_SWARM.md','WORK_QUEUE.md',
+        'HIVE_GATEWAY.md','WAVE2_STRIFE_SPLENDOR.md','BURROW.md','CELL0_HANDOFF.md',
+        '.agents/skills/roach-fanin/SKILL.md',
+        'HANDOFF/2026-09-14-baton.md','HANDOFF/2026-09-14-zerg-swarm-thread-handoff.md',
+    ]
+    stale = re.compile(r'(recover(?: issue)? #(1|2|3|6)(?!\d)|issue #(1|2|3|6) newest-first)', re.I)
+    for rel in surfaces:
+        text = (ROOT / rel).read_text(encoding='utf-8')
+        assert '#13' in text, rel
+        assert not stale.search(text), rel
+    kp = (ROOT / 'KNOWLEDGE_PROTOCOL.md').read_text(encoding='utf-8')
+    assert 'WORLD_STATE/index.json' not in kp
+    assert 'WORLD_STATE/partials' not in kp

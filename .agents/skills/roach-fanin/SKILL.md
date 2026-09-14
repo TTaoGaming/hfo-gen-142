@@ -8,8 +8,8 @@ description: Continue an existing Gen142 durable fan-in or recovery workload by 
 Use when a fresh carrier should continue durable reduction/fan-in rather than start a new discovery lane.
 
 ## Trigger
-- issue #2 has an under-covered/stale burrow;
-- #1 contains terminal evidence waiting for reduction;
+- #13 identifies an under-covered/stale fan-in edge;
+- linked historical issues contain terminal evidence waiting for reduction;
 - canonical Gen142 state is stale versus accepted evidence;
 - a prior Roach carrier ended and durable continuation is needed.
 
@@ -17,7 +17,7 @@ Use when a fresh carrier should continue durable reduction/fan-in rather than st
 A fresh thread is disposable cognition. It does not become durable by staying alive. Recover the burrow state, continue one bounded PDSA cycle, checkpoint, and release.
 
 ### PLAN
-- recover #2 and #1 newest-first;
+- recover #13 newest-first; follow linked historical evidence only when needed;
 - select/recover one burrow B0..B7;
 - generate fresh `carrier_episode_uuid`;
 - state exact fan-in question, expected delta, strongest falsifier, evidence needed, and effect ceiling;

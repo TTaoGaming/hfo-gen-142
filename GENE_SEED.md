@@ -42,7 +42,7 @@ Custom HFO code requires a demonstrated native gap and must stay thin and killab
 - Operator overload is a safety signal: fan-out that increases Tao burden must stop.
 
 ## Recovery
-Fresh carriers start at GitHub issue #1, read `RECOVERY_SWARM.md`, `GENE_SEED.md`, latest world state, and heritage manifest. They self-shard, do one bounded cell, and leave one durable terminal packet. Do not ask Tao to repeat already-recoverable context.
+Fresh carriers start at GitHub issue #13 newest-first. Load `GENE_SEED.md` and only the evidence files needed for the selected current edge. Retired recovery-wave files and closed issues are historical evidence unless #13 links them. Do one bounded current-edge transition and leave one durable terminal packet. Do not ask Tao to repeat recoverable context.
 
 ## Ablation rule
 Every proposed gene must answer: what measurable failure returns if this gene is removed? If the answer is nothing, kill it.

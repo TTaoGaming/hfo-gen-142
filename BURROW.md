@@ -1,6 +1,6 @@
 # Gen142 Burrow — Durable Roach Fan-In
 
-Parent/control: GitHub issue #2. Input evidence lake: issue #1 newest-first.
+Current control: GitHub issue #13. Issues #1/#2 are historical evidence archives, not active rendezvous points.
 
 ## Ontology
 `BURROW != ROACH != CARRIER != MODEL != AUTHORITY`.
@@ -51,7 +51,7 @@ TAO_RELAY_REQUIRED: false
 If Cloudflare backing becomes live, the same semantic record belongs in Agent/DO durable state; GitHub receives compact receipts/material transitions, not every hot mutation.
 
 ## Carrier pickup
-1. Read #2 newest-first, then #1 newest-first.
+1. Read #13 newest-first; open #1/#2 only when #13 links their historical evidence.
 2. Read `GATEWAY.md`, `BURROW.md`, and `.agents/skills/roach-fanin/SKILL.md`.
 3. Generate a fresh `carrier_episode_uuid`.
 4. Recover an existing burrow needing continuation, or take the highest-value under-covered burrow.

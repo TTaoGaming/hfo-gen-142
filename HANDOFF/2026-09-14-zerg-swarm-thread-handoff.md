@@ -1,5 +1,7 @@
 # GEN142 Zerg Swarm thread handoff
 
+**ARCHIVED HISTORICAL HANDOFF. Current recovery/rendezvous is issue #13 newest-first.**
+
 Observed UTC: 2026-09-14T13:46:58Z
 Carrier episode UUID: 47070813-e8f2-43da-9903-c5b5c8be8863
 Thread status: TERMINAL_HANDOFF__DO_NOT_EXPECT_CHAT_RETURN
@@ -62,17 +64,19 @@ Do not reintroduce:
 - custom scheduler/router/state store where COTS owner exists
 - fan-out before provider/resource leases and reducer capacity
 
-## Recovery order for next carrier
-1. Read `HANDOFF/2026-09-14-zerg-swarm-thread-handoff.md`.
-2. Read issue #6 newest-first, especially the Cell-0 live assay and Zerg branch PDSA terminal.
+## Historical recovery order
+Current carriers start at issue #13. The sequence below is retained only to reconstruct this historical episode.
+1. Read this handoff if #13 links it.
+2. Consult issue #6 only for the historical Cell-0 assay and Zerg branch PDSA terminal.
 3. Read `HIVE_R0.md`, `GATEWAY.md`, `BURROW.md`, and `HATCHERY_DEPLOYMENT.md` / `WORKLOAD_PROFILES.md` on the portable hatchery branch if needed.
 4. Fetch fresh Worldweaver state and generate a fresh carrier UUID. Do not inherit this UUID or authority.
 5. Probe actual current tools/runtime. Preserve `carrier != Hluti != actor != authority` and `REGROW != ADMIT`.
 6. Continue from the cognition/admission seam unless fresher evidence has already closed it.
 
 ## Durable pointers
-- Trunk: https://github.com/TTaoGaming/hfo-gen-142/issues/6
-- Burrow fan-in: https://github.com/TTaoGaming/hfo-gen-142/issues/2
+- Current trunk: https://github.com/TTaoGaming/hfo-gen-142/issues/13
+- Historical Cell-0 evidence: https://github.com/TTaoGaming/hfo-gen-142/issues/6
+- Historical Burrow evidence: https://github.com/TTaoGaming/hfo-gen-142/issues/2
 - Hive integration: https://github.com/TTaoGaming/hfo-gen-142/issues/3
 - Cell-0 source: `cell0/src/index.js` on main, prior receipt cites commit `5846d37`
 - Reduced contract: `HIVE_R0.md`

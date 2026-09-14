@@ -33,6 +33,8 @@ Until that passes, the correct swarm size is **one**.
 
 ## Recovery posture
 
+**Current front door:** `TTaoGaming/hfo-gen-142#13` newest-first. Dated handoffs, `WORLD_STATE/latest.md`, and closed issues are evidence/projections, not competing recovery roots.
+
 Gen140/141 are donor/evidence archives, not templates to copy wholesale. Import only proven components by immutable reference. Secrets, personal data, local machine state, and private operational details do not belong in this public repository.
 
 **North star:** `MISSION -> BOUNDED WORK -> INDEPENDENT EVIDENCE -> REDUCE -> LEARN -> REPEAT`, while making the human operator's burden trend toward zero.

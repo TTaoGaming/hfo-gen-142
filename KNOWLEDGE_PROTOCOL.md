@@ -26,7 +26,7 @@ Capsules are materialized views, not raw history. They must point backward by ha
 ## GitHub role
 GitHub stores sanitized, durable institutional memory: gene seed, capsule schema, rolling public partials, heritage pointers, scars, and commit history. Raw archives are referenced, not copied. Public Gen142 never receives credentials, private personal data, or secret values.
 
-Canonical public files stay few: `GENE_SEED.md`, `WORLD_STATE/index.json`, `WORLD_STATE/partials/*.json`, `HERITAGE/MANIFEST.md`, this protocol, and schemas. Agents submit proposals to coordination issue #1; reducer-owned writes update canonical projections.
+Canonical public files stay few: `GENE_SEED.md`, `WORLD_STATE/latest.md`, `HERITAGE/MANIFEST.md`, this protocol, and schemas. Current coordination/recovery is issue #13; historical issues are evidence only. Reducer-owned writes update canonical projections.
 
 ## Cloudflare role
 Start with one `KnowledgeAgent` using Agents SDK / Durable Object SQLite as the hot serialized knowledge head. Store events, claim status, conflicts, capsule heads, consumer acknowledgements, dedupe keys, and leases. Use a durable Workflow for reduction/materialization. Do not create a second scheduler, queue, actor runtime, or state store.
@@ -45,4 +45,4 @@ Default targets: identity capsule <= 8 KiB; each partial <= 32 KiB; at most 3 ne
 Producer identity, verifier identity, evidence source, and effect authority are separate fields. Independent failure domains outrank agent count. Consensus is advisory. Deterministic evidence outranks model judgment. A contradiction creates a conflict object and a next discriminating test.
 
 ## Success assay
-A fresh carrier with no chat memory can read issue #1 + `GENE_SEED.md` + one relevant partial and correctly state: mission, current known/unknown/conflict state, strongest blocker, evidence refs, and next bounded edge in under one minute without asking Tao for context.
+A fresh carrier with no chat memory can read issue #13 + `GENE_SEED.md` + the smallest relevant evidence projection and correctly state: mission, current known/unknown/conflict state, strongest blocker, evidence refs, and next bounded edge in under one minute without asking Tao for context.
