@@ -1,0 +1,39 @@
+name: GEN142 Oracle Cell R0
+
+on:
+  push:
+    paths:
+      - '.github/workflows/oracle-cell-r0.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gen142-oracle-cell-r0
+  cancel-in-progress: false
+
+jobs:
+  oracle-cell:
+    runs-on: [self-hosted, Linux, ARM64]
+    timeout-minutes: 5
+    steps:
+      - name: Prove admitted VPS execution
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'GEN142_ORACLE_CELL_R0'
+          printf 'hostname='; hostname
+          printf 'kernel='; uname -sr
+          printf 'arch='; uname -m
+          printf 'user='; id -un
+          printf 'utc='; date -u +%Y-%m-%dT%H:%M:%SZ
+          test "$(uname -m)" = 'aarch64' || test "$(uname -m)" = 'arm64'
+      - name: Emit bounded receipt
+        shell: bash
+        run: |
+          printf '%s\n' \
+            'receipt=GEN142_ORACLE_CELL_EXECUTED' \
+            'effect_class=NO_EFFECT' \
+            'lenovo_required=false' \
+            'tao_relay_required=false'
