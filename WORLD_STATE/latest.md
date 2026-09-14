@@ -1,6 +1,6 @@
 # Gen142 World State — latest
 
-Observed: 2026-09-14T12:14Z. Partial current projection; claims are scope-bounded.
+Observed: 2026-09-14T13:22Z. Partial current projection; claims are scope-bounded.
 
 ## Recovery surfaces
 - Public repo: `TTaoGaming/hfo-gen-142`
@@ -23,6 +23,15 @@ Observed: 2026-09-14T12:14Z. Partial current projection; claims are scope-bounde
 - Legacy Sigrun/Kimi actor path: QUARANTINED pending replacement; prior work remained `WAITING_WORKER` with repeated recovery/alarm cycling and no terminal result.
 - WorldWeaver custom domain: agent access remains BROKEN_OR_ENVIRONMENTALLY_UNREACHABLE; raw GitHub mirror is the recovery fallback.
 
+## Operator survivability / mobile control
+- Current AI control plane: Desktop Commander reaches Lenovo, Oracle and OVH for terminal/files/processes, but exposes no general GUI/screen-control surface.
+- Existing human GUI bridge on Lenovo: TeamViewer 15.81.5 service is installed, running and automatic, but current unattended/mobile configuration is not trusted as production-ready.
+- Lenovo and Oracle are both on Tailscale. Taildrop Lenovo -> Oracle is proven. Direct Lenovo -> Oracle SSH is not admitted. Enabling Tailscale SSH currently requires privileged host configuration (`sudo tailscale set --ssh` / operator delegation).
+- GitHub CLI on Lenovo is authenticated as `TTaoGaming` with `repo`, `workflow`, `read:org`, `gist` scopes. This is useful for local human-authorized credential gates but must not become a hot-state dependency.
+- Recommended COTS human control plane for next PDSA: **MeshCentral + Tailscale**. MeshCentral should provide browser-based Lenovo desktop plus terminal/files/device state for Linux nodes; do not install Linux desktop environments on VPSes unless a real GUI workload requires them.
+- Keep Tailscale as recovery/private-network substrate and Desktop Commander as ChatGPT machine-execution plane. TeamViewer/RustDesk may remain optional secondary desktop paths, not primary architecture.
+- New acceptance criterion: **operator survivability gate** — with only an arbitrary/mobile device and Lenovo unavailable as a routing dependency, Tao can authenticate, inspect critical nodes, reach VPS terminal/files, GUI-control the workstation when required, inspect GitHub/Cloudflare, and recover a failed cell.
+
 ## Current runtime contract
 `WORKLOAD != CAPACITY != CARRIER != ACTOR != PHENOTYPE != SKILL != TOOL != AUTHORITY != EVIDENCE`.
 
@@ -40,6 +49,7 @@ Minimal intended hot path: `GitHub intent/demand/evidence -> Oracle HQ common op
 - Native Oracle runner canary: PR_READY_HOLD_MERGE at `TTaoGaming/cdev-control#3`.
 - G2 admitted/default-path VPS execution with Lenovo unavailable: HOLD. Oracle substrate itself is PASS; missing dedicated GEN142 runner attachment/reboot-persistent dispatch is the exact blocking boundary.
 - G3 two-generation COTS evolution cell with frozen evaluator, runtime/dependency fingerprint, bounded disk, durable lineage, restart/resume, zero duplicate accepted effects, zero Tao routing: HOLD until G2 drains.
+- Operator survivability / arbitrary-device recovery: HOLD. Terminal automation is strong; unified mobile/browser GUI + fleet recovery path is not yet proven end-to-end.
 
 ## Mission-command / Zerg loop
 `INTENT -> OBSERVE -> RECOVER_DEMAND -> ADMISSION -> ALLOCATE -> EXECUTE -> VERIFY -> CONSUMER_ACK -> RELEASE -> LOOP`.
@@ -52,15 +62,17 @@ Oracle hosts the headquarters/common-operating-picture and allocation surface. C
 3. OVH is elastic capacity: scale up/down/replace without changing actor identity or coordination contracts.
 4. Laptop is opportunistic edge/UI/burst capacity only.
 5. Workload-specific placement overrides require evidence in the Carrier Capability Envelope, not provider/model preference or convenience.
+6. Human GUI/control must not be coupled to one physical laptop. Prefer browser-based COTS fleet management plus Tailscale recovery over bespoke HFO bridges.
 
-## Next edges
-1. Merge/activate protected `cdev-control#3` after required checks to get native 00:05 UTC Oracle canaries.
-2. Register/attach one dedicated reboot-persistent Oracle self-hosted runner to `TTaoGaming/hfo-gen-142`.
-3. Let existing queued `GEN142 Oracle Cell R0` drain and independently read back the Oracle/aarch64 receipt.
-4. Make `tools/gateway_preflight.py` mandatory on the canonical Oracle executor path; rootless gated-exec is proven, root-owned `hfo-evolution.service` still permits privileged bypass.
-5. Assay Oracle HQ recovery across process/service restart or host reboot without Lenovo/Tao.
-6. If G2 PASS, immediately run one bounded G3 evolution cell on Oracle.
-7. Stabilize/re-assay OVH, then use it as verifier/challenger/overflow rather than duplicating the Oracle phenotype.
-8. Scale Burrows/cells only after measured evaluator/information gain; do not revive the old multi-lane Kimi colony by default.
+## Next PDSA / next edges
+1. **Operator-control PDSA:** deploy/assay a minimal MeshCentral control plane using COTS only. Target: mobile/browser -> authenticated control surface -> Lenovo desktop + Oracle terminal/files. Keep it reversible and do not expose public unauthenticated ports.
+2. Falsify the MeshCentral choice against RustDesk/Guacamole only on measured criteria: arbitrary-device access, unattended Windows GUI, Linux terminal/files, recovery complexity, MFA/auth, hidden dependencies, and operator minutes.
+3. Register/attach one dedicated reboot-persistent Oracle self-hosted runner to `TTaoGaming/hfo-gen-142`; then let existing queued `GEN142 Oracle Cell R0` drain and independently read back Oracle/aarch64 receipt.
+4. Merge/activate protected `cdev-control#3` after required checks to get native 00:05 UTC Oracle canaries.
+5. Make `tools/gateway_preflight.py` mandatory on the canonical Oracle executor path; rootless gated-exec is proven, root-owned `hfo-evolution.service` still permits privileged bypass.
+6. Assay Oracle HQ recovery across process/service restart or host reboot without Lenovo/Tao routing.
+7. If G2 PASS, immediately run one bounded G3 evolution cell on Oracle.
+8. Stabilize/re-assay OVH, then use it as verifier/challenger/overflow rather than duplicating the Oracle phenotype.
+9. Scale Burrows/cells only after measured evaluator/information gain; do not revive the old multi-lane Kimi colony by default.
 
 Operator/admin action currently required for full G2: authorize/provide one GEN142 self-hosted runner registration path on Oracle. No Tao routing should be required after that runner is attached.
