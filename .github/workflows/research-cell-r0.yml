@@ -8,6 +8,8 @@ on:
       - 'tools/research_cell_r0.py'
       - 'tools/select_research_workitem.py'
       - 'tests/test_select_research_workitem.py'
+      - 'tools/trusted_reconcile_observer.py'
+      - 'tests/test_trusted_reconcile_observer.py'
       - 'tools/terminal_handoff_gate.py'
       - '.github/workflows/research-cell-r0.yml'
   workflow_dispatch:
@@ -38,7 +40,33 @@ jobs:
           python-version: '3.12'
 
       - name: Validate deterministic selector
-        run: python -m unittest tests.test_select_research_workitem -v
+        run: python -m unittest tests.test_select_research_workitem tests.test_trusted_reconcile_observer -v
+
+      - name: Trusted reconcile observation
+        id: trusted_observe
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SVA_TOKEN: ${{ secrets.SVA_TOKEN }}
+        run: |
+          set -euo pipefail
+          python tools/trusted_reconcile_observer.py "$RUNNER_TEMP/trusted-observer/receipt.json"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path(os.environ['RUNNER_TEMP'])/'trusted-observer'/'receipt.json'
+          r=json.loads(p.read_text())
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as f:
+              f.write(f"status={r['status']}\n")
+              f.write(f"reason={r.get('reason','')}\n")
+              f.write(f"observation_sha={r['observation_sha256']}\n")
+          PY
+
+      - name: Durable trusted-observer receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: trusted-observer-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/trusted-observer/receipt.json
+          retention-days: 7
 
       - name: Discover exactly one unretired WorkItem
         id: select
