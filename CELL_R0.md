@@ -76,9 +76,10 @@ envelopes without another model call, prove stop-on-winner, and recover the nati
 archive after interruption. Cross-cell account reservations are still unproven;
 copying a VPS does not copy an allowance. Do not scale past one cell yet.
 
-The winner stop branch uses an HTTP client that was not exercised by this no-win
-run. An observation using urllib received 403 while curl worked; that branch
-must be repaired and tested before a new mission. Bubblewrap was installed during
+An observation using urllib received 403 while curl worked. The subsequent
+candidate revision uses curl for the winner-stop request and requires an explicit
+stop ACK; this revision did not produce the R1 scientific receipts. A real winner
+and transport-failure termination still require an end-to-end test. Bubblewrap was installed during
 the code-execution feasibility check, but this data-only pilot did not need or
 use it; no sandbox-execution claim is made.
 

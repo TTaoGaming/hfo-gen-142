@@ -2,11 +2,15 @@
 import os
 os.environ['OPENBLAS_NUM_THREADS']='1'
 os.environ['OMP_NUM_THREADS']='1'
-import argparse,ast,hashlib,json,time,urllib.request
+import argparse,ast,hashlib,json,time,subprocess
 from pathlib import Path
 import numpy as np
 from scipy.optimize import minimize
 from packing_generations import verify
+
+def stop_mission(url):
+    reply=subprocess.run(['curl','--fail','--silent','--show-error','--max-time','15','-X','POST',url],capture_output=True,text=True,check=True,timeout=20)
+    if json.loads(reply.stdout).get('stopped') is not True:raise RuntimeError('STOP_ACK_MISSING')
 
 def genome(text):
     if len(text)>8192:raise ValueError('GENOME_SIZE')
@@ -72,8 +76,7 @@ def evaluate(program,output):
     metrics={'combined_score':best_score,'public':{'radius':best_score,'baseline':baseline,'winner':winner,'trial_count':len(history),'reason':reason},'private':{'parent_sha256':hashlib.sha256(parent).hexdigest(),'accepted_sha256':hashlib.sha256(best).hexdigest(),'verification':verification,'history':history,'elapsed_seconds':time.monotonic()-start}}
     (output/'metrics.json').write_text(json.dumps(metrics));(output/'correct.json').write_text(json.dumps({'correct':reason in ('COMPLETE','CPU_SLICE_EXHAUSTED'),'error':None if history else reason}))
     if winner and os.environ.get('CELL_STOP_URL'):
-        req=urllib.request.Request(os.environ['CELL_STOP_URL'],data=b'{}',method='POST')
-        with urllib.request.urlopen(req,timeout=15) as response:response.read(1024)
+        stop_mission(os.environ['CELL_STOP_URL'])
     print(json.dumps(metrics['public']))
 
 if __name__=='__main__':
