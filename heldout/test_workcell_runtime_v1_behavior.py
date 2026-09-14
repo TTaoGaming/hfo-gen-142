@@ -30,21 +30,25 @@ def write_task(root, name, wid, priority=0, admitted=True, blocked=False, schema
     return path
 
 
+def current_marker(path, wid):
+    return f"<!-- hfo-workcell-v1:{wid}:{rt.hashlib.sha256(path.read_bytes()).hexdigest()} -->"
+
+
 def fake_worker_script(root, exit_code=0):
     path = root / "fake_worker.py"
-    path.write_text(
-        "import hashlib,json,sys\n"
-        "from pathlib import Path\n"
-        f"raise SystemExit({exit_code})\n" if exit_code else
-        "import hashlib,json,sys\nfrom pathlib import Path\n"
-        "task=json.loads(Path(sys.argv[1]).read_text())\n"
-        "out=Path(sys.argv[2]); out.mkdir(parents=True,exist_ok=True)\n"
-        "base={'schema':'hfo.research-cell-result.v1','work_id':task['work_id'],'verdict':'PASS','sources':[],'next_state':'RETIRE','tao_hot_loop_actions':0}\n"
-        "base['result_sha256']=hashlib.sha256(json.dumps(base,sort_keys=True,separators=(',',':')).encode()).hexdigest()\n"
-        "(out/'result.json').write_text(json.dumps(base))\n"
-        "(out/'report.md').write_text('held-out report')\n",
-        encoding="utf-8",
-    )
+    if exit_code:
+        body = f"raise SystemExit({exit_code})\n"
+    else:
+        body = (
+            "import hashlib,json,sys\nfrom pathlib import Path\n"
+            "task=json.loads(Path(sys.argv[1]).read_text())\n"
+            "out=Path(sys.argv[2]); out.mkdir(parents=True,exist_ok=True)\n"
+            "base={'schema':'hfo.research-cell-result.v1','work_id':task['work_id'],'verdict':'PASS','sources':[],'next_state':'RETIRE','tao_hot_loop_actions':0}\n"
+            "base['result_sha256']=hashlib.sha256(json.dumps(base,sort_keys=True,separators=(',',':')).encode()).hexdigest()\n"
+            "(out/'result.json').write_text(json.dumps(base))\n"
+            "(out/'report.md').write_text('held-out report')\n"
+        )
+    path.write_text(body, encoding="utf-8")
     return path
 
 
@@ -99,8 +103,7 @@ class WorkCellHeldOutBehavior(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             root=Path(td); tasks=root/'tasks'; tasks.mkdir(); out=root/'out'
             p=write_task(tasks,'a.json','A',1)
-            marker=f"<!-- hfo-research-cell-r0:A:{rt.hashlib.sha256(p.read_bytes()).hexdigest()} -->"
-            gh=FakeGitHub([marker]); worker=fake_worker_script(root)
+            gh=FakeGitHub([current_marker(p,'A')]); worker=fake_worker_script(root)
             self.assertEqual(self.run_main(tasks,gh,worker,out),0)
             receipt=json.loads((out/'runtime-receipt.json').read_text())
             self.assertEqual(receipt['status'],'NOOP')
@@ -131,7 +134,7 @@ class WorkCellHeldOutBehavior(unittest.TestCase):
             gh=FakeGitHub(fail_dispatch=True); worker=fake_worker_script(root)
             with self.assertRaises(RuntimeError):
                 self.run_main(tasks,gh,worker,out)
-            marker=f"<!-- hfo-research-cell-r0:A:{rt.hashlib.sha256(a.read_bytes()).hexdigest()} -->"
+            marker=current_marker(a,'A')
             self.assertFalse(any(marker in row['body'] for row in gh.comments), 'failed continuation must not look retired')
 
     def test_duplicate_ids_fail_before_effects(self):
@@ -139,7 +142,7 @@ class WorkCellHeldOutBehavior(unittest.TestCase):
             root=Path(td); tasks=root/'tasks'; tasks.mkdir(); out=root/'out'
             write_task(tasks,'a.json','DUP',2); write_task(tasks,'b.json','DUP',1)
             gh=FakeGitHub(); worker=fake_worker_script(root)
-            with self.assertRaises(SystemExit):
+            with self.assertRaises(ValueError):
                 self.run_main(tasks,gh,worker,out)
             self.assertEqual(gh.effect_calls,[])
 
