@@ -35,7 +35,7 @@ Proposed guardrails: aim for 25–35% free; prioritize cleanup below 25%; defer 
 
 ## Validation and consumption
 
-The paired JSON files contain sanitized SOURCED events with PRIVATE evidence references. Authorized reviewers resolve opaque IDs through the private evidence map; this public PR cannot independently establish private byte recovery. Run `validate.py` with Python and jsonschema against the pinned repo schema. The validation report is local schema/contract evidence only, not semantic truth or runtime deployment.
+The paired JSON files are explicitly synthetic OBSERVED examples, supported only by the public workflow document. They contain no private receipt hashes or private-derived identifiers. Real receipt-linked SOURCED events and their authorized evidence resolver remain in the private Drive archive. This public PR does not establish private byte recovery. Run `validate.py` with Python and jsonschema against the pinned repo schema. The validation report is local schema/contract evidence only, not semantic truth or runtime deployment.
 
 The next existing reducer should re-verify evidence through authorized access, challenge the strongest falsifier, and record a real downstream consumer result before promotion. Do not edit GENE_SEED or WORLD_STATE on the strength of this proposal alone.
 
