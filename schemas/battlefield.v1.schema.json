@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TTaoGaming/hfo-gen-142/schemas/battlefield.v1.schema.json",
+  "title": "HFO Gen142 Battlefield Card v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "battlefield_id",
+    "observed_at_utc",
+    "mission_class",
+    "stage",
+    "domain",
+    "target",
+    "prestige",
+    "commercial",
+    "evolution",
+    "execution",
+    "probability",
+    "budget",
+    "evidence"
+  ],
+  "properties": {
+    "schema_version": {"const": "battlefield.v1"},
+    "battlefield_id": {"type": "string", "pattern": "^[A-Za-z0-9._-]{3,96}$"},
+    "observed_at_utc": {"type": "string", "format": "date-time"},
+    "mission_class": {"enum": ["prestige_crown", "case_study", "income_contract"]},
+    "stage": {"enum": ["scout", "canary", "attack", "claim"]},
+    "domain": {"type": "string", "minLength": 2},
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["board", "track", "metric", "direction", "incumbent_name", "incumbent_score", "incumbent_checked_at_utc", "incumbent_url", "rules_url", "open_to_user", "public_proof_before_merge", "proof_latency_hours"],
+      "properties": {
+        "board": {"type": "string", "minLength": 2},
+        "track": {"type": "string", "minLength": 1},
+        "metric": {"type": "string", "minLength": 1},
+        "direction": {"enum": ["maximize", "minimize"]},
+        "incumbent_name": {"type": "string", "minLength": 1},
+        "incumbent_score": {"type": ["number", "string"]},
+        "incumbent_checked_at_utc": {"type": "string", "format": "date-time"},
+        "incumbent_url": {"type": "string", "format": "uri"},
+        "rules_url": {"type": "string", "format": "uri"},
+        "submission_url": {"type": "string", "format": "uri"},
+        "open_to_user": {"type": "boolean"},
+        "public_proof_before_merge": {"type": "boolean"},
+        "proof_latency_hours": {"type": "number", "minimum": 0}
+      }
+    },
+    "prestige": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tier", "institution_or_platform", "independent_verifier", "verifier_url", "public_attribution", "durable_public_evidence", "real_incumbent_competition", "competitor_count", "accepted_submission_protocol", "buyer_legibility"],
+      "properties": {
+        "tier": {"enum": ["A", "B", "C"]},
+        "institution_or_platform": {"type": "string", "minLength": 2},
+        "independent_verifier": {"type": "boolean"},
+        "verifier_url": {"type": "string", "format": "uri"},
+        "public_attribution": {"type": "boolean"},
+        "durable_public_evidence": {"type": "boolean"},
+        "real_incumbent_competition": {"type": "boolean"},
+        "competitor_count": {"type": "integer", "minimum": 0},
+        "accepted_submission_protocol": {"type": "boolean"},
+        "buyer_legibility": {"type": "number", "minimum": 0, "maximum": 1}
+      }
+    },
+    "commercial": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["buyer_personas", "offer", "demand_evidence_urls", "p_paid_conversation_7d", "expected_cash_30d", "expected_cash_90d", "case_study_claim"],
+      "properties": {
+        "buyer_personas": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 2}},
+        "offer": {"type": "string", "minLength": 12},
+        "demand_evidence_urls": {"type": "array", "minItems": 1, "items": {"type": "string", "format": "uri"}},
+        "p_paid_conversation_7d": {"type": "number", "minimum": 0, "maximum": 1},
+        "expected_cash_30d": {"type": "number", "minimum": 0},
+        "expected_cash_90d": {"type": "number", "minimum": 0},
+        "case_study_claim": {"type": "string", "minLength": 12}
+      }
+    },
+    "evolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["donors", "mutable_axes", "weakness_hypothesis", "gap_evidence_urls", "canary", "full_run"],
+      "properties": {
+        "donors": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "required": ["url", "allowed"],
+            "properties": {
+              "url": {"type": "string", "format": "uri"},
+              "allowed": {"const": true},
+              "type": {"type": "string"},
+              "contribution": {"type": "string"}
+            }
+          }
+        },
+        "mutable_axes": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string", "minLength": 2}},
+        "weakness_hypothesis": {"type": "string", "minLength": 20},
+        "gap_evidence_urls": {"type": "array", "minItems": 1, "items": {"type": "string", "format": "uri"}},
+        "canary": {
+          "type": "object",
+          "required": ["runtime_minutes", "cost_usd", "status", "promotion_rule"],
+          "properties": {
+            "runtime_minutes": {"type": "number", "minimum": 0},
+            "cost_usd": {"type": "number", "minimum": 0},
+            "status": {"enum": ["NOT_RUN", "PASS", "FAIL", "HOLD"]},
+            "promotion_rule": {"type": "string", "minLength": 8}
+          }
+        },
+        "full_run": {
+          "type": "object",
+          "required": ["runtime_minutes", "cost_usd"],
+          "properties": {
+            "runtime_minutes": {"type": "number", "minimum": 0},
+            "cost_usd": {"type": "number", "minimum": 0}
+          }
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frontier_required", "provider_live", "provider_class", "provider_route", "no_weak_fallback", "evaluator_frozen", "local_reproduction_ready", "external_auth_ready", "carrier"],
+      "properties": {
+        "frontier_required": {"type": "boolean"},
+        "provider_live": {"type": "boolean"},
+        "provider_class": {"type": "string"},
+        "provider_route": {"type": "string"},
+        "no_weak_fallback": {"type": "boolean"},
+        "evaluator_frozen": {"type": "boolean"},
+        "local_reproduction_ready": {"type": "boolean"},
+        "external_auth_ready": {"type": "boolean"},
+        "carrier": {"type": "string"}
+      }
+    },
+    "probability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["p_beat_incumbent", "p_public_proof_24h", "p_public_proof_7d", "confidence", "basis"],
+      "properties": {
+        "p_beat_incumbent": {"type": "number", "minimum": 0, "maximum": 1},
+        "p_public_proof_24h": {"type": "number", "minimum": 0, "maximum": 1},
+        "p_public_proof_7d": {"type": "number", "minimum": 0, "maximum": 1},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "basis": {"type": "string", "minLength": 30}
+      }
+    },
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_spend_usd", "max_operator_minutes", "max_wallclock_hours"],
+      "properties": {
+        "max_spend_usd": {"type": "number", "minimum": 0},
+        "max_operator_minutes": {"type": "number", "minimum": 0},
+        "max_wallclock_hours": {"type": "number", "exclusiveMinimum": 0}
+      }
+    },
+    "evidence": {"type": "array", "minItems": 3, "items": {"type": "string", "format": "uri"}},
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["crown_won", "public_result_url", "accepted_protocol_result", "beats_incumbent", "attributable_identity"],
+      "properties": {
+        "crown_won": {"type": "boolean"},
+        "public_result_url": {"type": "string", "format": "uri"},
+        "accepted_protocol_result": {"type": "boolean"},
+        "beats_incumbent": {"type": "boolean"},
+        "attributable_identity": {"type": "string", "minLength": 2}
+      }
+    },
+    "notes": {"type": "string"}
+  }
+}
