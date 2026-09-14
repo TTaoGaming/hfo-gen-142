@@ -1,0 +1,24 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-RESEARCH-CELL-R0-001",
+  "issue_number": 13,
+  "question": "Can Cloudflare Agents natively sustain recurring research-cell wakeups without an immortal process?",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {
+      "url": "https://developers.cloudflare.com/agents/runtime/execution/schedule-tasks/",
+      "assertions": [
+        "Scheduled tasks survive agent restarts",
+        "scheduleEvery()",
+        "Overlap prevention"
+      ]
+    },
+    {
+      "url": "https://developers.cloudflare.com/durable-objects/api/alarms/",
+      "assertions": [
+        "at-least-once",
+        "retried automatically"
+      ]
+    }
+  ]
+}
