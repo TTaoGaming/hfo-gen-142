@@ -6,7 +6,10 @@ on:
     paths:
       - 'AGENTS.md'
       - 'GATEWAY.md'
+      - 'HOLON_MISSION_COMMAND_CONTRACT.md'
       - '.agents/skills/twinling-pdsa/SKILL.md'
+      - '.agents/skills/roach-fanin/SKILL.md'
+      - '.agents/skills/hive-integration/SKILL.md'
       - 'tools/terminal_handoff_gate.py'
       - 'tests/test_terminal_handoff_gate.py'
       - '.github/workflows/operator-cpr-contract.yml'
@@ -14,7 +17,10 @@ on:
     paths:
       - 'AGENTS.md'
       - 'GATEWAY.md'
+      - 'HOLON_MISSION_COMMAND_CONTRACT.md'
       - '.agents/skills/twinling-pdsa/SKILL.md'
+      - '.agents/skills/roach-fanin/SKILL.md'
+      - '.agents/skills/hive-integration/SKILL.md'
       - 'tools/terminal_handoff_gate.py'
       - 'tests/test_terminal_handoff_gate.py'
       - '.github/workflows/operator-cpr-contract.yml'
@@ -35,12 +41,31 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for file in GATEWAY.md .agents/skills/twinling-pdsa/SKILL.md; do
-            grep -q 'hfo-gen-142#13' "$file"
+          active=(
+            GATEWAY.md
+            .agents/skills/twinling-pdsa/SKILL.md
+            .agents/skills/roach-fanin/SKILL.md
+            .agents/skills/hive-integration/SKILL.md
+          )
+          for file in "${active[@]}"; do
+            grep -q '#13' "$file"
             if grep -Eq 'hfo-gen-142#1([^0-9]|$)' "$file"; then
               echo "stale canonical trunk pointer in $file"
               exit 1
             fi
+          done
+      - name: Reject prose-only terminal contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          skills=(
+            .agents/skills/twinling-pdsa/SKILL.md
+            .agents/skills/roach-fanin/SKILL.md
+            .agents/skills/hive-integration/SKILL.md
+          )
+          for file in "${skills[@]}"; do
+            grep -q 'terminal_handoff_gate.py' "$file"
+            grep -q 'next_handoff:' "$file"
           done
       - name: Run no-Tao handoff forcing regressions
         run: python -m unittest tests.test_terminal_handoff_gate -v
