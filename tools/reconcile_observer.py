@@ -40,13 +40,14 @@ SOURCE_OWNERS = {
     "human_boundary": "github",
 }
 # R0 bindings are deliberately code-owned so an admitted WorkItem or caller
-# cannot choose its own authority endpoint. These projection bindings are a
-# contract fixture until the live semantic endpoints are wired on an existing
-# scheduled wake; do not treat their presence as a live deployment claim.
+# cannot choose its own authority endpoint. The actor binding matches the
+# deployed authenticated Sigrun surface. The GitHub projection bindings remain
+# contract fixtures until live source-specific derivation is wired on an
+# existing scheduled wake; do not treat their presence as a live deployment.
 SOURCE_REGISTRY = {
     "actor": {
-        "url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/state",
-        "pointer": ["data"],
+        "url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/status",
+        "pointer": [],
     },
     "demand": {
         "url": "https://api.github.com/repos/TTaoGaming/hfo-gen-142/contents/RECONCILE/demand.json",
@@ -108,7 +109,12 @@ def trusted_registry_url(kind, url):
         return False
     host = (p.hostname or "").lower()
     if kind == "actor":
-        return host == ACTOR_HOST and url == SOURCE_REGISTRY[kind]["url"]
+        return (
+            host == ACTOR_HOST
+            and p.path == "/status"
+            and not p.query
+            and url == SOURCE_REGISTRY[kind]["url"]
+        )
     if host not in GITHUB_HOSTS:
         return False
     parts = [x for x in p.path.split("/") if x]
@@ -174,6 +180,18 @@ def project(kind, data):
     return list(data)
 
 
+def source_native_evidence(kind, data):
+    if kind != "actor" or not isinstance(data, dict):
+        return {}
+    # These fields come from the authenticated Durable Object /status payload,
+    # not the caller. They are evidence, not a freshness policy by themselves.
+    keys = (
+        "phase", "fence", "mission_sha256", "created_utc", "last_wake_utc",
+        "terminal_utc", "alarm_at", "worker_deadline_at",
+    )
+    return {key: data.get(key) for key in keys if key in data}
+
+
 def _auth_headers(kind, url):
     headers = {
         "Accept": "application/json",
@@ -223,7 +241,10 @@ def observe(source_doc, fetcher=http_fetch, now=None):
             return hold("SOURCE_SPEC_TYPE")
         forbidden = sorted(set(spec) - {"kind"})
         if forbidden or set(spec) & CALLER_FORBIDDEN_FIELDS:
-            return hold("CALLER_AUTHORITY_FORBIDDEN", fields=sorted(set(forbidden) | (set(spec) & CALLER_FORBIDDEN_FIELDS)))
+            return hold(
+                "CALLER_AUTHORITY_FORBIDDEN",
+                fields=sorted(set(forbidden) | (set(spec) & CALLER_FORBIDDEN_FIELDS)),
+            )
         kind = spec.get("kind")
         if kind not in REQUIRED_KINDS:
             return hold("SOURCE_KIND_INVALID", declared=kind)
@@ -238,6 +259,12 @@ def observe(source_doc, fetcher=http_fetch, now=None):
     missing = sorted(set(REQUIRED_KINDS) - seen_kinds)
     if missing:
         return hold("REQUIRED_SOURCE_MISSING", missing=missing)
+
+    # The deployed /status route is an authenticated semantic readback. Missing
+    # SVA_TOKEN is a legitimate human authority boundary, never an excuse to
+    # fall back to /health, /history/*, an invented empty actor, or Tao routing.
+    if "actor" in seen_kinds and not os.environ.get("SVA_TOKEN"):
+        return hold("HOLD_SECRET", kind="actor", secret="SVA_TOKEN", resume="existing_scheduled_wake")
 
     # Phase 2: only after full preflight do controller/API readbacks occur.
     by_kind = {}
@@ -270,6 +297,7 @@ def observe(source_doc, fetcher=http_fetch, now=None):
             "observed_utc": observed_utc,
             "response_sha256": digest_bytes(raw),
             "data_sha256": digest(data),
+            "source_native": source_native_evidence(kind, data),
             "self_attested": False,
         }
 
