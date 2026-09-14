@@ -1,0 +1,46 @@
+name: operator-cpr-contract
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'AGENTS.md'
+      - 'GATEWAY.md'
+      - '.agents/skills/twinling-pdsa/SKILL.md'
+      - 'tools/terminal_handoff_gate.py'
+      - 'tests/test_terminal_handoff_gate.py'
+      - '.github/workflows/operator-cpr-contract.yml'
+  pull_request:
+    paths:
+      - 'AGENTS.md'
+      - 'GATEWAY.md'
+      - '.agents/skills/twinling-pdsa/SKILL.md'
+      - 'tools/terminal_handoff_gate.py'
+      - 'tests/test_terminal_handoff_gate.py'
+      - '.github/workflows/operator-cpr-contract.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Reject split-brain active recovery pointers
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in GATEWAY.md .agents/skills/twinling-pdsa/SKILL.md; do
+            grep -q 'hfo-gen-142#13' "$file"
+            if grep -q 'hfo-gen-142#1' "$file"; then
+              echo "stale canonical trunk pointer in $file"
+              exit 1
+            fi
+          done
+      - name: Run no-Tao handoff forcing regressions
+        run: python -m unittest tests.test_terminal_handoff_gate -v
