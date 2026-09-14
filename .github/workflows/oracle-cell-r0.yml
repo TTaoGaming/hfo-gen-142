@@ -22,7 +22,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          echo 'GEN142_ORACLE_CELL_R0'
+          echo 'GEN142_ORACLE_CELL_R0_V2'
           printf 'hostname='; hostname
           printf 'kernel='; uname -sr
           printf 'arch='; uname -m
