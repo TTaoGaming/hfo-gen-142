@@ -57,3 +57,7 @@ PASS only if same durable actor/work identity survives caller replacement, compl
 
 ## After G1
 G2 = admitted/default-path VPS execution proof with Lenovo unavailable. G3 = one two-generation COTS evolution cell with frozen evaluator + runtime/dependency fingerprint, bounded disk, durable lineage, zero duplicate accepted effects and zero Tao routing.
+
+Proposed G2 portability profile: [Hatchery and Larva ABI R0](HATCHERY_LARVA_ABI.md).
+Laptop and VPS implement one host-independent contract; Ollama is an optional
+cognition adapter. This profile does not advance G1/G2/G3 runtime admission.

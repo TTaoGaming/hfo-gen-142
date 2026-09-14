@@ -1,0 +1,134 @@
+[
+  {
+    "abi": "gen142.hatchery/0",
+    "hatchery_id": "example-laptop",
+    "boot_id": "00000000-0000-4000-8000-000000000001",
+    "observed_utc": "2026-09-14T00:00:00Z",
+    "expires_utc": "2026-09-14T00:01:00Z",
+    "platform": {
+      "os": "windows",
+      "arch": "x86_64",
+      "availability": "intermittent"
+    },
+    "limits": {
+      "active_attempts": 1,
+      "cpu_millis": 1000,
+      "memory_bytes": 1073741824,
+      "workspace_bytes": 104857600,
+      "log_bytes": 1048576,
+      "lifetime_seconds": 120,
+      "provider_requests": 2,
+      "max_usd": 0
+    },
+    "adapters": [
+      {
+        "id": "example-cognition",
+        "kind": "ollama",
+        "version": "example-0",
+        "binding_ref": "private-config:example-only",
+        "model_identity": {
+          "kind": "digest",
+          "value": "example-only"
+        },
+        "capabilities": [
+          "text-generation"
+        ],
+        "assay_ref": null
+      }
+    ],
+    "owners": {
+      "supervisor_ref": "native:example-only",
+      "state_owner_ref": "GITHUB_SHADOW_ONLY",
+      "admission_ref": "example:none"
+    },
+    "admission_state": "UNADMITTED"
+  },
+  {
+    "abi": "gen142.hatchery/0",
+    "hatchery_id": "example-arm-worker",
+    "boot_id": "00000000-0000-4000-8000-000000000001",
+    "observed_utc": "2026-09-14T00:00:00Z",
+    "expires_utc": "2026-09-14T00:01:00Z",
+    "platform": {
+      "os": "linux",
+      "arch": "arm64",
+      "availability": "continuous"
+    },
+    "limits": {
+      "active_attempts": 1,
+      "cpu_millis": 1000,
+      "memory_bytes": 1073741824,
+      "workspace_bytes": 104857600,
+      "log_bytes": 1048576,
+      "lifetime_seconds": 120,
+      "provider_requests": 2,
+      "max_usd": 0
+    },
+    "adapters": [
+      {
+        "id": "example-cognition",
+        "kind": "provider_api",
+        "version": "example-0",
+        "binding_ref": "private-config:example-only",
+        "model_identity": {
+          "kind": "provider_alias",
+          "value": "example-only"
+        },
+        "capabilities": [
+          "text-generation"
+        ],
+        "assay_ref": null
+      }
+    ],
+    "owners": {
+      "supervisor_ref": "native:example-only",
+      "state_owner_ref": "GITHUB_SHADOW_ONLY",
+      "admission_ref": "example:none"
+    },
+    "admission_state": "UNADMITTED"
+  },
+  {
+    "abi": "gen142.hatchery/0",
+    "hatchery_id": "example-x64-worker",
+    "boot_id": "00000000-0000-4000-8000-000000000001",
+    "observed_utc": "2026-09-14T00:00:00Z",
+    "expires_utc": "2026-09-14T00:01:00Z",
+    "platform": {
+      "os": "linux",
+      "arch": "x86_64",
+      "availability": "continuous"
+    },
+    "limits": {
+      "active_attempts": 1,
+      "cpu_millis": 1000,
+      "memory_bytes": 1073741824,
+      "workspace_bytes": 104857600,
+      "log_bytes": 1048576,
+      "lifetime_seconds": 120,
+      "provider_requests": 2,
+      "max_usd": 0
+    },
+    "adapters": [
+      {
+        "id": "example-cognition",
+        "kind": "cli",
+        "version": "example-0",
+        "binding_ref": "private-config:example-only",
+        "model_identity": {
+          "kind": "provider_alias",
+          "value": "example-only"
+        },
+        "capabilities": [
+          "text-generation"
+        ],
+        "assay_ref": null
+      }
+    ],
+    "owners": {
+      "supervisor_ref": "native:example-only",
+      "state_owner_ref": "GITHUB_SHADOW_ONLY",
+      "admission_ref": "example:none"
+    },
+    "admission_state": "UNADMITTED"
+  }
+]
