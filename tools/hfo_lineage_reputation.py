@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Deterministic lineage reputation reducer.
 
 This reducer deliberately does NOT invent a universal scalar trust score.
@@ -60,10 +60,13 @@ def reduce_reputation(events: list[dict[str, Any]]) -> dict[str, Any]:
             continue
         evidence_class = event.get("evidence_class")
         effect_allowed = event.get("reputation_effect_allowed", True)
+        evidence_refs = event.get("evidence_refs")
         if (
             event.get("candidate_can_self_award") is not False
             or evidence_class not in POSITIVE_EXTERNAL
             or effect_allowed is False
+            or not isinstance(evidence_refs, list)
+            or not any(isinstance(ref, str) and ref.strip() for ref in evidence_refs)
         ):
             continue
         context = event.get("context") or {}
@@ -78,7 +81,7 @@ def reduce_reputation(events: list[dict[str, Any]]) -> dict[str, Any]:
                 continue
             target_time = str(by_id[target].get("observed_utc", ""))
             supersession_time = str(event.get("observed_utc", ""))
-            if target_time and supersession_time and supersession_time >= target_time:
+            if target_time and supersession_time and supersession_time > target_time:
                 resolved.add(target)
     positive: list[str] = []
     neutral: list[str] = []

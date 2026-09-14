@@ -1,4 +1,4 @@
-﻿import importlib.util
+import importlib.util
 import pathlib
 import unittest
 
@@ -119,6 +119,28 @@ class LineageReputationTests(unittest.TestCase):
         hard = event(
             "h", "EVAL_INTEGRITY_FAILURE", "MECHANICAL_INTEGRITY_DIFF", "HARD_NEGATIVE",
             observed_utc="2026-08-22T02:00:00Z",
+        )
+        result = mod.reduce_reputation([hard, resolution])
+        self.assertEqual(result["eligibility"], "QUARANTINED")
+        self.assertNotIn("h", result["resolved_event_ids"])
+
+    def test_supersession_requires_nonempty_external_evidence_ref(self):
+        hard = event("h", "EVAL_INTEGRITY_FAILURE", "MECHANICAL_INTEGRITY_DIFF", "HARD_NEGATIVE")
+        resolution = event(
+            "s", "SUPERSESSION", "INDEPENDENT_VERIFIER", "NEUTRAL",
+            context={"resolves_event_id": "h"}, evidence_refs=[],
+            observed_utc="2026-08-22T01:00:00Z",
+        )
+        result = mod.reduce_reputation([hard, resolution])
+        self.assertEqual(result["eligibility"], "QUARANTINED")
+        self.assertNotIn("h", result["resolved_event_ids"])
+
+    def test_supersession_must_be_strictly_later_than_target(self):
+        hard = event("h", "EVAL_INTEGRITY_FAILURE", "MECHANICAL_INTEGRITY_DIFF", "HARD_NEGATIVE")
+        resolution = event(
+            "s", "SUPERSESSION", "INDEPENDENT_VERIFIER", "NEUTRAL",
+            context={"resolves_event_id": "h"},
+            observed_utc=hard["observed_utc"],
         )
         result = mod.reduce_reputation([hard, resolution])
         self.assertEqual(result["eligibility"], "QUARANTINED")
