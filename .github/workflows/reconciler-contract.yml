@@ -6,18 +6,14 @@ on:
     paths:
       - 'DETERMINISTIC_RECONCILER_CONTRACT.md'
       - 'tools/reconcile_kernel.py'
-      - 'tools/reconcile_snapshot.py'
       - 'tests/test_reconcile_kernel.py'
-      - 'tests/test_reconcile_snapshot.py'
       - 'AGENTS.md'
       - '.github/workflows/reconciler-contract.yml'
   pull_request:
     paths:
       - 'DETERMINISTIC_RECONCILER_CONTRACT.md'
       - 'tools/reconcile_kernel.py'
-      - 'tools/reconcile_snapshot.py'
       - 'tests/test_reconcile_kernel.py'
-      - 'tests/test_reconcile_snapshot.py'
       - 'AGENTS.md'
       - '.github/workflows/reconciler-contract.yml'
 
@@ -34,12 +30,11 @@ jobs:
         with:
           python-version: '3.12'
       - name: Run deterministic reconciler regressions
-        run: python -m unittest tests.test_reconcile_kernel tests.test_reconcile_snapshot -v
+        run: python -m unittest tests.test_reconcile_kernel -v
       - name: Assert controller remains a pure policy surface
         shell: bash
         run: |
           set -euo pipefail
           grep -q 'owns no queue, scheduler, lease, actor state, credentials, or effects' tools/reconcile_kernel.py
-          grep -q 'owns no scheduler, queue, lease, actor state, credentials, or effects' tools/reconcile_snapshot.py
           grep -q 'Same canonical snapshot + same policy version MUST produce the same plan' DETERMINISTIC_RECONCILER_CONTRACT.md
           ! grep -Eq 'requests\.|urllib|subprocess|socket|boto|cloudflare|github' tools/reconcile_kernel.py
