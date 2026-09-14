@@ -227,3 +227,15 @@ After a verified result, create one compact packet:
 - buyer-facing offer.
 
 The case study is the bridge from prestige to income. The crown alone is not the product.
+
+## Executable reducer forcing
+
+Materialize cards under `BATTLEFIELDS/`. After individual gate admission, run:
+
+```bash
+python tools/battlefield_reduce.py BATTLEFIELDS/*.json
+```
+
+The reducer is deterministic: killed/blocked cards cannot survive, survivors are sorted by gate routing score, output is capped at three, and the first survivor is the only primary. If every card fails, the only valid decision is `NONE`.
+
+Repository CI in `.github/workflows/battlefield-contract.yml` validates the schema, battlefield forcing tests, reducer tests, and every materialized non-template battlefield card on relevant pushes/PRs. CI feedback does not replace external-verifier truth or branch-protection policy.

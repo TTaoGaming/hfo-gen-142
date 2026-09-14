@@ -1,0 +1,92 @@
+{
+  "schema_version": "battlefield.v1",
+  "battlefield_id": "replace-me",
+  "observed_at_utc": "2000-01-01T00:00:00Z",
+  "mission_class": "prestige_crown",
+  "stage": "scout",
+  "domain": "domain-agnostic",
+  "target": {
+    "board": "REPLACE",
+    "track": "REPLACE",
+    "metric": "REPLACE",
+    "direction": "maximize",
+    "incumbent_name": "REPLACE",
+    "incumbent_score": 0,
+    "incumbent_checked_at_utc": "2000-01-01T00:00:00Z",
+    "incumbent_url": "https://example.invalid/incumbent",
+    "rules_url": "https://example.invalid/rules",
+    "submission_url": "https://example.invalid/submit",
+    "open_to_user": false,
+    "public_proof_before_merge": false,
+    "proof_latency_hours": 9999
+  },
+  "prestige": {
+    "tier": "C",
+    "institution_or_platform": "REPLACE",
+    "independent_verifier": false,
+    "verifier_url": "https://example.invalid/verifier",
+    "public_attribution": false,
+    "durable_public_evidence": false,
+    "real_incumbent_competition": false,
+    "competitor_count": 0,
+    "accepted_submission_protocol": false,
+    "buyer_legibility": 0
+  },
+  "commercial": {
+    "buyer_personas": ["REPLACE"],
+    "offer": "REPLACE WITH SPECIFIC SELLABLE OFFER",
+    "demand_evidence_urls": ["https://example.invalid/demand"],
+    "p_paid_conversation_7d": 0,
+    "expected_cash_30d": 0,
+    "expected_cash_90d": 0,
+    "case_study_claim": "REPLACE WITH TRUTHFUL CLAIM UNLOCKED BY PROOF"
+  },
+  "evolution": {
+    "donors": [
+      {"url": "https://example.invalid/donor1", "allowed": true, "type": "REPLACE", "contribution": "REPLACE"},
+      {"url": "https://example.invalid/donor2", "allowed": true, "type": "REPLACE", "contribution": "REPLACE"}
+    ],
+    "mutable_axes": ["REPLACE-AXIS-1", "REPLACE-AXIS-2"],
+    "weakness_hypothesis": "REPLACE WITH A FALSIFIABLE, EVIDENCE-BACKED REASON THIS BATTLEFIELD IS WEAK WHERE WE ARE STRONG.",
+    "gap_evidence_urls": ["https://example.invalid/gap"],
+    "canary": {
+      "runtime_minutes": 0,
+      "cost_usd": 0,
+      "status": "NOT_RUN",
+      "promotion_rule": "REPLACE WITH PREDECLARED NUMERIC KILL/PROMOTE RULE"
+    },
+    "full_run": {
+      "runtime_minutes": 0,
+      "cost_usd": 0
+    }
+  },
+  "execution": {
+    "frontier_required": true,
+    "provider_live": false,
+    "provider_class": "frontier_subscription_bridge",
+    "provider_route": "REPLACE",
+    "no_weak_fallback": true,
+    "evaluator_frozen": false,
+    "local_reproduction_ready": false,
+    "external_auth_ready": false,
+    "carrier": "REPLACE"
+  },
+  "probability": {
+    "p_beat_incumbent": 0,
+    "p_public_proof_24h": 0,
+    "p_public_proof_7d": 0,
+    "confidence": 0,
+    "basis": "REPLACE WITH EVIDENCE AND EXPLICIT ASSUMPTIONS; DO NOT EMIT VIBES AS BAYES."
+  },
+  "budget": {
+    "max_spend_usd": 0,
+    "max_operator_minutes": 0,
+    "max_wallclock_hours": 1
+  },
+  "evidence": [
+    "https://example.invalid/evidence1",
+    "https://example.invalid/evidence2",
+    "https://example.invalid/evidence3"
+  ],
+  "notes": "Template intentionally fails most gates until replaced with current evidence."
+}

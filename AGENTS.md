@@ -56,3 +56,7 @@ If swarm operation increases operator burden, repeated explanation, cleanup, rou
 
 ## Default scale
 Until the first laptop-independent two-generation competition/evolution assay passes, maximum autonomous evolutionary cell count is **1**.
+
+## Battlefield reducer enforcement
+- Materialize external target cards in `BATTLEFIELDS/`; prose-only battlefield recommendations are non-actionable.
+- After `battlefield_gate.py`, run `python tools/battlefield_reduce.py BATTLEFIELDS/*.json`; only the reducer's primary may receive the next attack budget. If it emits `NONE`, stop rather than inventing a proxy target.

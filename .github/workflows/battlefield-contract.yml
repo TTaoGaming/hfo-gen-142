@@ -1,0 +1,48 @@
+name: battlefield-contract
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'AGENTS.md'
+      - 'BATTLEFIELD_SELECTION_STANDARD.md'
+      - 'CROWN_FITNESS_CONTRACT.md'
+      - 'BATTLEFIELDS/**'
+      - 'schemas/battlefield.v1.schema.json'
+      - 'tools/battlefield_*.py'
+      - 'tests/test_battlefield_*.py'
+  pull_request:
+    paths:
+      - 'AGENTS.md'
+      - 'BATTLEFIELD_SELECTION_STANDARD.md'
+      - 'CROWN_FITNESS_CONTRACT.md'
+      - 'BATTLEFIELDS/**'
+      - 'schemas/battlefield.v1.schema.json'
+      - 'tools/battlefield_*.py'
+      - 'tests/test_battlefield_*.py'
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate schema JSON
+        run: python -m json.tool schemas/battlefield.v1.schema.json >/dev/null
+      - name: Run forcing-function tests
+        run: python -m unittest discover -s tests -p 'test_battlefield_*.py' -v
+      - name: Gate materialized battlefield cards
+        shell: bash
+        run: |
+          shopt -s nullglob
+          cards=(BATTLEFIELDS/*.json)
+          for card in "${cards[@]}"; do
+            [[ "$(basename "$card")" == _* ]] && continue
+            python tools/battlefield_gate.py "$card"
+          done
