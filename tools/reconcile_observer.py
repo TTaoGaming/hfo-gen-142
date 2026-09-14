@@ -2,11 +2,13 @@
 """Trusted readback observer for the Gen142 deterministic reconciler.
 
 This module owns no scheduler, queue, lease, actor state, credentials, or effects.
-It performs bounded GET readbacks from allowlisted controller/API surfaces,
+It performs bounded GET readbacks from a versioned, code-owned controller registry,
 derives provenance from the request it actually made, projects only semantic
 state, and feeds the pure reconcile kernel.
 
-Authority metadata inside a response body is never trusted.
+Authority metadata inside a response body is never trusted. Callers may select
+which required source kinds to read, but may not supply URLs, payloads, pointers,
+provenance, timestamps, credentials, or authority labels.
 """
 from __future__ import annotations
 
@@ -37,6 +39,37 @@ SOURCE_OWNERS = {
     "worker_routes": "github",
     "human_boundary": "github",
 }
+# R0 bindings are deliberately code-owned so an admitted WorkItem or caller
+# cannot choose its own authority endpoint. These projection bindings are a
+# contract fixture until the live semantic endpoints are wired on an existing
+# scheduled wake; do not treat their presence as a live deployment claim.
+SOURCE_REGISTRY = {
+    "actor": {
+        "url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/state",
+        "pointer": ["data"],
+    },
+    "demand": {
+        "url": "https://api.github.com/repos/TTaoGaming/hfo-gen-142/contents/RECONCILE/demand.json",
+        "pointer": ["data"],
+    },
+    "dispatches": {
+        "url": "https://api.github.com/repos/TTaoGaming/hfo-gen-142/actions/runs?event=workflow_dispatch",
+        "pointer": ["data"],
+    },
+    "worker_routes": {
+        "url": "https://raw.githubusercontent.com/TTaoGaming/hfo-gen-142/main/RECONCILE/worker-routes.json",
+        "pointer": ["data"],
+    },
+    "human_boundary": {
+        "url": "https://raw.githubusercontent.com/TTaoGaming/hfo-gen-142/main/RECONCILE/human-boundary.json",
+        "pointer": ["data"],
+    },
+}
+CALLER_FORBIDDEN_FIELDS = {
+    "url", "pointer", "data", "payload", "headers", "authorization", "token",
+    "source_owner", "provenance_ref", "source_receipt_sha256", "self_attested",
+    "observed_utc", "snapshot_observed_utc", "response_sha256", "data_sha256",
+}
 ACTOR_HOST = "hfo-sigrun-va-r0.tommytai3.workers.dev"
 GITHUB_HOSTS = {"api.github.com", "raw.githubusercontent.com"}
 ALLOWED_GITHUB_REPOS = {"hfo-gen-142", "cdev-control"}
@@ -65,7 +98,8 @@ def utc_text(now=None):
     return dt.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
-def trusted_url(kind, url):
+def trusted_registry_url(kind, url):
+    """Defense-in-depth validation of code-owned registry bindings."""
     try:
         p = urlsplit(str(url))
     except Exception:
@@ -74,29 +108,27 @@ def trusted_url(kind, url):
         return False
     host = (p.hostname or "").lower()
     if kind == "actor":
-        return host == ACTOR_HOST and p.path.startswith("/")
+        return host == ACTOR_HOST and url == SOURCE_REGISTRY[kind]["url"]
     if host not in GITHUB_HOSTS:
         return False
     parts = [x for x in p.path.split("/") if x]
     if host == "api.github.com":
-        return (
+        repo_ok = (
             len(parts) >= 3
             and parts[0] == "repos"
             and parts[1] == "TTaoGaming"
             and parts[2] in ALLOWED_GITHUB_REPOS
         )
-    return (
-        len(parts) >= 2
-        and parts[0] == "TTaoGaming"
-        and parts[1] in ALLOWED_GITHUB_REPOS
-    )
+    else:
+        repo_ok = (
+            len(parts) >= 2
+            and parts[0] == "TTaoGaming"
+            and parts[1] in ALLOWED_GITHUB_REPOS
+        )
+    return repo_ok and url == SOURCE_REGISTRY[kind]["url"]
 
 
 def resolve_pointer(payload, pointer):
-    if pointer in (None, "", []):
-        return payload
-    if not isinstance(pointer, list) or not all(isinstance(x, (str, int)) for x in pointer):
-        raise ValueError("pointer_type")
     cur = payload
     for part in pointer:
         if isinstance(part, int):
@@ -145,6 +177,8 @@ def project(kind, data):
 def _auth_headers(kind, url):
     headers = {
         "Accept": "application/json",
+        "Cache-Control": "no-cache",
+        "Pragma": "no-cache",
         "User-Agent": "hfo-gen142-reconcile-observer/1",
     }
     host = (urlsplit(url).hostname or "").lower()
@@ -172,6 +206,8 @@ def observe(source_doc, fetcher=http_fetch, now=None):
         return hold("SOURCE_DOC_TYPE")
     if source_doc.get("schema") != SOURCE_SCHEMA:
         return hold("SOURCE_DOC_SCHEMA", declared=source_doc.get("schema"))
+    if set(source_doc) - {"schema", "sources"}:
+        return hold("SOURCE_DOC_FORBIDDEN_FIELD", fields=sorted(set(source_doc) - {"schema", "sources"}))
     sources = source_doc.get("sources")
     if not isinstance(sources, list):
         return hold("SOURCE_LIST_INVALID")
@@ -183,14 +219,19 @@ def observe(source_doc, fetcher=http_fetch, now=None):
     for spec in sources:
         if not isinstance(spec, dict):
             return hold("SOURCE_SPEC_TYPE")
+        forbidden = sorted((set(spec) - {"kind"}) | (set(spec) & CALLER_FORBIDDEN_FIELDS))
+        if forbidden:
+            return hold("CALLER_AUTHORITY_FORBIDDEN", fields=forbidden)
         kind = spec.get("kind")
         if kind not in REQUIRED_KINDS:
             return hold("SOURCE_KIND_INVALID", declared=kind)
         if kind in by_kind:
             return hold("DUPLICATE_SOURCE_KIND", kind=kind)
-        url = str(spec.get("url") or "")
-        if not trusted_url(kind, url):
-            return hold("UNTRUSTED_SOURCE_URL", kind=kind)
+
+        binding = SOURCE_REGISTRY[kind]
+        url = binding["url"]
+        if not trusted_registry_url(kind, url):
+            return hold("REGISTRY_AUTHORITY_INVALID", kind=kind)
         try:
             raw = fetcher(url, _auth_headers(kind, url))
         except Exception as exc:
@@ -202,7 +243,7 @@ def observe(source_doc, fetcher=http_fetch, now=None):
             return hold("SOURCE_RESPONSE_TOO_LARGE", kind=kind)
         try:
             payload = json.loads(raw.decode("utf-8"))
-            selected = resolve_pointer(payload, spec.get("pointer"))
+            selected = resolve_pointer(payload, binding["pointer"])
             data = project(kind, selected)
         except Exception as exc:
             return hold("SOURCE_PROJECTION_FAILED", kind=kind, error=type(exc).__name__)
