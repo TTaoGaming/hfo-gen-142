@@ -1,0 +1,16 @@
+{
+  "observed_utc": "2026-09-14T11:18:02.392Z",
+  "actor": "HFO/4/SIGRUN/7/7",
+  "prior_revision": 6,
+  "revision": 7,
+  "checkpoint_utc": "2026-09-14T11:18:07.440Z",
+  "readback_matched": true,
+  "claim": "GEN142_BATON_POINTER_PERSISTED_ONLY",
+  "github_handoff_commit": "6bbe45596cf28f1500af5ddf81c5ad0a9bda18e4",
+  "portable_hatchery_branch_commit": "e598157c2dcc4604a867d70d1cb3e069732b9ff0",
+  "refs": [
+    "HANDOFF/2026-09-14-baton.md",
+    "issue #2",
+    "issue #3"
+  ]
+}
