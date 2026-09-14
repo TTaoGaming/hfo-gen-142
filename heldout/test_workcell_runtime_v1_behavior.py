@@ -34,6 +34,10 @@ def current_marker(path, wid):
     return f"<!-- hfo-workcell-v1:{wid}:{rt.hashlib.sha256(path.read_bytes()).hexdigest()} -->"
 
 
+def ack_marker(path, wid):
+    return f"<!-- hfo-workcell-ack-v1:{wid}:{rt.hashlib.sha256(path.read_bytes()).hexdigest()} -->"
+
+
 def fake_worker_script(root, exit_code=0):
     path = root / "fake_worker.py"
     if exit_code:
@@ -53,26 +57,32 @@ def fake_worker_script(root, exit_code=0):
 
 
 class FakeGitHub:
-    def __init__(self, initial_bodies=None, fail_comment=False, fail_dispatch=False):
+    def __init__(self, initial_bodies=None, fail_ack=False, fail_watch=False, fail_retirement=False):
         self.comments = [{"body": b, "html_url": f"https://example/{i}"} for i, b in enumerate(initial_bodies or [])]
-        self.fail_comment = fail_comment
-        self.fail_dispatch = fail_dispatch
+        self.fail_ack = fail_ack
+        self.fail_watch = fail_watch
+        self.fail_retirement = fail_retirement
         self.calls = []
 
     def api(self, token, method, path, payload=None):
         self.calls.append((method, path, payload))
         if method == "GET" and "/comments?" in path:
             return 200, list(self.comments)
+        if method == "GET" and "/actions/workflows/" in path:
+            if self.fail_watch:
+                raise RuntimeError("HELDOUT_WATCH_FAILURE")
+            return 200, {"id": 77, "state": "active", "path": ".github/workflows/workcell-runtime-v1.yml"}
         if method == "POST" and path.endswith("/comments"):
-            if self.fail_comment:
-                raise RuntimeError("HELDOUT_COMMENT_FAILURE")
-            row = {"body": payload["body"], "html_url": f"https://example/ack-{len(self.comments)+1}", "id": len(self.comments)+1}
+            body = payload["body"]
+            if self.fail_ack and "hfo-workcell-ack-v1" in body:
+                raise RuntimeError("HELDOUT_ACK_FAILURE")
+            if self.fail_retirement and "hfo-workcell-v1:" in body:
+                raise RuntimeError("HELDOUT_RETIREMENT_FAILURE")
+            row = {"body": body, "html_url": f"https://example/comment-{len(self.comments)+1}", "id": len(self.comments)+1}
             self.comments.append(row)
             return 201, row
         if method == "POST" and "/actions/workflows/" in path:
-            if self.fail_dispatch:
-                raise RuntimeError("HELDOUT_DISPATCH_FAILURE")
-            return 204, None
+            raise AssertionError("recursive dispatch is forbidden in held-out v1 behavior")
         raise AssertionError((method, path, payload))
 
     @property
@@ -118,24 +128,71 @@ class WorkCellHeldOutBehavior(unittest.TestCase):
                 self.run_main(tasks,gh,worker,out)
             self.assertEqual(gh.effect_calls,[])
 
-    def test_consumer_ack_failure_stops_before_dispatch(self):
+    def test_consumer_ack_failure_stops_before_retirement(self):
         with tempfile.TemporaryDirectory() as td:
             root=Path(td); tasks=root/'tasks'; tasks.mkdir(); out=root/'out'
-            write_task(tasks,'a.json','A',2); write_task(tasks,'b.json','B',1)
-            gh=FakeGitHub(fail_comment=True); worker=fake_worker_script(root)
+            a=write_task(tasks,'a.json','A',1)
+            gh=FakeGitHub(fail_ack=True); worker=fake_worker_script(root)
             with self.assertRaises(RuntimeError):
                 self.run_main(tasks,gh,worker,out)
-            self.assertFalse(any('/actions/workflows/' in p for m,p,_ in gh.effect_calls))
+            self.assertFalse(any(current_marker(a,'A') in row['body'] for row in gh.comments))
 
-    def test_dispatch_failure_must_not_durably_retire_current_work(self):
+    def test_watch_failure_must_not_durably_retire_current_work(self):
         with tempfile.TemporaryDirectory() as td:
             root=Path(td); tasks=root/'tasks'; tasks.mkdir(); out=root/'out'
             a=write_task(tasks,'a.json','A',2); write_task(tasks,'b.json','B',1)
-            gh=FakeGitHub(fail_dispatch=True); worker=fake_worker_script(root)
+            gh=FakeGitHub(fail_watch=True); worker=fake_worker_script(root)
             with self.assertRaises(RuntimeError):
                 self.run_main(tasks,gh,worker,out)
-            marker=current_marker(a,'A')
-            self.assertFalse(any(marker in row['body'] for row in gh.comments), 'failed continuation must not look retired')
+            self.assertTrue(any(ack_marker(a,'A') in row['body'] for row in gh.comments))
+            self.assertFalse(any(current_marker(a,'A') in row['body'] for row in gh.comments))
+
+    def test_terminal_gate_failure_must_not_retire(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td); tasks=root/'tasks'; tasks.mkdir(); out=root/'out'
+            a=write_task(tasks,'a.json','A',1)
+            gh=FakeGitHub(); worker=fake_worker_script(root)
+            with patch.object(rt, 'run_terminal_gate', side_effect=RuntimeError('HELDOUT_GATE_FAILURE')):
+                with self.assertRaises(RuntimeError):
+                    self.run_main(tasks,gh,worker,out)
+            self.assertTrue(any(ack_marker(a,'A') in row['body'] for row in gh.comments))
+            self.assertFalse(any(current_marker(a,'A') in row['body'] for row in gh.comments))
+
+    def test_retirement_write_failure_reuses_consumer_ack_on_retry(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td); tasks=root/'tasks'; tasks.mkdir(); out1=root/'out1'; out2=root/'out2'
+            a=write_task(tasks,'a.json','A',1)
+            gh=FakeGitHub(fail_retirement=True); worker=fake_worker_script(root)
+            with self.assertRaises(RuntimeError):
+                self.run_main(tasks,gh,worker,out1)
+            ack_count=lambda: sum(ack_marker(a,'A') in row['body'] for row in gh.comments)
+            self.assertEqual(ack_count(),1)
+            gh.fail_retirement=False
+            self.assertEqual(self.run_main(tasks,gh,worker,out2),0)
+            self.assertEqual(ack_count(),1)
+            self.assertTrue(any(current_marker(a,'A') in row['body'] for row in gh.comments))
+
+    def test_two_wakes_progress_a_to_b_without_recursive_dispatch(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td); tasks=root/'tasks'; tasks.mkdir(); out1=root/'out1'; out2=root/'out2'; out3=root/'out3'
+            write_task(tasks,'a.json','A',2); write_task(tasks,'b.json','B',1)
+            gh=FakeGitHub(); worker=fake_worker_script(root)
+            self.assertEqual(self.run_main(tasks,gh,worker,out1),0)
+            r1=json.loads((out1/'runtime-receipt.json').read_text())
+            h1=json.loads((out1/'handoff.json').read_text())
+            self.assertEqual(r1['work_id'],'A')
+            self.assertEqual(r1['next_work_id'],'B')
+            self.assertEqual(r1['continuation_mode'],'SCHEDULED_RECONCILE')
+            self.assertEqual(h1['next']['mode'],'RECONCILE')
+            self.assertFalse(any('/actions/workflows/' in path for method,path,_ in gh.effect_calls))
+            self.assertEqual(self.run_main(tasks,gh,worker,out2),0)
+            r2=json.loads((out2/'runtime-receipt.json').read_text())
+            self.assertEqual(r2['work_id'],'B')
+            self.assertIsNone(r2['next_work_id'])
+            self.assertEqual(r2['continuation_mode'],'MISSION_COMPLETE')
+            self.assertEqual(self.run_main(tasks,gh,worker,out3),0)
+            r3=json.loads((out3/'runtime-receipt.json').read_text())
+            self.assertEqual(r3['status'],'NOOP')
 
     def test_duplicate_ids_fail_before_effects(self):
         with tempfile.TemporaryDirectory() as td:
