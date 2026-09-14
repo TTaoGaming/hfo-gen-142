@@ -27,11 +27,12 @@ Hard rules:
 3. `semantic_owner` must remain the admitted Sigrun DO unless an explicit retirement/migration assay proves a replacement end-to-end.
 4. `provider_role=leaf`. Crown/frontier work marked `FRONTIER_REQUIRED` fails closed when no admitted frontier route is live; no silent Ollama/small-model fallback.
 5. Rehydrate/probe/repair before build. A new primitive requires evidence that the current admitted donor/owner cannot satisfy the frozen contract.
-6. Tao relay defaults FALSE. Human intervention is admissible only for declared secret/OAuth/2FA/payment/permission/protected-merge/irreversible external-submit boundaries.
+6. Tao relay defaults FALSE. Human intervention is admissible only for declared secret/OAuth/2FA/payment/permission/protected-merge/irreversible external-submit boundaries. The human action may only unlock that authority boundary; before escalation, the system must record the failed machine attempt and arm an automatic resume watcher. Tao must never be required to launch, retry, route, gather, monitor, check back, or restart continuation work.
 7. A worker cannot promote its own output. Promotion requires an independent verifier receipt and ConsumerAck.
 8. Memory/heritage is reference until promoted. `LIBRARY != RUNTIME`; `PROSE != CONTROL`.
 9. Domain is **agnostic by default**. Agents are leverage, not the business domain. AI-reliability/AI-engineering work receives no default priority unless the mission explicitly selects it.
 10. Buyer-facing crown missions must also pass `CROWN_FITNESS_CONTRACT.md`; low-prestige proxy trophies are rejected.
+11. A carrier cannot self-attest its own transition to the next carrier. Terminal-to-next evidence must be controller/API-observed, provenance-bound, and accepted by `tools/terminal_handoff_gate.py`.
 
 ## Evolution / learning loop
 `INTENT -> DONOR_RECOVERY -> FINGERPRINT -> MUTATE -> CHEAP_CANARY -> SUCCESSIVE_HALVING -> FROZEN_VERIFIER -> RESULT -> CONSUMER_ACK -> PROMOTE|REJECT -> HERITAGE -> TRANSFER_ASSAY`
@@ -60,9 +61,10 @@ A durable holon is not admitted until this succeeds with Tao hot-loop actions = 
 1. Actor receives mission A and durably claims it through the admitted semantic owner.
 2. Kill/replace the current carrier after claim.
 3. Actor reaches an honest bounded terminal or recovers, preserving identity/lineage and producing verifier + ConsumerAck evidence.
-4. Actor automatically receives/claims mission B.
-5. B closes under a different carrier if available.
-6. Promoted learning from A is readable by the same `actor_id` during B; no Tao context ferry.
+4. A controller/API-observed transition automatically dispatches mission B; a prose `next_consumer`, arbitrary string receipt, or Tao relay does not count.
+5. Actor automatically receives/claims mission B.
+6. B closes under a different carrier if available.
+7. Promoted learning from A is readable by the same `actor_id` during B; no Tao context ferry.
 
 The carrier may die. The actor must remain attributable, reconstructible, and governable.
 
@@ -70,4 +72,4 @@ The carrier may die. The actor must remain attributable, reconstructible, and go
 A remembered failure remains `REFERENCE` until compiled into enforcement:
 `FAILURE -> FINGERPRINT -> DEDUPE -> SMALLEST_FORCING_FUNCTION -> FAILING_REGRESSION/ADMISSION -> RECOVERY_ASSAY -> SPLENDOR_OR_REJECT`.
 
-The executable forcing functions for this contract live in `tools/holon_gate.py` and `ops/vps_exec_guard.py`. They are gates/wrappers, not a new control plane.
+The executable forcing functions for this contract live in `tools/holon_gate.py`, `tools/terminal_handoff_gate.py`, and `ops/vps_exec_guard.py`. They are gates/wrappers, not a new control plane.
