@@ -23,3 +23,11 @@ Public-repo rule: reduce donor findings into sanitized conclusions; do not copy 
 Promotion test: a gene enters `GENE_SEED.md` only if it prevents a concrete failure or enables a required capability, survives falsification, is not redundant with a COTS owner, fits compactly, and reduces operator burden.
 
 Ablation question: what measurable failure returns if we delete this gene? If nothing measurable changes, kill it.
+
+## Standardized Strife/Splendor intake
+
+- Canonical event schema: `schemas/strife-splendor-event-v1.schema.json`.
+- First validated seed: `HERITAGE/STRIFE_SPLENDOR_SEED_V1.jsonl` (3 STRIFE + 2 SPLENDOR).
+- Every evidence item carries an exact content SHA-256 and claim ceiling.
+- Legacy Gen137 formal axes (`port`, `dependability`, `control_deviation`, violated invariant/guard) are preserved as namespaced tags in v1; do not fork a second ontology merely to carry them.
+- Archive evidence never becomes `ADOPTED` merely because it was important or repeated. Promotion still requires falsification, corroboration, consumption, and current fit.
