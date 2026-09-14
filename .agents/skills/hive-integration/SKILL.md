@@ -1,3 +1,8 @@
+---
+name: hive-integration
+description: Integrate Gen142 Hive contracts across A2A, Agent Skills, tools/authority, Cloudflare runtime, Burrow, and reducer boundaries using one bounded H0-H9 PDSA. Use only for cross-contract Hive integration/reduction; do not use for ordinary research, execution, or durable fan-in.
+---
+
 # Hive Integration Roach Skill
 
 Use when a Roach should integrate Gen142's existing pieces into a coherent Zerg Hive rather than start another broad discovery wave.
