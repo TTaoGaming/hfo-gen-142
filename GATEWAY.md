@@ -30,7 +30,7 @@ This is placement preference only. `PREFERRED_TARGET != REACHABLE != ADMITTED !=
 Cloudflare remains the preferred durable actor/workflow state owner. GitHub remains institutional coordination/evidence. Oracle local disk must not become the only copy of durable work state.
 
 ## Morph law
-1. Recover #13 newest-first plus `AGENTS.md`, `HOLON_MISSION_COMMAND_CONTRACT.md`, `GENE_SEED.md`, `STANDARDS_PROFILE.md`, `STRIFE_SPLENDOR.md`, `ORACLE_HQ.md`, `ORACLE_GATEWAY.md`, `HERITAGE/MANIFEST.md`. Treat `WORLD_STATE/latest.md` as advisory/timestamped only.
+1. Recover #13 newest-first plus `AGENTS.md`, `HOLON_MISSION_COMMAND_CONTRACT.md`, `GENE_SEED.md`, `STANDARDS_PROFILE.md`, `STRIFE_SPLENDOR.md`, and only the evidence/profile files required by the selected current edge. Load `ORACLE_HQ.md` / `ORACLE_GATEWAY.md` only when Oracle placement is actually being considered. Treat `WORLD_STATE/latest.md` as advisory/timestamped only.
 2. Generate immutable `carrier_episode_uuid`; record self-attested model/harness and UTC.
 3. Observe this carrier's actual Skill/tool/runtime/provider/target capabilities and emit a fresh Carrier Capability Envelope.
 4. Run the executable preflight. Non-zero exit or decision other than `ADMIT` means `HOLD`; do not claim work.

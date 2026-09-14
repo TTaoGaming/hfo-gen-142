@@ -42,21 +42,39 @@ def test_unloaded_required_skill_fails_closed():
     assert r.returncode!=0
     assert json.loads(r.stdout)['reason']=='SKILL_NOT_LOADED'
 
-
 def test_recovery_topology_has_one_current_trunk():
     import re
     surfaces = [
-        'README.md','AGENTS.md','GATEWAY.md','GENE_SEED.md','KNOWLEDGE_PROTOCOL.md',
-        'WORLD_STATE/latest.md','BATON_PASS.md','RECOVERY_SWARM.md','WORK_QUEUE.md',
-        'HIVE_GATEWAY.md','WAVE2_STRIFE_SPLENDOR.md','BURROW.md','CELL0_HANDOFF.md',
-        '.agents/skills/roach-fanin/SKILL.md',
-        'HANDOFF/2026-09-14-baton.md','HANDOFF/2026-09-14-zerg-swarm-thread-handoff.md',
+        'README.md','AGENTS.md','GATEWAY.md','GENE_SEED.md','WORLD_STATE/latest.md',
+        '.agents/skills/twinling-pdsa/SKILL.md','.agents/skills/roach-fanin/SKILL.md',
     ]
-    stale = re.compile(r'(recover(?: issue)? #(1|2|3|6)(?!\d)|issue #(1|2|3|6) newest-first)', re.I)
+    stale=re.compile(r'(recover(?: issue)? #(1|2|3|6|7|9)(?!\d)|issue #(1|2|3|6|7|9) newest-first)',re.I)
     for rel in surfaces:
-        text = (ROOT / rel).read_text(encoding='utf-8')
+        text=(ROOT/rel).read_text(encoding='utf-8')
         assert '#13' in text, rel
         assert not stale.search(text), rel
-    kp = (ROOT / 'KNOWLEDGE_PROTOCOL.md').read_text(encoding='utf-8')
-    assert 'WORLD_STATE/index.json' not in kp
-    assert 'WORLD_STATE/partials' not in kp
+
+def test_retired_surfaces_are_absent_from_live_tree():
+    retired = [
+        'BATON_PASS.md','CELL0_HANDOFF.md','HIVE_GATEWAY.md','HIVE_R0.md','HIVE_WAVE1.md',
+        'MOBILE_HQ_BRIDGE.md','RECOVERY_SWARM.md','WAVE2_STRIFE_SPLENDOR.md','WORK_QUEUE.md',
+        'WORLD_STATE/HQ_LOOP_R1.md','BRIDGES/CHATGPT_CLOUD_INPUT.md','income/BATON_SELF_ORG_R1.md',
+        'income/self_org_r0.py','income/self_org_r0.json','cell0/src/index.js','cell0/wrangler.jsonc',
+        'KNOWLEDGE_PROTOCOL.md',
+        'schemas/holon-mission-v1.schema.json','schemas/knowledge-event-v0.json',
+        'schemas/oracle-hq-canary-v1.schema.json','schemas/world-state-capsule-v0.json',
+        'experiments/harbor/H3_PUBLIC_PROOF_SUBMISSION.md','experiments/packing/H3_PACKOMANIA_PUBLIC_PROOF.md',
+        'tools/crown_gate.py','tests/test_crown_gate.py','.github/workflows/oracle-cell-r0.yml',
+    ]
+    assert not (ROOT/'HANDOFF').exists()
+    for rel in retired: assert not (ROOT/rel).exists(), rel
+
+def test_mutable_status_not_cached_in_oracle_design_profiles():
+    # ORACLE_HQ is collision-protected by the newer deterministic reconciler path.
+    # ORACLE_GATEWAY remains a stable design profile and must not cache mutable blockers.
+    oracle=(ROOT/'ORACLE_GATEWAY.md').read_text(encoding='utf-8')
+    assert 'NOT CURRENT RUNTIME TRUTH' in oracle
+    assert '#13' in oracle and '#8' in oracle
+    assert '## Current exact blockers' not in oracle
+    gateway=(ROOT/'GATEWAY.md').read_text(encoding='utf-8')
+    assert 'Load `ORACLE_HQ.md` / `ORACLE_GATEWAY.md` only when Oracle placement is actually being considered.' in gateway
