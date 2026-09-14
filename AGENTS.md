@@ -47,6 +47,15 @@ Every carrier entering this repository must assume prior state can be stale, con
 - Spare capacity never creates demand. Unknown/contradictory state fails closed. An active dispatch suppresses duplicate dispatch. A true human boundary must have machine resume armed before Tao is asked to unlock it.
 - Candidate controller policies evolve offline by trace replay/failure injection/canary/soak; promotion must not widen authority or add a new state owner.
 
+## Deterministic janitor forcing
+- Read `DETERMINISTIC_JANITOR_CONTRACT.md` before removing runtime residue.
+- Cleanup is a bounded leaf effect selected by the existing reconciler; it is not a neural janitor, scheduler, or second state owner.
+- Before any cleanup effect, `python tools/janitor_gate.py <request.json> --allowed-root <trusted-root>` must return `ADMIT_CLEANUP` or `NOOP_CLEAN`.
+- `ops/janitor_exec.py` is the only R0 cleanup actuator. It rechecks admission immediately before effect, performs exactly one cleanup, writes a hashed receipt, and never retries itself.
+- R0 cleanup is limited to owned expired temp/cache directories and clean registered Git worktrees. No arbitrary process/container/repository/branch/provider cleanup.
+- Unknown ownership, live TTL, active lease, pending consumer, self-attested terminal evidence, dirty worktree, path escape, or identity mismatch fails closed.
+- `DELETE_RESIDUE != DELETE_HISTORY`: GitHub evidence, actor state, verifier receipts, ConsumerAck, lineage, and public proof are never janitor targets.
+- Routine cleanup is swarm work. `routine_cleanup_actions_by_tao` targets zero.
 ## Battlefield / income forcing
 - Read `BATTLEFIELD_SELECTION_STANDARD.md` before scouting, recommending, or attacking any external leaderboard, competition, benchmark, challenge, case-study target, or income lane.
 - Every external target MUST have a machine-readable `battlefield.v1` card conforming to `schemas/battlefield.v1.schema.json`.

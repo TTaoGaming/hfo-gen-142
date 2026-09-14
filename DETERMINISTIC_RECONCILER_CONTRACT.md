@@ -16,6 +16,7 @@ The system already had clocks, durable local state machines, workers, gates, and
 - GitHub Actions / Cloudflare schedule/workflow: wake and transport only.
 - VPS/provider workers: disposable execution capacity only.
 - `tools/reconcile_kernel.py`: pure deterministic policy only; it owns **no durable state**.
+- `tools/janitor_gate.py` + `ops/janitor_exec.py`: bounded cleanup admission/effect leaf; see `DETERMINISTIC_JANITOR_CONTRACT.md`.
 - Tao: intent, budgets, policy, true authority unlocks, irreversible external effects. Never routine continuation.
 
 ## Reconciliation law
@@ -28,8 +29,9 @@ Priority order:
 4. let Sigrun finish phases it already owns;
 5. when `WAITING_WORKER`, dispatch one admitted live worker route or let Sigrun's deadline/recovery owner handle absence;
 6. consume terminal evidence before launching unrelated next work;
-7. when actor capacity is free, select the highest-priority admitted unblocked demand deterministically;
-8. if no admitted demand exists, idle. Spare capacity never invents work.
+7. execute at most one already-admitted cleanup candidate before unrelated new demand;
+8. when actor capacity is free, select the highest-priority admitted unblocked demand deterministically;
+9. if no admitted cleanup or demand exists, idle. Spare capacity never invents work.
 
 ## Determinism / evolution
 Same canonical snapshot + same policy version MUST produce the same plan and `plan_sha256`.

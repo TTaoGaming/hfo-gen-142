@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Rootless installer only. This does not create a daemon, scheduler, queue, lease,
-# service, or semantic state owner. It installs two admission/execution gates.
+# service, or semantic state owner. It installs bounded policy/admission/execution gates.
 REPO_URL="https://github.com/TTaoGaming/hfo-gen-142.git"
 ROOT="${HFO_GEN142_ROOT:-$HOME/.local/share/hfo-gen-142}"
 BIN="$HOME/.local/bin"
@@ -22,9 +22,14 @@ fi
 
 ln -sfn "$ROOT/tools/holon_gate.py" "$BIN/hfo-holon-gate"
 ln -sfn "$ROOT/ops/vps_exec_guard.py" "$BIN/hfo-vps-exec"
-chmod +x "$ROOT/tools/holon_gate.py" "$ROOT/ops/vps_exec_guard.py"
+ln -sfn "$ROOT/tools/reconcile_kernel.py" "$BIN/hfo-reconcile"
+ln -sfn "$ROOT/tools/janitor_gate.py" "$BIN/hfo-janitor-gate"
+ln -sfn "$ROOT/ops/janitor_exec.py" "$BIN/hfo-janitor-exec"
+chmod +x "$ROOT/tools/holon_gate.py" "$ROOT/ops/vps_exec_guard.py" "$ROOT/tools/reconcile_kernel.py" "$ROOT/tools/janitor_gate.py" "$ROOT/ops/janitor_exec.py"
 
 python3 -m unittest discover -s "$ROOT/tests" -p 'test_holon_gate.py'
+python3 -m unittest discover -s "$ROOT/tests" -p 'test_reconcile_kernel.py'
+python3 -m unittest discover -s "$ROOT/tests" -p 'test_janitor_gate.py'
 
 commit="$(git -C "$ROOT" rev-parse HEAD)"
 python3 - "$STATE/install.json" "$commit" <<'PY'
@@ -42,5 +47,5 @@ p.write_text(json.dumps({
 },sort_keys=True)+'\n',encoding='utf-8')
 PY
 
-echo "ADMIT: installed hfo-holon-gate + hfo-vps-exec at commit $commit"
+echo "ADMIT: installed holon + reconcile + janitor gates/executors at commit $commit"
 echo "No service or scheduler was created. Existing Sigrun DO remains semantic owner."

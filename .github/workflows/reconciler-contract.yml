@@ -5,6 +5,11 @@ on:
     branches: [main]
     paths:
       - 'DETERMINISTIC_RECONCILER_CONTRACT.md'
+      - 'DETERMINISTIC_JANITOR_CONTRACT.md'
+      - 'tools/janitor_gate.py'
+      - 'ops/janitor_exec.py'
+      - 'ops/install_vps_forcing_functions.sh'
+      - 'tests/test_janitor_gate.py'
       - 'tools/reconcile_kernel.py'
       - 'tests/test_reconcile_kernel.py'
       - 'AGENTS.md'
@@ -12,6 +17,11 @@ on:
   pull_request:
     paths:
       - 'DETERMINISTIC_RECONCILER_CONTRACT.md'
+      - 'DETERMINISTIC_JANITOR_CONTRACT.md'
+      - 'tools/janitor_gate.py'
+      - 'ops/janitor_exec.py'
+      - 'ops/install_vps_forcing_functions.sh'
+      - 'tests/test_janitor_gate.py'
       - 'tools/reconcile_kernel.py'
       - 'tests/test_reconcile_kernel.py'
       - 'AGENTS.md'
@@ -30,11 +40,14 @@ jobs:
         with:
           python-version: '3.12'
       - name: Run deterministic reconciler regressions
-        run: python -m unittest tests.test_reconcile_kernel -v
+        run: |
+          python -m unittest discover -s tests -p 'test_reconcile_kernel.py' -v
+          python -m unittest discover -s tests -p 'test_janitor_gate.py' -v
       - name: Assert controller remains a pure policy surface
         shell: bash
         run: |
           set -euo pipefail
           grep -q 'owns no queue, scheduler, lease, actor state, credentials, or effects' tools/reconcile_kernel.py
           grep -q 'Same canonical snapshot + same policy version MUST produce the same plan' DETERMINISTIC_RECONCILER_CONTRACT.md
+          grep -q 'R0 deliberately does \*\*not\*\* kill arbitrary processes' DETERMINISTIC_JANITOR_CONTRACT.md
           ! grep -Eq 'requests\.|urllib|subprocess|socket|boto|cloudflare|github' tools/reconcile_kernel.py
