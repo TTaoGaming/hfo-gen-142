@@ -7,23 +7,24 @@
   "reducer_min_terminals": 12,
   "laws": [
     "WORK_DEMAND_BEFORE_CAPACITY",
+    "CAPABILITY_FIT_BEFORE_CLAIM",
     "SYMBOLIC_GATES_BEFORE_NEURAL_ADVICE",
     "NEURAL_ADVICE_CANNOT_WIDEN_AUTHORITY",
-    "CLAIM_ONE_LANE_THEN_READ_BACK",
+    "PROPOSAL_IS_NOT_CLAIM_UNTIL_DURABLE_WRITE",
     "EARLIER_DURABLE_CLAIM_WINS",
     "TERMINAL_ONCE",
     "UNKNOWN_REMAINS_UNKNOWN"
   ],
   "lanes": {
-    "I0": {"mission":"Upwork API/current policy and VPS independence","priority":100,"phenotype":"LING"},
-    "I1": {"mission":"marketplace economics and live buyer demand","priority":85,"phenotype":"LING"},
-    "I2": {"mission":"direct/referral/agency acquisition evidence","priority":80,"phenotype":"LING"},
-    "I3": {"mission":"remote employment channels and role families","priority":75,"phenotype":"LING"},
-    "I4": {"mission":"proposal/bid conversion evidence","priority":90,"phenotype":"LING"},
-    "I5": {"mission":"video proof evidence and buyer fatigue falsification","priority":70,"phenotype":"TWINLING"},
-    "I6": {"mission":"code/demo/case-study proof artifact evidence","priority":95,"phenotype":"TWINLING"},
-    "I7": {"mission":"career SSOT inventory across Drive/GitHub","priority":98,"phenotype":"ROACH"},
-    "I8": {"mission":"optimization/public-proof inventory and buyer translation","priority":96,"phenotype":"ROACH"},
-    "I9": {"mission":"deduplicate and reduce terminals into one 7-day playbook","priority":110,"phenotype":"REDUCER","requires_terminals":12}
+    "I0": {"mission":"Upwork API/current policy and VPS independence","priority":100,"phenotype":"LING","required_capabilities":["public_web"]},
+    "I1": {"mission":"marketplace economics and live buyer demand","priority":85,"phenotype":"LING","required_capabilities":["public_web"]},
+    "I2": {"mission":"direct/referral/agency acquisition evidence","priority":80,"phenotype":"LING","required_capabilities":["public_web"]},
+    "I3": {"mission":"remote employment channels and role families","priority":75,"phenotype":"LING","required_capabilities":["public_web"]},
+    "I4": {"mission":"proposal/bid conversion evidence","priority":90,"phenotype":"LING","required_capabilities":["public_web"]},
+    "I5": {"mission":"video proof evidence and buyer fatigue falsification","priority":70,"phenotype":"TWINLING","required_capabilities":["public_web"]},
+    "I6": {"mission":"code/demo/case-study proof artifact evidence","priority":95,"phenotype":"TWINLING","required_capabilities":["public_web","github_read"]},
+    "I7": {"mission":"career SSOT inventory across Drive/GitHub","priority":98,"phenotype":"ROACH","required_capabilities":["drive_read","github_read"]},
+    "I8": {"mission":"optimization/public-proof inventory and buyer translation","priority":96,"phenotype":"ROACH","required_capabilities":["github_read"]},
+    "I9": {"mission":"deduplicate and reduce terminals into one 7-day playbook","priority":110,"phenotype":"REDUCER","requires_terminals":12,"required_capabilities":["github_read"]}
   }
 }
