@@ -37,6 +37,16 @@ Every carrier entering this repository must assume prior state can be stale, con
 - Transition evidence must be structured, provenance-bound, and `self_attested=false`; the producer cannot mint proof that its own next transition happened merely by writing prose or an arbitrary receipt string.
 - `HUMAN_BOUNDARY != MANUAL_CONTINUATION`. Before escalating a real authority wall, record the failed machine attempt and arm an automatic resume watcher. Tao may unlock authority; Tao must not launch, retry, route, monitor, gather, check back, or restart the next carrier.
 
+## Deterministic reconciler forcing
+- Read `DETERMINISTIC_RECONCILER_CONTRACT.md` for hot-loop orchestration semantics.
+- The hot-loop owner is a versioned deterministic controller/reconciler policy, not Tao, Sigrun-as-personality, a worker model, or a chat thread.
+- `QUEEN` is only a codename for reconciliation policy. `QUEEN_POLICY != ACTOR != WORKER != SCHEDULER != QUEUE != AUTHORITY`.
+- Neural agents may propose demand/payloads and perform bounded work; they may not choose control-flow transitions after admission.
+- Reconciliation must be replayable: same canonical snapshot + same policy version => same `plan_sha256`.
+- Run `python tools/reconcile_kernel.py <snapshot.json>` for the current R0 policy. The kernel owns no durable state or effects; wake/transport adapters execute its bounded plan through existing owners.
+- Spare capacity never creates demand. Unknown/contradictory state fails closed. An active dispatch suppresses duplicate dispatch. A true human boundary must have machine resume armed before Tao is asked to unlock it.
+- Candidate controller policies evolve offline by trace replay/failure injection/canary/soak; promotion must not widen authority or add a new state owner.
+
 ## Battlefield / income forcing
 - Read `BATTLEFIELD_SELECTION_STANDARD.md` before scouting, recommending, or attacking any external leaderboard, competition, benchmark, challenge, case-study target, or income lane.
 - Every external target MUST have a machine-readable `battlefield.v1` card conforming to `schemas/battlefield.v1.schema.json`.
