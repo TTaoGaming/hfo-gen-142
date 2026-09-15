@@ -1,0 +1,19 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-CROWN-CVRPLIB-010",
+  "priority": 590,
+  "admitted": true,
+  "question": "Verify CVRPLib is an active third-party record keeper with an explicit improved-solution submission path and current 2026 BKS updates.",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {
+      "url": "https://galgos.inf.puc-rio.br/cvrplib/index.php/en/updates/",
+      "assertions": [
+        "Any person or group can submit improved solutions",
+        "September 10, 2026",
+        "XL-n2354-k631",
+        "940,632"
+      ]
+    }
+  ]
+}

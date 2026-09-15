@@ -1,0 +1,20 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-CROWN-CVRPLIB-PRESTIGE-012",
+  "priority": 570,
+  "admitted": true,
+  "question": "Verify CVRPLib 2026 competitive depth so a new BKS there is a credible prestige signal rather than an internal synthetic win.",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {
+      "url": "https://galgos.inf.puc-rio.br/cvrplib/index.php/en/updates/",
+      "assertions": [
+        "1,932",
+        "19 teams",
+        "7 teams",
+        "verified and approved",
+        "OptVerse-CityU"
+      ]
+    }
+  ]
+}

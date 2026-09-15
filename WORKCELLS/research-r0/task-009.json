@@ -1,0 +1,27 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-CROWN-FJSPLIB-009",
+  "priority": 600,
+  "admitted": true,
+  "question": "Verify the public FJSPLib one-point-gap crown portfolio and that these remain open best-known-solution targets.",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {
+      "url": "https://scheduleopt.github.io/benchmarks/fjsplib/",
+      "assertions": [
+        "FJSPLib",
+        "506 / 507",
+        "behnke29",
+        "116",
+        "117",
+        "behnke33",
+        "223",
+        "224",
+        "behnke48",
+        "124",
+        "125",
+        "best lb + 1 == best ub"
+      ]
+    }
+  ]
+}

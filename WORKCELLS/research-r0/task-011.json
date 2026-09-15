@@ -1,0 +1,21 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-CROWN-FJSPLIB-DONORS-011",
+  "priority": 580,
+  "admitted": true,
+  "question": "Verify FJSPLib exposes reproducible public donor families and industrially legible scheduling-engine semantics suitable for bounded evolutionary search.",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {
+      "url": "https://scheduleopt.github.io/benchmarks/fjsplib/",
+      "assertions": [
+        "CP-SAT",
+        "OptalCP",
+        "Cplex",
+        "10 minute",
+        "industrial workflows",
+        "meta-heuristics"
+      ]
+    }
+  ]
+}
