@@ -1,0 +1,92 @@
+{
+  "schema_version": "battlefield.v1",
+  "battlefield_id": "ecdsa-fail-secp256k1-pointadd-20260915",
+  "observed_at_utc": "2026-09-15T07:28:51Z",
+  "mission_class": "prestige_crown",
+  "stage": "canary",
+  "domain": "quantum-computing/cryptographic-resource-estimation",
+  "target": {
+    "board": "ECDSA.fail",
+    "track": "secp256k1 Point-Addition Challenge",
+    "metric": "average executed Toffoli count × peak qubit width",
+    "direction": "minimize",
+    "incumbent_name": "REgonLevy / DeepSeek-V4",
+    "incumbent_score": 1140989148,
+    "incumbent_checked_at_utc": "2026-09-15T07:28:00Z",
+    "incumbent_url": "https://ecdsa.fail/",
+    "rules_url": "https://github.com/Layr-Labs/ecdsafail-challenge/blob/main/README.md",
+    "submission_url": "https://ecdsa.fail/",
+    "open_to_user": true,
+    "public_proof_before_merge": true,
+    "proof_latency_hours": 24
+  },
+  "prestige": {
+    "tier": "B",
+    "institution_or_platform": "Eigen Labs / ECDSA.fail",
+    "independent_verifier": true,
+    "verifier_url": "https://github.com/Layr-Labs/ecdsafail-challenge",
+    "public_attribution": true,
+    "durable_public_evidence": true,
+    "real_incumbent_competition": true,
+    "competitor_count": 70,
+    "accepted_submission_protocol": true,
+    "buyer_legibility": 0.86
+  },
+  "commercial": {
+    "buyer_personas": ["quantum-computing R&D leads", "cryptography/security engineering leaders", "optimization/agent-research teams"],
+    "offer": "Reproducible optimization and agentic search engineering for hard verifier-backed technical benchmarks",
+    "demand_evidence_urls": ["https://ecdsa.fail/", "https://github.com/Layr-Labs/ecdsafail-challenge"],
+    "p_paid_conversation_7d": 0.05,
+    "expected_cash_30d": 250,
+    "expected_cash_90d": 1000,
+    "case_study_claim": "If an accepted result beats the public incumbent: independently verified optimization of a live secp256k1 quantum-circuit frontier."
+  },
+  "evolution": {
+    "donors": [
+      {"url": "https://github.com/Layr-Labs/ecdsafail-challenge", "allowed": true, "type": "official_open_benchmark", "contribution": "Frozen 9024-shot correctness/reversibility/phase evaluator and editable point_add search surface."},
+      {"url": "https://github.com/jieyilong/ecdsafail-autoresearch-harness", "allowed": true, "type": "public_methodology", "contribution": "Profile-first measurement, huntability gating, frozen-evaluator bake/recheck, and clean-island search patterns."},
+      {"url": "https://github.com/BitWonka/ecdsafail-tools", "allowed": true, "type": "public_analysis_tooling", "contribution": "Dead-CCX/CCZ screening for charged-but-inert Toffoli gates; value-neutral removal candidate axis."}
+    ],
+    "mutable_axes": [
+      "peak-qubit liveness/ancilla reuse and recomputation",
+      "executed-Toffoli reductions via exact arithmetic/circuit rewrites",
+      "clean-island nonce/search strategy after op-stream changes",
+      "charged-but-inert CCX/CCZ elimination validated against the frozen evaluator"
+    ],
+    "weakness_hypothesis": "The public frontier is active but still moving; open donor methodology exposes measured peak and Toffoli levers, so exact local mutations can be successive-halved against the frozen 9024-shot verifier.",
+    "gap_evidence_urls": ["https://ecdsa.fail/", "https://github.com/jieyilong/ecdsafail-autoresearch-harness", "https://github.com/BitWonka/ecdsafail-tools"],
+    "canary": {
+      "runtime_minutes": 5,
+      "cost_usd": 0,
+      "status": "FAIL_INFRA_BWRAP_LOOPBACK_RTM_NEWADDR_DENIED",
+      "promotion_rule": "Promote only after one unchanged official-harness run completes 9024/9024 with OK and score.json; otherwise kill that carrier fingerprint."
+    },
+    "full_run": {"runtime_minutes": 240, "cost_usd": 0}
+  },
+  "execution": {
+    "frontier_required": false,
+    "provider_live": true,
+    "provider_class": "frontier_subscription_bridge",
+    "provider_route": "not required for deterministic harness canary; existing frontier providers reserved for mutation proposals",
+    "no_weak_fallback": true,
+    "evaluator_frozen": true,
+    "local_reproduction_ready": false,
+    "external_auth_ready": false,
+    "carrier": "Oracle ARM64 exact official HEAD 97003969 with Rust 1.93.0 and bwrap 0.9.0; compile succeeded, but the sandbox failed before evaluator entry. Lenovo WSL lacks bwrap; the prior OVH Docker fingerprint was killed separately."
+  },
+  "probability": {
+    "p_beat_incumbent": 0.08,
+    "p_public_proof_24h": 0.15,
+    "p_public_proof_7d": 0.55,
+    "confidence": 0.35,
+    "basis": "The live official board was independently rechecked at 1,140,989,148 with 590 frontier advances by 70 solvers; this carrier still has no safe completed local evaluator run, so beat probability remains deliberately low."
+  },
+  "budget": {"max_spend_usd": 0, "max_operator_minutes": 0, "max_wallclock_hours": 1},
+  "evidence": [
+    "https://ecdsa.fail/",
+    "https://github.com/Layr-Labs/ecdsafail-challenge/blob/main/README.md",
+    "https://github.com/jieyilong/ecdsafail-autoresearch-harness",
+    "https://github.com/BitWonka/ecdsafail-tools"
+  ],
+  "notes": "Carrier ac9fbcef-9b13-4f2c-83ec-392a63dcef8c. Exact official HEAD 97003969b1d3809c6829954bb520c37c1879efbf. Exactly one canary was attempted on Oracle and killed before evaluator entry because bwrap could not configure the loopback interface inside the unprivileged network namespace. This fingerprint may not be retried without a runtime-isolation strategy change."
+}
