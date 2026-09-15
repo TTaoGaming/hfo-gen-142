@@ -1,0 +1,121 @@
+{
+  "battlefield_id": "jsplib-ta32js-20260915",
+  "budget": {
+    "max_operator_minutes": 20,
+    "max_spend_usd": 0,
+    "max_wallclock_hours": 12
+  },
+  "commercial": {
+    "buyer_personas": [
+      "operations-research and scheduling engineering teams",
+      "manufacturing planning and optimization buyers"
+    ],
+    "case_study_claim": "Improved the independently reproducible best-known makespan for Taillard ta32js in the public JSPLib archive, if and only if a validated schedule below 1783 is accepted or publicly reviewable upstream.",
+    "demand_evidence_urls": [
+      "https://www.dice.com/job-detail/ee2cb1cc-54cb-4e11-97ed-601761f15dfc",
+      "https://www.upwork.com/freelance-jobs/apply/Full-stack-Developer-manufacturing-projection-planning-SaaS-multi-Tenant-scheduling_~022096159673648145414/"
+    ],
+    "expected_cash_30d": 1500,
+    "expected_cash_90d": 6000,
+    "offer": "Scheduling optimization sprint: reproduce a production scheduling bottleneck, benchmark CP/OR baselines, and deliver a validated lower-makespan solver configuration with reproducible artifacts.",
+    "p_paid_conversation_7d": 0.22
+  },
+  "domain": "job-shop-scheduling-operations-research",
+  "evidence": [
+    "https://scheduleopt.github.io/benchmarks/jsplib/",
+    "https://raw.githubusercontent.com/ScheduleOpt/benchmarks/main/jobshop/solutions/bks.json",
+    "https://github.com/ScheduleOpt/benchmarks/tree/main/jobshop/code/cpsat",
+    "https://arxiv.org/abs/2504.16106"
+  ],
+  "evolution": {
+    "canary": {
+      "cost_usd": 0,
+      "promotion_rule": "PASS only if the frozen ScheduleOpt validator accepts a ta32js schedule with makespan <=1782; otherwise FAIL and do not expand the same strategy fingerprint.",
+      "runtime_minutes": 1,
+      "status": "FAIL"
+    },
+    "donors": [
+      {
+        "allowed": true,
+        "contribution": "Frozen public model, solution extractor, and independent schedule validator.",
+        "type": "Apache-2.0 reference CP-SAT harness",
+        "url": "https://github.com/ScheduleOpt/benchmarks/tree/main/jobshop/code/cpsat"
+      },
+      {
+        "allowed": true,
+        "contribution": "Current high-performing scheduling-engine benchmark patterns and result schema.",
+        "type": "public reference engine harness",
+        "url": "https://github.com/ScheduleOpt/benchmarks/tree/main/jobshop/code/optalcp"
+      },
+      {
+        "allowed": true,
+        "contribution": "OR-Tools solver-portfolio and bound-improvement methodology over open benchmark instances.",
+        "type": "public JSSP bound-improvement paper",
+        "url": "https://arxiv.org/abs/2504.16106"
+      }
+    ],
+    "full_run": {
+      "cost_usd": 0,
+      "runtime_minutes": 600
+    },
+    "gap_evidence_urls": [
+      "https://raw.githubusercontent.com/ScheduleOpt/benchmarks/main/jobshop/solutions/bks.json",
+      "https://scheduleopt.github.io/benchmarks/jsplib/"
+    ],
+    "mutable_axes": [
+      "search seed/restart/LNS and CP-SAT portfolio parameters",
+      "incumbent warm-start/neighborhood decomposition and schedule repair policy"
+    ],
+    "weakness_hypothesis": "Fresh BKS replay shows ta32js has the smallest absolute open JSPLib gap: LB 1774 versus certified UB 1783, leaving only 9 makespan units (0.507%) for an incumbent-beating schedule while retaining a reproducible public validator."
+  },
+  "execution": {
+    "carrier": "Oracle VPS ARM64 via existing Desktop Commander transport",
+    "evaluator_frozen": true,
+    "external_auth_ready": false,
+    "frontier_required": false,
+    "local_reproduction_ready": true,
+    "no_weak_fallback": true,
+    "provider_class": "cots_local_solver",
+    "provider_live": true,
+    "provider_route": "Oracle ARM64 + OR-Tools CP-SAT 9.15.6755 + ScheduleOpt reference validator"
+  },
+  "mission_class": "prestige_crown",
+  "notes": "KILL_CANARY for strategy fingerprint cp-sat-9.15.6755/ta32js/seed1701/60s/8workers. Validated UB=1953 vs incumbent 1783; preserve negative result and require a strategy change before any retry. JSPLib also explicitly warns that isolated BKS wins have limited scientific value.",
+  "observed_at_utc": "2026-09-15T04:44:00Z",
+  "prestige": {
+    "accepted_submission_protocol": true,
+    "buyer_legibility": 0.82,
+    "competitor_count": 4,
+    "durable_public_evidence": true,
+    "independent_verifier": true,
+    "institution_or_platform": "ScheduleOpt JSPLib specialist scheduling benchmark",
+    "public_attribution": true,
+    "real_incumbent_competition": true,
+    "tier": "B",
+    "verifier_url": "https://github.com/ScheduleOpt/benchmarks/tree/main/jobshop"
+  },
+  "probability": {
+    "basis": "Frozen 60-second OR-Tools CP-SAT 9.15.6755 canary on Oracle ARM64 validated makespan 1953, which is 170 above the live 1783 incumbent (9.53% worse); stock CP-SAT is therefore not a plausible near-term crown strategy on this fingerprint.",
+    "confidence": 0.8,
+    "p_beat_incumbent": 0.03,
+    "p_public_proof_24h": 0.03,
+    "p_public_proof_7d": 0.12
+  },
+  "schema_version": "battlefield.v1",
+  "stage": "canary",
+  "target": {
+    "board": "ScheduleOpt JSPLib best-known-solutions archive",
+    "direction": "minimize",
+    "incumbent_checked_at_utc": "2026-09-15T04:44:00Z",
+    "incumbent_name": "QXL2026",
+    "incumbent_score": 1783,
+    "incumbent_url": "https://scheduleopt.github.io/benchmarks/jsplib/",
+    "metric": "makespan",
+    "open_to_user": true,
+    "proof_latency_hours": 24,
+    "public_proof_before_merge": true,
+    "rules_url": "https://scheduleopt.github.io/benchmarks/jsplib/",
+    "submission_url": "https://github.com/ScheduleOpt/benchmarks",
+    "track": "Taillard ta32js open best-known upper bound"
+  }
+}
