@@ -1,7 +1,7 @@
 import { Agent, getAgentByName, type FiberRecoveryContext } from "agents";
 import { createQuickActionTools } from "agents/browser/ai";
 import { createWorkersAI } from "workers-ai-provider";
-import { generateText, stepCountIs } from "ai";
+import { generateText, jsonSchema, Output, stepCountIs } from "ai";
 
 const ACTOR_ID = "SIGRUN-GEN142-SCOUT-R0";
 const PARENT_ACTOR = "SIGRUN/C2";
@@ -101,9 +101,30 @@ Return JSON only with keys: role, lane, kills, surviving_objections, evidence_ur
 const REDUCER_SYSTEM = BASE_SYSTEM + `
 ROLE=REDUCER. Reconcile independent proposer and falsifier traces. Do not average disagreement away.
 Only retain claims jointly supportable by cited observations. If evidence is inadequate, return survivors=[] and state the blocker.
-Return strict JSON, no markdown, with exactly these keys:
-observed_utc, lane, canonical_recovery, survivors, finding, strongest_falsifier, blocker, next_executable_assay.
-survivors must be an array with at most 3 strings. lane must exactly match the requested lane.`;
+The host enforces a structured output schema and supplies observed_utc, lane, and canonical_recovery deterministically.
+Return only semantic result fields: survivors, finding, strongest_falsifier, blocker, next_executable_assay.
+survivors must contain at most 3 strings.`;
+
+type ReducerOutput = {
+  survivors: string[];
+  finding: string;
+  strongest_falsifier: string;
+  blocker: string;
+  next_executable_assay: string;
+};
+
+const REDUCER_OUTPUT_SCHEMA = jsonSchema<ReducerOutput>({
+  type: "object",
+  additionalProperties: false,
+  required: ["survivors", "finding", "strongest_falsifier", "blocker", "next_executable_assay"],
+  properties: {
+    survivors: { type: "array", maxItems: 3, items: { type: "string" } },
+    finding: { type: "string" },
+    strongest_falsifier: { type: "string" },
+    blocker: { type: "string" },
+    next_executable_assay: { type: "string" },
+  },
+});
 
 function parseStrictResult(text: string, lane: Lane): Record<string, unknown> {
   const trimmed = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
@@ -222,8 +243,20 @@ export class Gen142Scout extends Agent<any, ScoutState> {
             system: REDUCER_SYSTEM,
             prompt: JSON.stringify({ runId, lane, canonical, proposer, falsifier, debate_sha256: debateSha }).slice(0, 30000),
             maxOutputTokens: 1800,
-          });          const text = synthesis.text.trim().slice(0, 12000);
-          if (!text) throw new Error("EMPTY_SYNTHESIS");
+            providerOptions: {
+              "workers-ai": {
+                reasoning_effort: null,
+                chat_template_kwargs: { enable_thinking: false },
+              },
+            },
+            output: Output.object({ schema: REDUCER_OUTPUT_SCHEMA }),
+          });
+          const text = JSON.stringify({
+            observed_utc: new Date().toISOString(),
+            lane,
+            canonical_recovery: "github:TTaoGaming/hfo-gen-142#13",
+            ...synthesis.output,
+          });
           parseStrictResult(text, lane);
           const completed = new Date().toISOString();
           this.setState({
