@@ -1,0 +1,91 @@
+{
+  "schema": "gen142.night-shift-crown-pdsa.v1",
+  "carrier_uuid": "a1c7b495-bb1f-4165-9cf8-a04dd6481b78",
+  "observed_at_utc": "2026-09-15T05:19:03Z",
+  "tao_hot_loop_actions": 0,
+  "base_main_sha": "a4e59326eb3435853b935b6af4521d956ee4a4e5",
+  "governance_readback": {
+    "main_protected": false,
+    "rulesets": [],
+    "main_mutated": false
+  },
+  "workcell_readback": {
+    "last_retired": "GEN142-QD-LEARN2DESIGN-018",
+    "result_sha256": "bc74261a490a878db11acd28eebfc388799c91ca90f5d59f52178a19e79b6879",
+    "next": "GEN142-PRESTIGE-SWEEP-008",
+    "continuation": "SCHEDULED_RECONCILE"
+  },
+  "native_scout_readback": {
+    "url": "https://hfo-gen142-native-scout-r0.tommytai3.workers.dev/state",
+    "http_status": 200,
+    "phase": "COGNITION_RUNNING",
+    "epoch": 12,
+    "failureCount": 15,
+    "sameFailureCount": 2,
+    "lastLane": "REDUCER",
+    "lastAttemptLane": "DONOR",
+    "lastFailureFingerprint": "ecc528ffe5337352dea6cc284c83ea77f4204b62db6619445201b6493be5fada",
+    "lastResult_admitted": false,
+    "anchor_status": "CANDIDATE_NOT_ADMITTED"
+  },
+  "carrier_capability": {
+    "ovh_x86_64": {"online": true, "python3": true, "git": true, "docker": true, "ollama": true, "gh": true, "relevant_credential_env_names": []},
+    "oracle_arm64": {"online": true, "python3": true, "git": true, "ollama": true, "kimi": true, "gh": true, "relevant_credential_env_names": []},
+    "lenovo_amd64": {"online": true, "python": true, "node": true, "git": true, "docker": true, "ollama": true, "kimi": true, "wrangler": true, "codex": true, "gh": true, "kicad_cli": false}
+  },
+  "gather": [
+    {"id": "micro2026-moa-npu-stage1", "source": "BATTLEFIELDS/micro2026-moa-npu-stage1.json", "repo_gate": "ADMIT_SCOUT", "hard_gate": "HOLD", "reason": "local_reproduction_ready=false; promotion requires Furiosa Arena authentication, forbidden in this run"},
+    {"id": "ieee-bigdata-traffic-flow-bench-2026", "source": "BATTLEFIELDS/ieee-bigdata-traffic-flow-bench-2026.json", "repo_gate": "ADMIT_SCOUT", "hard_gate": "HOLD", "reason": "local_reproduction_ready=false; canary cost_usd=5 and Kaggle auth/submission path is outside this run"},
+    {"id": "tartanimu-iros2026", "source": "BATTLEFIELDS/tartanimu-iros2026.json", "repo_gate": "ADMIT_SCOUT", "hard_gate": "HOLD", "reason": "local_reproduction_ready=false; canary cost_usd=20 and 180 minutes"},
+    {"id": "comma-pcbgolf-20260915", "source": "fresh public gather", "hard_gate": "KILL", "reason": "no visible public incumbent and no independent machine-verifier/public score path yet"},
+    {"id": "sisap26-task1-public-20260915", "source": "fresh public gather", "hard_gate": "KILL", "reason": "public leaderboard says new submissions stay open, but archived live-challenge TIRA/auth workflow is closed and no current accepted post-challenge submission protocol is documented"},
+    {"id": "hutter-prize-enwik9", "source": "fresh public gather", "hard_gate": "KILL", "reason": "real prestigious incumbent exists but official resource envelope is roughly 50 hours single-core; not a bounded overnight canary"},
+    {"id": "comma-video-compression-20260915", "source": "fresh public gather", "repo_gate": "ADMIT_CANARY routing_score=0.035177", "hard_gate": "ADMIT", "reason": "current public incumbent, open deterministic evaluator, public PR protocol, no login/payment needed for local canary, artifact locally reproducible"}
+  ],
+  "hard_gate_contract": {
+    "rules": [
+      "real public incumbent and accepted public verification protocol",
+      "local no-external-effect reproduction ready",
+      "canary cost_usd == 0",
+      "no registration/login/TOS/payment/public submission required for canary",
+      "frozen deterministic readback available",
+      "repeated failed fingerprint requires strategy change"
+    ],
+    "survivors": ["comma-video-compression-20260915"],
+    "primary": "comma-video-compression-20260915"
+  },
+  "repo_gate_readback": {
+    "comma": {"decision": "ADMIT", "verdict": "ADMIT_CANARY", "routing_score": 0.035177},
+    "unconstrained_repo_reducer_primary": "micro2026-moa-npu-stage1",
+    "note": "The stock reducer ranks scout cards without this carrier's no-external-effect hard constraints; therefore it is not authoritative for this bounded run until the run hard gate is applied."
+  },
+  "primary": {
+    "battlefield": "comma.ai video compression challenge",
+    "incumbent": "semantic-pose-HPAC_CPR1_polished",
+    "official_public_score": 0.162,
+    "incumbent_exact_reported_score": 0.16226842169958583,
+    "incumbent_source": "https://github.com/commaai/comma_video_compression_challenge/pull/135",
+    "metric": "100*SegNet + sqrt(10*PoseNet) + 25*rate; lower is better",
+    "donor_genes": ["fixed-schema packing", "WANS1 semantic renderer representation", "CAP1 carrier representation", "RC64 token stream", "exact-score-gated discrete polishing", "rebuild-twice byte identity and full-evaluator promotion loop"],
+    "mutation_axes": ["outer ZIP representation", "inner lossless entropy/container representation", "carrier/entropy coding parameters"]
+  },
+  "canary": {
+    "fingerprint": "comma135:outer-zip-minimalization:v1",
+    "carrier": "OVH VPS x86_64",
+    "incumbent_archive_bytes": 186724,
+    "payload_bytes": 186624,
+    "zip_overhead_bytes": 100,
+    "incumbent_archive_sha256": "12cf5d71a94065184f097c3e40dfe9f1db8402a1a76a80efc76a6956fe1e4004",
+    "payload_sha256": "66da2921780038cad6b18d25ea36e066c63b07b755fec33c15ac013ff4bcfc3c",
+    "candidate_archive_bytes": 186724,
+    "candidate_archive_sha256": "19fe4319d1f745abe4187b28d1cb4a87e71f9319d2cca9e4e37230cdcbd5a343",
+    "candidate_payload_sha256": "66da2921780038cad6b18d25ea36e066c63b07b755fec33c15ac013ff4bcfc3c",
+    "delta_bytes": 0,
+    "verdict": "FAIL_TIE_MINIMAL_ZIP_OVERHEAD",
+    "successive_halving": "KILL fingerprint; no retry without strategy change"
+  },
+  "strongest_falsifier": "The incumbent already uses the protocol-minimum 100-byte overhead for a one-character, one-member stored ZIP. Outer-container minimization has zero remaining byte headroom; beating 0.162 requires an inner representation/model-state improvement, and the incumbent is already heavily polished.",
+  "public_proof_path": "If a future distinct mutation strictly improves the frozen full score and passes reproducibility/parity, the challenge accepts public pull-request submissions and the comma.ai leaderboard provides attributable proof. No PR was opened in this run.",
+  "next_machine_owned_action": "Do not repeat outer ZIP minimization. Assimilate the incumbent's exact rebuild/parity/full-score loop and run one distinct lossless inner-representation mutation against the frozen PR #135 archive, prioritizing entropy/container state that preserves decoded payload/model hashes. Successive-half only strict byte/score improvements.",
+  "human_only_authority_boundary": "Only external public submission/PR and any account authentication/terms action. None is needed for the next local mutation assay."
+}
