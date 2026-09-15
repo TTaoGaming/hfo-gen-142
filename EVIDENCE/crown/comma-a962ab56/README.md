@@ -9,7 +9,7 @@ Status: **`SUBMISSION_READY_INTERNAL`**. External submission was **not** perform
 - Incumbent archive: `186,724` bytes, SHA-256 `12cf5d71a94065184f097c3e40dfe9f1db8402a1a76a80efc76a6956fe1e4004`.
 - Exact incumbent score reported by PR #135: `0.16226842169958583`.
 - Frozen metric: `100*SegNet + sqrt(10*PoseNet) + 25*archive_bytes/37545489`; lower is better.
-- This attack is representation-only. It must reconstruct the incumbent F24S model bytes exactly and retain the residual + RC64 tail byte-for-byte.
+- This attack is representation-only. It reconstructs the incumbent F24S model bytes exactly and retains the residual + RC64 tail byte-for-byte.
 
 ## Evo lineage
 
@@ -50,20 +50,33 @@ The producer did not self-verify the material improvement. An independent Oracle
 - unchanged residual + RC64 SHA-256: `fd3e5617a130d194f65ce1540ed778bedc963ceebc0d5ca1ae64830b425bddb2`
 - verifier receipt SHA-256: `323645b1df96a34c7212f2c853f5da9212d2521420e7c901ac1bab406a46c766`
 
-`reproduce.py` uses only Python's standard library and the public F26 release. A clean run must produce the exact candidate hash above.
+The public `reproduce.py` was then cloned from this evidence branch on Oracle ARM64 and independently produced the same `186,709`-byte candidate and SHA-256.
+
+## Decoder integration
+
+`f2m1_decoder.patch` is a minimal patch against the frozen F26 submission runtime. It adds only:
+
+- the F2M1 raw-LZMA2 filter;
+- strict compact-metadata unpacking;
+- exact expansion back to canonical F24S bytes before the existing parser runs.
+
+Patch SHA-256: `a921c3ace7a1801425f2fb3b2071c5bbe4bf1712c24458a2d77bdc5d50182543`.
+
+A parser-level assay on OVH applied the patch to the frozen submission tree and required candidate vs incumbent equality for semantic renderer bytes, carrier bytes, HPAC bytes, RC64 token stream and residual payload. All five were byte-identical. No evaluator or challenge data was changed.
 
 ## Strongest falsifier
 
 The OVH liblzma rail cannot byte-reproduce the published incumbent compressor stream: rebuilding the unchanged incumbent on that rail is `186,745` bytes. Therefore local *delta-to-local-rebuild* alone is not admissible evidence of a crown.
 
-The promoted claim does **not** depend on that delta. The candidate's own charged archive is `186,709` bytes, below the published `186,724`, and the independent ARM64 replay produced the same candidate SHA while reconstructing the exact public F24S semantic/model bytes. The remaining real boundary is challenge-side acceptance of the new decoder representation.
+The promoted claim does **not** depend on that delta. The candidate's own charged archive is `186,709` bytes, below the published `186,724`; Oracle independently reproduced the same candidate SHA; and the patched decoder reconstructs the exact public F24S state. The remaining real boundary is a clean full inflation/evaluator run on an admitted compatible GPU rail and then external challenge acceptance.
 
 ## Files
 
 - `producer.json` — lineage, populations, kills, metric and candidate receipt.
 - `verifier.json` — independent ARM64 replay receipt.
 - `reproduce.py` — clean public reproducer that writes `candidate.zip` and fails closed on any hash mismatch.
+- `f2m1_decoder.patch` — minimal validated decoder integration patch.
 
 ## Next machine action
 
-Prepare and verify the minimal decoder integration for `F2M1` against the frozen challenge submission tree, then run a clean-checkout reproduction. Do **not** open the external challenge PR or submit the artifact without Tao authority.
+Run the patched candidate through the frozen full inflation/evaluator on an **already-authorized compatible GPU rail** if one is available without new spend/account action. If no such rail is already available, stop at `SUBMISSION_READY_INTERNAL`. Do **not** open the external challenge PR or submit the artifact without Tao authority.
