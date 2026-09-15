@@ -17,6 +17,7 @@ on:
       - 'tools/janitor_gate.py'
       - 'ops/janitor_exec.py'
       - 'ops/install_vps_forcing_functions.sh'
+      - 'tests/test_installer_pin.py'
       - 'tests/test_janitor_gate.py'
       - 'tools/reconcile_kernel.py'
       - 'tests/test_reconcile_kernel.py'
@@ -41,6 +42,7 @@ on:
       - 'tools/janitor_gate.py'
       - 'ops/janitor_exec.py'
       - 'ops/install_vps_forcing_functions.sh'
+      - 'tests/test_installer_pin.py'
       - 'tests/test_janitor_gate.py'
       - 'tools/reconcile_kernel.py'
       - 'tests/test_reconcile_kernel.py'
@@ -70,6 +72,7 @@ jobs:
           python -m unittest discover -s tests -p 'test_public_boundary_gate.py' -v
           python -m unittest discover -s tests -p 'test_scout_result_gate.py' -v
           python -m unittest discover -s tests -p 'test_janitor_gate.py' -v
+          python -B -m unittest discover -s tests -p 'test_installer_pin.py' -v
       - name: Assert controller remains a pure policy surface
         shell: bash
         run: |
