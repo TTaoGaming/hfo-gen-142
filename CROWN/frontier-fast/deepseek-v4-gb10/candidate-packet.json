@@ -1,0 +1,54 @@
+{
+  "schema": "hfo.crown-candidate-packet.v0",
+  "candidate_id": "frontier-fast-deepseek-v4-gb10-dspark-depth3-r0",
+  "battlefield": "frontier.fast",
+  "track_id": "deepseek-v4-flash-gguf-gb10cuda-v1",
+  "board": "speculative",
+  "model_label": "DeepSeek V4 Flash 0731",
+  "engine": "llama.cpp CUDA",
+  "device": "DGX Spark GB10",
+  "claim_status": "UNADMITTED_CANDIDATE_NOT_CROWN",
+  "external_frontier_at_selection": {
+    "trusted_runner_nonbaseline_records": 0,
+    "baseline_score": 1.0,
+    "baseline_decode_tokens_per_second": 17.507
+  },
+  "donor": {
+    "kind": "PINNED_AUTHOR_DRAFT_MODEL",
+    "repository": "unsloth/DeepSeek-V4-Flash-0731-GGUF",
+    "file": "dspark-DeepSeek-V4-Flash-0731-Q8_0.gguf",
+    "declared_spec_type": "draft-dspark",
+    "published_track_measurement": "depth 3 approximately 25.51 tok/s decode vs 17.51 stock (~1.46x)",
+    "measurement_owner": "frontier.fast live track contract; not HFO"
+  },
+  "proposed_serving_delta": {
+    "speculative": {
+      "specType": "draft-dspark",
+      "draftMax": 3,
+      "draftMin": 1
+    }
+  },
+  "admission": {
+    "decision": "HOLD",
+    "code": "PUBLISHED_CONTRACT_CONFLICT",
+    "reason": "live draftModel.specType and note say draft-dspark while live howToRun currently says draft-dflash",
+    "release_gate": "CROWN/frontier-fast/contract_assay.py exits 0 and official/current intake agrees on the exact specType"
+  },
+  "correctness_gates": [
+    "perplexity equivalence <=0.1% relative delta",
+    "prefill speedup >=0.95",
+    "decode speedup >=0.95",
+    "same-runner paired timing"
+  ],
+  "promotion_sequence": [
+    "resolve contract contradiction without guessing",
+    "smoke-test lever fires",
+    "rented/exact GB10 local A/B if authorized",
+    "independent verifier reproduces",
+    "manual external submit while submit authority remains human",
+    "trusted-runner row appears",
+    "claim crown only if public board rank is #1"
+  ],
+  "effect_ceiling": "NO_EXTERNAL_SUBMISSION_NO_SPEND",
+  "tao_hot_loop_target": 0
+}
