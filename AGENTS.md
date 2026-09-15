@@ -74,6 +74,14 @@ Every carrier entering this repository must assume prior state can be stale, con
 - `DELETE_RESIDUE != DELETE_HISTORY`: GitHub evidence, actor state, verifier receipts, ConsumerAck, lineage, and public proof are never janitor targets.
 - Routine cleanup is swarm work. `routine_cleanup_actions_by_tao` targets zero.
 
+## Hatch-pressure / fan-in forcing
+- Read `HATCH_PRESSURE_POKAYOKE_V1.md` before creating a new ling, roach, twinling, manual branch wave, provider call wave, or autonomous fan-out.
+- New semantic work is default-deny when fan-in is behind. Build a fresh `hfo.hatch-pressure-snapshot.v1` and require `python tools/hatch_pressure_gate.py <snapshot.json>` -> `ADMIT_HATCH`.
+- Provider throttle/UNKNOWN, duplicate semantic work, burst launches, repeated unchanged failures, unconsumed terminals, verifier/ConsumerAck backlog, missing verifier/consumer, or Tao-hot-loop dependence MUST HOLD new hatch pressure.
+- A throttle is backpressure, not permission to spray the same work onto another provider. Same failure fingerprint twice requires a real strategy/carrier/donor mutation or terminal HOLD.
+- When hatch pressure is held, drain/reconcile/verify/consume/clean existing work. `NO_NEW_HATCH != NO_WORK`.
+- Do not raise WIP ceilings because tokens/compute are cheap; only a zero-Tao unattended soak with lower verifier latency and no duplicate accepted effects may justify a versioned policy change.
+
 ## Battlefield / income forcing
 - Read `BATTLEFIELD_SELECTION_STANDARD.md` before scouting, recommending, or attacking any external leaderboard, competition, benchmark, challenge, case-study target, or income lane.
 - Every external target MUST have a machine-readable `battlefield.v1` card conforming to `schemas/battlefield.v1.schema.json`.
