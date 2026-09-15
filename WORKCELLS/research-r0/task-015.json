@@ -1,0 +1,11 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-QD-ECDSAFAIL-015",
+  "priority": 700,
+  "admitted": true,
+  "question": "Verify ECDSA.fail remains a reproducible secp256k1 point-addition optimization niche with a frozen correctness/score contract and submit path.",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {"url": "https://raw.githubusercontent.com/Layr-Labs/ecdsafail-challenge/main/README.md", "assertions": ["secp256k1 Point-Addition Challenge", "Toffoli count", "peak qubits", "ecdsafail submit", "9024 random test points"]}
+  ]
+}

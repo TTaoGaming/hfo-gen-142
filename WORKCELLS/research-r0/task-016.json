@@ -1,0 +1,11 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-QD-PACKOMANIA-016",
+  "priority": 690,
+  "admitted": true,
+  "question": "Verify Packomania is still an actively updated external packing record surface with explicit submission-format guidance.",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {"url": "https://www.packomania.com/", "assertions": ["Hints for formatting the data of your submitted packings", "Circles in a square", "Last updated"]}
+  ]
+}

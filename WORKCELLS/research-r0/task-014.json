@@ -1,0 +1,11 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-QD-DRDOCBENCH-014",
+  "priority": 710,
+  "admitted": true,
+  "question": "Verify Dr.DocBench remains a live EMNLP 2026 document-intelligence niche with an open challenge window.",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {"url": "https://docinsights-workshop.github.io/docinsights-2026/", "assertions": ["Dr.DocBench", "October 10, 2026", "EMNLP 2026", "EvalAI"]}
+  ]
+}

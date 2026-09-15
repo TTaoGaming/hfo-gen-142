@@ -1,0 +1,11 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-QD-LEARN2DESIGN-018",
+  "priority": 670,
+  "admitted": true,
+  "question": "Verify Learn2Design 2026 remains a prestigious scientific-optimization niche with a frozen algorithm/evaluator contract and another public evaluation deadline.",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {"url": "https://raw.githubusercontent.com/artificial-scientist-lab/Learn2Design-2026/main/README.md", "assertions": ["NeurIPS 2026 Challenge", "29.09.2026", "Differometor", "CMA-ES", "H100"]}
+  ]
+}

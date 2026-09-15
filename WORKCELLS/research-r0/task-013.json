@@ -1,0 +1,12 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-QD-BUILDBENCH-013",
+  "priority": 720,
+  "admitted": true,
+  "question": "Verify Build-Bench remains a live ICSE 2027 cross-architecture repair niche with executable organizer verification.",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {"url": "https://aiops-lab-nku.github.io/BuildBench/", "assertions": ["Build-Bench Challenge", "ICSE 2027", "Verified Build Success Rate", "200 public Development Cases"]},
+    {"url": "https://aiops-lab-nku.github.io/BuildBench/leaderboard.html", "assertions": ["Leaderboard", "Build Success Rate"]}
+  ]
+}

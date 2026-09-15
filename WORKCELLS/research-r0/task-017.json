@@ -1,0 +1,11 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-QD-OPTARENA-017",
+  "priority": 680,
+  "admitted": true,
+  "question": "Verify Optimization Arena semicircle packing remains a live deterministic geometry niche with a public incumbent and direct submit surface.",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {"url": "https://www.optimizationarena.com/packing", "assertions": ["Pack Semicircles", "2.94853", "Submit Your Solution", "Leaderboard"]}
+  ]
+}
