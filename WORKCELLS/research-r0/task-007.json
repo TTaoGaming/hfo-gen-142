@@ -1,0 +1,14 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-PRESTIGE-SWEEP-007",
+  "priority": 320,
+  "admitted": true,
+  "question": "Is NeurIPS 2026 Fusion Equilibrium Challenge 2 still a live public weak-incumbent scientific crown surface with continuous submissions?",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {
+      "url": "https://fusion-equilibrium-challenge.sophelio.io/timeline-prizes/",
+      "assertions": ["25 entries", "0.7299", "Oct 18, 2026", "NeurIPS"]
+    }
+  ]
+}
