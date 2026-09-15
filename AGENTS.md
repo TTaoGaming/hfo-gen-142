@@ -84,7 +84,7 @@ Every carrier entering this repository must assume prior state can be stale, con
 - No random fights: every target needs a current incumbent, rules/verifier evidence, at least two legal donors, two mutable axes, and a falsifiable weakness hypothesis with gap evidence.
 - No frontier substitution: `FRONTIER_REQUIRED` targets fail closed if the qualified provider is unavailable; never silently run local/small models instead.
 - No full attack before the predeclared canary promotion rule passes.
-- A scout cycle returns at most three survivors and exactly one primary; if none pass, return `NONE`, not a proxy trophy.
+- `EXPLORE` is QD illumination: preserve multiple behavior-space niches and per-niche Pareto elites; there is no global primary. Global convergence is legal only in explicit `SEND`.
 - Domain is explicitly agnostic. Agents are the force multiplier; the work domain is selected by battlefield fitness and commercial translation, not by familiarity with AI.
 
 ## Promotion rule
@@ -96,8 +96,9 @@ A neural agent cannot self-promote past the evidence it owns.
 If swarm operation increases operator burden, repeated explanation, cleanup, routing, or recovery work, treat that as a system failure and reduce/freeze the swarm before adding capacity.
 
 ## Default scale
-Until the first laptop-independent two-generation competition/evolution assay passes, maximum autonomous evolutionary cell count is **1**.
+Before a laptop-independent two-generation assay passes, maximum autonomous evolutionary cell count is **1**. After that gate is proven, scale is bounded by transport health, effect budgets, and QD niche coverage—not raw available carrier count.
 
-## Battlefield reducer enforcement
+## Battlefield QD / reducer enforcement
 - Materialize external target cards in `BATTLEFIELDS/`; prose-only battlefield recommendations are non-actionable.
-- After `battlefield_gate.py`, run `python tools/battlefield_reduce.py BATTLEFIELDS/*.json`; only the reducer's primary may receive the next attack budget. If it emits `NONE`, stop rather than inventing a proxy target.
+- During `EXPLORE`, run `python tools/qd_battlefield_archive.py BATTLEFIELDS/*.json`; `primary` MUST remain null and crowded exact niches force new capacity to morph into another behavior cell unless it is the distinct paired verifier.
+- `python tools/battlefield_reduce.py` fails closed during exploration. Only explicit `--phase SEND` may select <=3 survivors and one primary for final packaging/submission. If it emits `NONE`, stop rather than inventing a proxy target.
