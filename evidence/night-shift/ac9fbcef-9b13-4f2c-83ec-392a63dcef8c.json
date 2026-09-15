@@ -1,0 +1,87 @@
+{
+  "schema_version": "night-shift-crown.v1",
+  "carrier_uuid": "ac9fbcef-9b13-4f2c-83ec-392a63dcef8c",
+  "observed_at_utc": "2026-09-15T07:28:51Z",
+  "tao_hot_loop_actions": 0,
+  "effect_ceiling": "NO_EXTERNAL_EFFECT",
+  "base_main": {
+    "sha": "b2e59b5ba3db47dc6fbf8061c5165ce60559b743",
+    "protected": false,
+    "rulesets": [],
+    "andon": "PROTECTED_MAIN_ASSUMPTION_FALSE"
+  },
+  "recovery": {
+    "issue": 13,
+    "workcell": {
+      "work_item": "GEN142-PRESTIGE-SWEEP-008",
+      "terminal_state": "HOLD",
+      "result_sha256": "5a27d4a776221a44922a229837a436f105f124c2aabb57de2f1eaf1cef4f00e9",
+      "authority": "PUBLIC_OBSERVE_ONLY"
+    },
+    "native_scout": {
+      "state_url": "https://hfo-gen142-native-scout-r0.tommytai3.workers.dev/state",
+      "direct_readback_from_oracle": "HTTP_403_CF_ERROR_1010",
+      "public_observe_only_latest": "epoch 12 remains FAILED/EMPTY_SYNTHESIS across CROWN and DONOR; PR39 static tests reported 4/4 PASS but no admitted runtime repair proof"
+    }
+  },
+  "provider_capability": {
+    "ovh_x86_64": {"online": true, "docker_present": true, "bwrap_present": false, "prior_fingerprint": "FAIL_INFRA_DOCKER_SOCKET_DENIED"},
+    "oracle_arm64": {"online": true, "gcc": true, "bwrap": "0.9.0", "rustc": "1.93.0", "cargo": "1.93.0", "unprivileged_userns_clone": 1, "max_user_namespaces": 47461},
+    "lenovo": {"online": true, "windows_rustc": "1.93.1", "windows_cargo": "1.93.1", "wsl_rustc": "1.98.1", "wsl_bwrap_present": false}
+  },
+  "gather_falsify": [
+    {"battlefield_id": "micro2026-moa-npu-stage1", "source_stage": "scout", "source_local_reproduction_ready": false, "source_external_auth_ready": false, "carrier_eligible": false, "reason": "Arena access is for registered participants; this carrier forbids registration/login/terms/submission."},
+    {"battlefield_id": "ieee-bigdata-traffic-flow-bench-2026", "source_stage": "scout", "source_local_reproduction_ready": false, "source_external_auth_ready": false, "carrier_eligible": false, "reason": "Kaggle accepted-protocol path is external-auth dependent and local reproduction is not ready."},
+    {"battlefield_id": "tartanimu-iros2026", "source_stage": "scout", "source_local_reproduction_ready": false, "source_external_auth_ready": false, "carrier_eligible": false, "reason": "Kaggle accepted-protocol path is external-auth dependent and local reproduction is not ready."},
+    {"battlefield_id": "ecdsa-fail-secp256k1-pointadd-20260915", "source_stage": "canary", "carrier_eligible": true, "incumbent": {"score": 1140989148, "toffoli": 903396, "qubits": 1263, "solvers": 70, "frontier_advances": 590, "source": "https://ecdsa.fail/"}}
+  ],
+  "deterministic_reduce": {
+    "poka_yoke_observation": "The unmodified reducer ranks scout cards by routing score even when their cards say local_reproduction_ready=false and external_auth_ready=false. Under this carrier's explicit effect ceiling that would select an unexecutable primary.",
+    "operational_accessibility_overlay": {
+      "rule": "For this carrier only, target.open_to_user=false when both the card says external_auth_ready=false and local_reproduction_ready=false and satisfying either would require a forbidden external effect.",
+      "gate_receipts": [
+        {"battlefield_id": "micro2026-moa-npu-stage1", "verdict": "KILL_INELIGIBLE_BATTLEFIELD"},
+        {"battlefield_id": "ieee-bigdata-traffic-flow-bench-2026", "verdict": "KILL_INELIGIBLE_BATTLEFIELD"},
+        {"battlefield_id": "tartanimu-iros2026", "verdict": "KILL_INELIGIBLE_BATTLEFIELD"},
+        {"battlefield_id": "ecdsa-fail-secp256k1-pointadd-20260915", "verdict": "ADMIT_CANARY", "routing_score": 0.017028}
+      ],
+      "decision": "SELECT",
+      "primary": "ecdsa-fail-secp256k1-pointadd-20260915",
+      "survivor_count": 1
+    }
+  },
+  "donor_genes": [
+    {"source": "https://github.com/Layr-Labs/ecdsafail-challenge", "gene": "frozen 9024-shot correctness/reversibility/phase verifier"},
+    {"source": "https://github.com/jieyilong/ecdsafail-autoresearch-harness", "gene": "profile-first measurement, huntability gating, bake/recheck, clean-island search"},
+    {"source": "https://github.com/BitWonka/ecdsafail-tools", "gene": "dead-CCX/CCZ screening for charged-but-inert Toffoli gates"}
+  ],
+  "mutation_axes": ["peak-qubit liveness/recompute", "exact executed-Toffoli rewrites", "dead charged-Toffoli elimination", "clean-island search after op-stream changes"],
+  "canary": {
+    "fingerprint": "ecdsa.fail:official-head-97003969:oracle-arm64-bwrap-baseline:v1",
+    "official_commit": "97003969b1d3809c6829954bb520c37c1879efbf",
+    "rustc": "1.93.0",
+    "cargo": "1.93.0",
+    "wall_seconds": 0,
+    "score_observed": null,
+    "evaluator_entered": false,
+    "result": "FAIL_INFRA_BWRAP_LOOPBACK_RTM_NEWADDR_DENIED",
+    "stderr_terminal": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted",
+    "successive_halving": "KILL_FINGERPRINT_NO_RETRY_WITHOUT_RUNTIME_ISOLATION_STRATEGY_CHANGE",
+    "frozen_hashes": {
+      "benchmark.sh": "122a65431ad42a1bad5114af9e8f8301fe5cb08c01adaeee00799c9f0d0ed92a",
+      "Cargo.lock": "42ff16919e551891ad1b21821329b116d133194245a0e0734a33573dfe598e07",
+      "rust-toolchain": "92b454c1ccf330de9b94242f73bc3214370fb420d5152baeec12dc82ceef9dcc",
+      "src/bin/eval_circuit.rs": "b35314bc47a5f8eecbf60459e6c76c9b43aa034eeb9b7ec3421655d74f9e890b",
+      "src/circuit.rs": "ac2255f6bcb6895c9da2dfe21c3a051a0ef8fc4e0af9598634fec0035dbf35c6",
+      "src/sim.rs": "f0c72f2a280cd68acee1dbf8282098f72d6b3bf4311e0abf96d122fe002256d7",
+      "src/weierstrass_elliptic_curve.rs": "ecfca15ee3b831c243fbea559ff4b8937be47fe591a4f14786ec2b9bfb30bded"
+    },
+    "sandbox_smoke": {"without_unshare_net": "FAIL_UID_MAP_PERMISSION_DENIED", "with_unshare_net": "FAIL_LOOPBACK_RTM_NEWADDR_PERMISSION_DENIED"}
+  },
+  "strongest_falsifier": "No currently proven safe carrier has entered the official evaluator: OVH Docker socket denied, Lenovo WSL lacks bwrap so official fallback would execute untrusted challenge code unconfined, and Oracle rootless bubblewrap cannot establish the required user/network sandbox. The public frontier is also mature: 1.140B score after 590 advances by 70 solvers.",
+  "champion": {"promoted": false, "reason": "NO_EVALUATOR_SCORE"},
+  "public_proof_path": "Only after a new runtime-isolation fingerprint safely completes the unchanged official 9024-shot harness and a later mutation scores below the freshly rechecked incumbent may an external submission packet be considered.",
+  "next_machine_owned_action": "Do not execute challenge code again yet. On existing carriers only, run a harmless /bin/true sandbox capability matrix to find a profile that proves read-only filesystem + no network + unprivileged uid without elevated authority; freeze that runtime profile. If one passes, run exactly one unchanged official-harness baseline under a new fingerprint before any mutation search.",
+  "human_only_authority_boundaries": ["ECDSA.fail API-key/login/public submit", "GitHub repository administration required to actually protect main / install a ruleset"],
+  "external_effects": []
+}
