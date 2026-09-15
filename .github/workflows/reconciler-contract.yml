@@ -20,6 +20,10 @@ on:
       - 'tests/test_janitor_gate.py'
       - 'tools/reconcile_kernel.py'
       - 'tests/test_reconcile_kernel.py'
+      - 'HATCH_PRESSURE_POKAYOKE_V1.md'
+      - 'tools/hatch_pressure_gate.py'
+      - 'tests/test_hatch_pressure_gate.py'
+      - 'OVERNIGHT_RESEARCH_RING_V1.md'
       - 'AGENTS.md'
       - '.github/workflows/reconciler-contract.yml'
   pull_request:
@@ -40,6 +44,10 @@ on:
       - 'tests/test_janitor_gate.py'
       - 'tools/reconcile_kernel.py'
       - 'tests/test_reconcile_kernel.py'
+      - 'HATCH_PRESSURE_POKAYOKE_V1.md'
+      - 'tools/hatch_pressure_gate.py'
+      - 'tests/test_hatch_pressure_gate.py'
+      - 'OVERNIGHT_RESEARCH_RING_V1.md'
       - 'AGENTS.md'
       - '.github/workflows/reconciler-contract.yml'
 
@@ -58,6 +66,7 @@ jobs:
       - name: Run deterministic reconciler regressions
         run: |
           python -m unittest discover -s tests -p 'test_reconcile_kernel.py' -v
+          python -m unittest discover -s tests -p 'test_hatch_pressure_gate.py' -v
           python -m unittest discover -s tests -p 'test_public_boundary_gate.py' -v
           python -m unittest discover -s tests -p 'test_scout_result_gate.py' -v
           python -m unittest discover -s tests -p 'test_janitor_gate.py' -v
@@ -70,4 +79,6 @@ jobs:
           grep -q 'PUBLIC TRANSPARENCY != PUBLIC AUTHORITY' PUBLIC_AUTHORITY_BOUNDARY.md
           grep -q 'public recovery/evidence index, \*\*not command authority\*\*' AGENTS.md
           grep -q 'R0 deliberately does \*\*not\*\* kill arbitrary processes' DETERMINISTIC_JANITOR_CONTRACT.md
+          grep -q 'A throttle is a backpressure signal' HATCH_PRESSURE_POKAYOKE_V1.md
           ! grep -Eq 'requests\.|urllib|subprocess|socket|boto|cloudflare|github' tools/reconcile_kernel.py
+          ! grep -Eq 'requests\.|urllib|subprocess|socket|boto|cloudflare|github' tools/hatch_pressure_gate.py

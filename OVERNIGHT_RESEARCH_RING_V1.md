@@ -51,6 +51,10 @@ Agents do not debate peer-to-peer. They communicate through immutable receipts s
 - A worker cannot verify its own material claim.
 - `PROSE != CONTROL`; `NEXT_CONSUMER` text never counts as transition evidence.
 
+## Hatch-pressure forcing
+
+Every new research formation must pass `HATCH_PRESSURE_POKAYOKE_V1.md` before launch. The ring drains existing evidence before creating more demand. Provider throttle, fan-in backlog, duplicate semantics, or repeated unchanged failure means `HOLD_NEW_HATCH`; reducers/verifiers continue, but no additional producers are spawned.
+
 ## Night schedule
 
 A quiet COTS cognition ring is currently armed hourly:
