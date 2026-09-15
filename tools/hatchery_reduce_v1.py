@@ -46,8 +46,9 @@ def reduce_event(event: dict[str, Any]) -> dict[str, Any]:
             "schema": OUT_SCHEMA, "policy_version": POLICY, "decision": "NEXT_RESEARCH_EDGE",
             "event_sha256": event["entries_sha256"], "source_slot": chosen.get("slot"),
             "source_lane": chosen.get("lane"), "result_sha256": chosen.get("result_sha256"),
-            "survivors": result.get("survivors", []), "finding": result.get("finding", ""),
-            "blocker": result.get("blocker", ""), "next_executable_assay": result.get("next_executable_assay", ""),
+            "survivors": result.get("survivors", []), "evidence_urls": result.get("evidence_urls", []),
+            "finding": result.get("finding", ""), "blocker": result.get("blocker", ""),
+            "next_executable_assay": result.get("next_executable_assay", ""),
             "operator_action_required": "NONE", "tao_relay_required": False,
         }
     elif rate_limited:

@@ -2,7 +2,7 @@ import { Agent, getAgentByName, type FiberRecoveryContext } from "agents";
 import { createQuickActionTools } from "agents/browser/ai";
 import { createWorkersAI } from "workers-ai-provider";
 import { generateText, stepCountIs } from "ai";
-import { emptySynthesisNoClaim } from "./result-policy";
+import { parseFalsifier, parseProposer, reduceDebate } from "./result-policy";
 import { carrierUuidFromDigest, isExplicitProviderThrottle, isRepeatedFailurePressure, selectHatchCandidate } from "./hatch-policy";
 
 const ACTOR_ID = "SIGRUN-GEN142-SCOUT-R0";
@@ -10,7 +10,7 @@ const PARENT_ACTOR = "SIGRUN/C2";
 const RADIX = [4, 4] as const;
 const SEAT_ROLE = "THUNDER_DISRUPT";
 const ROACH_UUID = "0771446a-3b95-45ea-baa4-5140c3e1510b";
-const DEBATE_VERSION = "twinling-debate-v1";
+const DEBATE_VERSION = "twinling-deterministic-reducer-v2";
 const MODEL = "@cf/moonshotai/kimi-k2.7-code";
 const ISSUE_API = "https://api.github.com/repos/TTaoGaming/hfo-gen-142/issues/13";
 const LANES = ["CROWN", "DONOR", "BENCHMARK", "REDUCER"] as const;
@@ -102,20 +102,15 @@ A prestigious crown must have a real incumbent, independent verifier, accepted s
 const PROPOSER_SYSTEM = BASE_SYSTEM + `
 ROLE=PROPOSER. Search aggressively but conservatively. Produce up to 3 evidence-backed survivors or NONE.
 Look for weak incumbents, public exemplar genes, mutable axes, accepted evaluators, and cheap canaries.
+claims, evidence_urls, and candidate_survivors MUST be arrays of strings; candidate_survivors MUST contain <=3 concise unique strings.
 Return JSON only with keys: role, lane, claims, evidence_urls, candidate_survivors, uncertainty.`;
 
 const FALSIFIER_SYSTEM = BASE_SYSTEM + `
-ROLE=FALSIFIER. Assume the obvious proposal is reward-hacked, stale, proxy prestige, or publication-gated.
-Try to kill candidates using current rules, actual incumbent strength, hidden/private scoring, verifier weakness, attribution ambiguity,
-submission latency, terms, compute cost, buyer irrelevance, or missing donor legality.
-Return JSON only with keys: role, lane, kills, surviving_objections, evidence_urls, uncertainty.`;
-
-const REDUCER_SYSTEM = BASE_SYSTEM + `
-ROLE=REDUCER. Reconcile independent proposer and falsifier traces. Do not average disagreement away.
-Only retain claims jointly supportable by cited observations. If evidence is inadequate, return survivors=[] and state the blocker.
-Return strict JSON, no markdown, with exactly these keys:
-observed_utc, lane, canonical_recovery, survivors, finding, strongest_falsifier, blocker, next_executable_assay.
-survivors must be an array with at most 3 strings. lane must exactly match the requested lane.`;
+ROLE=FALSIFIER. You receive the proposer's exact candidate strings. Attack them adversarially; do not invent replacements.
+Every proposer candidate MUST appear exactly once in either kills or surviving_candidates, copied byte-for-byte.
+Use current rules, incumbent strength, hidden/private scoring, verifier weakness, attribution ambiguity, submission latency,
+terms, compute cost, buyer irrelevance, or missing donor legality. kills, surviving_candidates, and evidence_urls are arrays of strings.
+Return JSON only with keys: role, lane, kills, surviving_candidates, strongest_falsifier, blocker, next_executable_assay, evidence_urls, uncertainty.`;
 
 function parseStrictResult(text: string, lane: Lane): Record<string, unknown> {
   const trimmed = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
@@ -123,13 +118,16 @@ function parseStrictResult(text: string, lane: Lane): Record<string, unknown> {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error("RESULT_OBJECT_REQUIRED");
   const obj = value as Record<string, unknown>;
   const expected = [
-    "observed_utc", "lane", "canonical_recovery", "survivors", "finding",
+    "observed_utc", "lane", "canonical_recovery", "survivors", "evidence_urls", "finding",
     "strongest_falsifier", "blocker", "next_executable_assay",
   ].sort();
   if (Object.keys(obj).sort().join("|") !== expected.join("|")) throw new Error("RESULT_FIELDS_REFUSED");
   if (obj.lane !== lane) throw new Error("RESULT_LANE_MISMATCH");
   if (!Array.isArray(obj.survivors) || obj.survivors.length > 3 || !obj.survivors.every((x) => typeof x === "string")) {
     throw new Error("RESULT_SURVIVORS_REFUSED");
+  }
+  if (!Array.isArray(obj.evidence_urls) || obj.evidence_urls.length > 20 || !obj.evidence_urls.every((x) => typeof x === "string")) {
+    throw new Error("RESULT_EVIDENCE_URLS_REFUSED");
   }
   for (const key of ["observed_utc", "canonical_recovery", "finding", "strongest_falsifier", "blocker", "next_executable_assay"]) {
     if (typeof obj[key] !== "string") throw new Error(`RESULT_${key.toUpperCase()}_REFUSED`);
@@ -199,7 +197,7 @@ export class Gen142Scout extends Agent<any, ScoutState> {
       async (ctx) => {
         ctx.stash({ runId, carrierUuid, actorId: ACTOR_ID, lane, debateVersion: DEBATE_VERSION });
         const workersai = createWorkersAI({ binding: this.env.AI });
-        const runDebater = async (role: "PROPOSER" | "FALSIFIER", system: string) => {
+        const runDebater = async (role: "PROPOSER" | "FALSIFIER", system: string, extra: Record<string, unknown> = {}) => {
           const browserTools = createQuickActionTools({
             browser: this.env.BROWSER,
             actions: ["markdown", "links", "scrape", "extract"],
@@ -209,7 +207,7 @@ export class Gen142Scout extends Agent<any, ScoutState> {
             model: workersai(MODEL),
             system,
             prompt: JSON.stringify({
-              runId, lane, canonical,
+              runId, lane, canonical, ...extra,
               objective: lane === "CROWN"
                 ? "Sweep public prestige battlefields across any lawful domain; find weak real incumbents and public gene donors."
                 : lane === "DONOR"
@@ -233,29 +231,17 @@ export class Gen142Scout extends Agent<any, ScoutState> {
         };
 
         try {
-          // Preserve independent role prompts but serialize provider calls to avoid RPM burst amplification.
+          // Two model calls only: proposal, then adversarial falsification. Control reduction is deterministic.
           const proposer = await runDebater("PROPOSER", PROPOSER_SYSTEM);
-          const falsifier = await runDebater("FALSIFIER", FALSIFIER_SYSTEM);
-          const debateSha = await sha256(JSON.stringify({ lane, proposer, falsifier }));
-          const synthesis = await generateText({
-            model: workersai(MODEL),
-            system: REDUCER_SYSTEM,
-            prompt: JSON.stringify({ runId, lane, canonical, proposer, falsifier, debate_sha256: debateSha }).slice(0, 30000),
-            maxOutputTokens: 1800,
+          const proposerTrace = parseProposer(proposer.text, lane);
+          const falsifier = await runDebater("FALSIFIER", FALSIFIER_SYSTEM, {
+            proposer_candidate_survivors: proposerTrace.candidate_survivors,
+            proposer_claims: proposerTrace.claims,
+            proposer_evidence_urls: proposerTrace.evidence_urls,
           });
-          let text = synthesis.text.trim().slice(0, 12000);
-          let degraded = false;
-          let degradedFingerprint: string | undefined;
-          let degradedSameFailureCount = 0;
-          if (!text) {
-            degraded = true;
-            degradedFingerprint = await sha256(`${lane}|EMPTY_SYNTHESIS`);
-            const prior = this.normalizedState();
-            degradedSameFailureCount = prior.lastFailureFingerprint === degradedFingerprint
-              ? prior.sameFailureCount + 1
-              : 1;
-            text = JSON.stringify(emptySynthesisNoClaim(lane, new Date().toISOString()));
-          }
+          const falsifierTrace = parseFalsifier(falsifier.text, lane, proposerTrace.candidate_survivors);
+          const debateSha = await sha256(JSON.stringify({ lane, proposer, falsifier }));
+          const text = JSON.stringify(reduceDebate(proposerTrace, falsifierTrace, new Date().toISOString()));
           parseStrictResult(text, lane);
           const completed = new Date().toISOString();
           const prior = this.normalizedState();
@@ -269,11 +255,11 @@ export class Gen142Scout extends Agent<any, ScoutState> {
             lastResult: text,
             lastResultSha256: await sha256(text),
             lastDebateSha256: debateSha,
-            lastError: degraded ? "EMPTY_SYNTHESIS_DEGRADED_TO_NO_CLAIM" : undefined,
-            lastFailureFingerprint: degraded ? degradedFingerprint : undefined,
-            failureCount: prior.failureCount + (degraded ? 1 : 0),
-            sameFailureCount: degraded ? degradedSameFailureCount : 0,
-            degradedResultCount: prior.degradedResultCount + (degraded ? 1 : 0),
+            lastError: undefined,
+            lastFailureFingerprint: undefined,
+            failureCount: prior.failureCount,
+            sameFailureCount: 0,
+            degradedResultCount: prior.degradedResultCount,
             updatedAt: completed,
           });
         } catch (error) {
@@ -379,7 +365,7 @@ export default {
         model: MODEL,
         cadence: "*/5 * * * *",
         lanes: LANES,
-        debate: { version: DEBATE_VERSION, roles: ["PROPOSER", "FALSIFIER", "REDUCER"] },
+        debate: { version: DEBATE_VERSION, roles: ["PROPOSER", "FALSIFIER", "DETERMINISTIC_REDUCER"] },
         effect_ceiling: "RESEARCH_ONLY",
       });
     }
