@@ -1,7 +1,7 @@
 {
   "schema": "hfo.authority-envelope.v1",
   "effective_scope": "ALL_SIGRUN_HLUTI_AND_ADMITTED_CROWN_WORKERS",
-  "purpose": "Remove Tao from routine benchmark submission and compute routing while preserving explicit human authority boundaries.",
+  "purpose": "Remove Tao from routine benchmark submission, provider routing, and compute routing while preserving explicit human authority boundaries and preventing accidental paid fallback or destructive-first behavior.",
   "submission": {
     "automatic_allowed": true,
     "conditions": [
@@ -22,13 +22,78 @@
   },
   "spend": {
     "incremental_usd_per_day": 0,
+    "no_debt": true,
+    "unknown_billing_class": "HOLD",
+    "silent_paid_fallback": "DENY",
     "prefer_existing_resources": [
       "existing_memberships",
       "existing_free_vendor_quota",
       "existing_cloudflare_resources",
-      "existing_vps_capacity"
+      "existing_vps_capacity",
+      "local_compute"
     ],
-    "new_membership_or_paid_compute": "HUMAN_APPROVAL_REQUIRED"
+    "cost_classes": {
+      "ZERO_MARGINAL": {
+        "automatic_allowed": true,
+        "requirements": [
+          "current_route_is_verified_free_or_included_quota",
+          "route_has_no_automatic_paid_fallback",
+          "quota_or_limit_state_is_observable_or_provider_hard_fail_is_verified",
+          "work_is_bounded"
+        ],
+        "on_exhaustion": "ROTATE_TO_ANOTHER_ADMITTED_ZERO_MARGINAL_ROUTE_OR_HOLD"
+      },
+      "PREPAID_OR_HARD_CAPPED": {
+        "automatic_allowed": false,
+        "admission": "ROUTE_SPECIFIC_BUDGET_REQUIRED",
+        "requirements": [
+          "budget_is_explicit_and_versioned",
+          "runtime_cannot_exceed_budget_without_new_human_authority",
+          "no_auto_recharge_or_uncapped_overage"
+        ]
+      },
+      "METERED_PAID": {
+        "automatic_allowed": false,
+        "admission": "HUMAN_APPROVAL_REQUIRED"
+      }
+    },
+    "new_membership_or_paid_compute": "HUMAN_APPROVAL_REQUIRED",
+    "accounting_required_per_episode": [
+      "provider",
+      "model_or_route",
+      "billing_class",
+      "quota_source",
+      "provider_calls",
+      "budget_decision",
+      "observed_or_estimated_cost_when_available"
+    ]
+  },
+  "provider_routing": {
+    "standing_authority": "ADMITTED_ZERO_MARGINAL_ROUTES_ONLY",
+    "route_must_bind": [
+      "provider",
+      "model_or_profile",
+      "billing_class",
+      "quota_source",
+      "fallback_policy"
+    ],
+    "credential_presence_does_not_grant_spend_authority": true,
+    "subscription_presence_does_not_imply_api_inclusion": true,
+    "provider_or_model_change_does_not_widen_effect_authority": true,
+    "billing_or_quota_uncertain": "HOLD",
+    "quota_exhausted": "ROTATE_TO_ANOTHER_ADMITTED_ZERO_MARGINAL_ROUTE_OR_HOLD",
+    "fallback_to_metered_paid": "DENY"
+  },
+  "effects": {
+    "destructive_first": "DENY",
+    "default_sequence": [
+      "OBSERVE",
+      "SNAPSHOT_OR_ARCHIVE_WHEN_MEANINGFUL",
+      "QUARANTINE_OR_DISABLE",
+      "DELETE_ONLY_IF_VERSIONED_POLICY_ADMITS_IT"
+    ],
+    "irreversible_user_or_external_data_change": "HUMAN_APPROVAL_REQUIRED",
+    "bounded_generated_ephemeral_cleanup": "VERSIONED_JANITOR_POLICY_ONLY"
   },
   "stop_and_escalate_for": [
     "new_or_changed_terms",
@@ -36,7 +101,8 @@
     "identity_or_public_handle_change",
     "oauth_2fa_captcha_or_account_authority",
     "protected_merge_or_permission_change",
-    "irreversible_external_effect"
+    "irreversible_external_effect",
+    "unknown_or_unverifiable_billing_state"
   ],
   "operator_protection": {
     "tao_hot_loop_required": false,
@@ -44,5 +110,5 @@
     "batch_human_blockers": true,
     "auto_resume_after_unlock": true
   },
-  "notes": "N is intentionally not invented globally. Each battlefield must derive and version its submission cap from current platform rules/cooldown. Existing resources must be saturated before requesting new paid compute."
+  "notes": "N is intentionally not invented globally. Each battlefield must derive and version its submission cap from current platform rules/cooldown. Zero-marginal routes may run without Tao only when the route's current billing/quota behavior is verified and paid fallback is impossible. Exhaustion rotates among already-admitted zero-marginal routes or holds; it never creates debt. Existing resources must be saturated before requesting new paid compute."
 }
