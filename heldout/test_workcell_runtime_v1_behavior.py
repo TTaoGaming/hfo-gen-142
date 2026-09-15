@@ -120,14 +120,39 @@ class WorkCellHeldOutBehavior(unittest.TestCase):
             self.assertEqual(receipt['status'],'NOOP')
             self.assertEqual(gh.effect_calls,[])
 
-    def test_worker_failure_has_no_github_effects(self):
+    def test_worker_failure_writes_only_typed_failure_not_success_or_retirement(self):
         with tempfile.TemporaryDirectory() as td:
             root=Path(td); tasks=root/'tasks'; tasks.mkdir(); out=root/'out'
-            write_task(tasks,'a.json','A',1)
+            a=write_task(tasks,'a.json','A',1)
             gh=FakeGitHub(); worker=fake_worker_script(root,7)
-            with self.assertRaises(Exception):
-                self.run_main(tasks,gh,worker,out)
-            self.assertEqual(gh.effect_calls,[])
+            self.assertEqual(self.run_main(tasks,gh,worker,out),0)
+            receipt=json.loads((out/'runtime-receipt.json').read_text())
+            self.assertEqual(receipt['status'],'RETRY_ARMED')
+            self.assertEqual(len(gh.effect_calls),1)
+            body=gh.effect_calls[0][2]['body']
+            self.assertIn('hfo-workcell-failure-v1:A:',body)
+            self.assertNotIn('hfo-workcell-ack-v1:A:',body)
+            self.assertNotIn(current_marker(a,'A'),body)
+
+    def test_poison_pill_quarantines_then_next_work_progresses(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td); tasks=root/'tasks'; tasks.mkdir()
+            a=write_task(tasks,'a.json','A',99); b=write_task(tasks,'b.json','B',1)
+            task=json.loads(a.read_text()); task['max_attempts']=2; a.write_text(json.dumps(task),encoding='utf-8')
+            gh=FakeGitHub(); bad=fake_worker_script(root,7)
+            out1=root/'out1'; out2=root/'out2'; out3=root/'out3'
+            self.assertEqual(self.run_main(tasks,gh,bad,out1),0)
+            self.assertEqual(json.loads((out1/'runtime-receipt.json').read_text())['status'],'RETRY_ARMED')
+            self.assertEqual(self.run_main(tasks,gh,bad,out2),0)
+            r2=json.loads((out2/'runtime-receipt.json').read_text())
+            self.assertEqual(r2['status'],'QUARANTINED')
+            self.assertEqual(r2['next_work_id'],'B')
+            qmarker=f"<!-- hfo-workcell-quarantine-v1:A:{rt.hashlib.sha256(a.read_bytes()).hexdigest()} -->"
+            self.assertTrue(any(qmarker in row['body'] for row in gh.comments))
+            good=fake_worker_script(root,0)
+            self.assertEqual(self.run_main(tasks,gh,good,out3),0)
+            r3=json.loads((out3/'runtime-receipt.json').read_text())
+            self.assertEqual(r3['work_id'],'B')
 
     def test_consumer_ack_failure_stops_before_retirement(self):
         with tempfile.TemporaryDirectory() as td:

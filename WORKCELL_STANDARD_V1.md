@@ -31,6 +31,21 @@ A WorkItem retirement marker MUST NOT be published until:
 
 If ConsumerAck already exists but retirement did not complete, the next wake reuses that ConsumerAck rather than duplicating it. A failed watch, terminal gate, or retirement write must leave the WorkItem eligible for retry.
 
+
+### Worker failure / poison-pill law
+
+Worker failure is a first-class durable outcome, never an implicit busy-loop and never a success retirement.
+
+- Each failed attempt emits `hfo.workcell-failure-receipt.v1` with a deterministic failure fingerprint and attempt count.
+- Retry budget is versioned in the WorkItem as optional `max_attempts` (default `3`, hard range `1..20`).
+- Below the ceiling, the scheduled heartbeat owns retry; Tao does not relaunch it.
+- At the ceiling, the exact `work_id + spec_sha256` is marked `hfo-workcell-quarantine-v1` and remains **unretired**.
+- The deterministic selector skips quarantined exact specs so lower-priority admitted demand can continue.
+- Editing a WorkItem changes `spec_sha256`; old quarantine evidence therefore cannot silently suppress a repaired spec.
+- Quarantine is not success, not ConsumerAck, and not deletion. It is STRIFE/poka-yoke evidence requiring a later repaired spec or explicit policy decision.
+
+`REPEATED_FAILURE != RETIREMENT` and `ONE_POISON_WORKITEM != GLOBAL_STARVATION`.
+
 ## Human boundary
 
 Tao may set intent, add/approve WorkItems, budgets, secrets, permissions, protected merges, payments, or irreversible external submissions.

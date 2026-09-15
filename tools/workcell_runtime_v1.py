@@ -24,6 +24,9 @@ from select_research_workitem import select_work
 ROOT = Path(__file__).resolve().parents[1]
 WORKERS = {"hfo.research-workitem.v1": ROOT / "tools" / "research_cell_r0.py"}
 ACK_PREFIX = "hfo-workcell-ack-v1"
+FAILURE_PREFIX = "hfo-workcell-failure-v1"
+QUARANTINE_PREFIX = "hfo-workcell-quarantine-v1"
+DEFAULT_MAX_ATTEMPTS = 3
 
 
 def canon(value) -> bytes:
@@ -104,6 +107,113 @@ def post_comment(token: str, repo: str, issue: int, body: str) -> dict:
 
 def ack_marker(selected: dict) -> str:
     return f"<!-- {ACK_PREFIX}:{selected['work_id']}:{selected['spec_sha256']} -->"
+
+
+def failure_prefix(selected: dict) -> str:
+    return f"<!-- {FAILURE_PREFIX}:{selected['work_id']}:{selected['spec_sha256']}:"
+
+
+def failure_marker(selected: dict, fingerprint: str) -> str:
+    return f"{failure_prefix(selected)}{fingerprint} -->"
+
+
+def quarantine_marker(selected: dict) -> str:
+    return f"<!-- {QUARANTINE_PREFIX}:{selected['work_id']}:{selected['spec_sha256']} -->"
+
+
+def max_attempts_for(task: dict) -> int:
+    value = task.get("max_attempts", DEFAULT_MAX_ATTEMPTS)
+    if not isinstance(value, int) or isinstance(value, bool) or value < 1 or value > 20:
+        raise RuntimeError(f"MAX_ATTEMPTS_REFUSED:{value}")
+    return value
+
+
+def failure_count(rows: list[dict], selected: dict) -> int:
+    prefix = failure_prefix(selected)
+    return sum(str(row.get("body", "")).count(prefix) for row in rows)
+
+
+def worker_failure_fingerprint(proc: subprocess.CompletedProcess, worker_out: Path) -> str:
+    basis = {"returncode": int(proc.returncode)}
+    result_path = worker_out / "result.json"
+    if result_path.exists():
+        try:
+            doc = json.loads(result_path.read_text(encoding="utf-8"))
+            basis["result"] = {
+                "schema": doc.get("schema"),
+                "work_id": doc.get("work_id"),
+                "verdict": doc.get("verdict"),
+                "next_state": doc.get("next_state"),
+                "sources": [
+                    {"url": row.get("url"), "missing": row.get("missing")}
+                    for row in doc.get("sources", [])
+                    if isinstance(row, dict)
+                ],
+            }
+        except (json.JSONDecodeError, OSError):
+            basis["result_parse"] = "UNAVAILABLE"
+    else:
+        basis["stderr_tail"] = (proc.stderr or "")[-2000:]
+        basis["stdout_tail"] = (proc.stdout or "")[-2000:]
+    return sha256(basis)
+
+
+def record_worker_failure(
+    token: str,
+    repo: str,
+    issue: int,
+    rows: list[dict],
+    selected: dict,
+    task: dict,
+    proc: subprocess.CompletedProcess,
+    worker_out: Path,
+    selection_sha: str,
+    failure_reason: str = "WORKER_EXECUTION_FAILURE",
+) -> dict:
+    fingerprint = sha256({
+        "worker_fingerprint": worker_failure_fingerprint(proc, worker_out),
+        "classification": failure_reason,
+    })
+    attempt = failure_count(rows, selected) + 1
+    max_attempts = max_attempts_for(task)
+    quarantined = attempt >= max_attempts
+    action = "QUARANTINE" if quarantined else "RETRY"
+    marker = failure_marker(selected, fingerprint)
+    body = (
+        "## WORKCELL FAILURE v1\n\n"
+        f"- WorkItem: `{selected['work_id']}`\n"
+        f"- Spec SHA256: `{selected['spec_sha256']}`\n"
+        f"- Attempt: `{attempt}/{max_attempts}`\n"
+        f"- Worker return code: `{proc.returncode}`\n"
+        f"- Failure fingerprint: `{fingerprint}`\n"
+        f"- Controller classification: `{failure_reason}`\n"
+        f"- Selection SHA256: `{selection_sha}`\n"
+        f"- Action: `{action}`\n"
+        "- Retirement: `FALSE`\n"
+        "- Tao hot-loop actions: `0`\n\n"
+        "Failure is evidence, not completion. "
+        + (
+            "This exact WorkItem/spec is quarantined so later admitted demand can continue."
+            if quarantined
+            else "The shared scheduled heartbeat owns the bounded retry."
+        )
+        + f"\n\n{marker}"
+        + (f"\n{quarantine_marker(selected)}" if quarantined else "")
+    )
+    comment = post_comment(token, repo, issue, body)
+    return {
+        "schema": "hfo.workcell-failure-receipt.v1",
+        "status": "QUARANTINED" if quarantined else "RETRY_ARMED",
+        "work_id": selected["work_id"],
+        "spec_sha256": selected["spec_sha256"],
+        "attempt": attempt,
+        "max_attempts": max_attempts,
+        "failure_fingerprint": fingerprint,
+        "failure_reason": failure_reason,
+        "comment": comment["html_url"],
+        "quarantined": quarantined,
+        "tao_hot_loop_actions": 0,
+    }
 
 
 def get_or_create_consumer_ack(token: str, repo: str, issue: int, rows: list[dict], selected: dict, report: str, selection_sha: str) -> dict:
@@ -228,14 +338,54 @@ def main() -> int:
     worker = worker_for(task)
     worker_out = outdir / "worker"
     worker_out.mkdir(exist_ok=True)
-    worker_proc = subprocess.run([sys.executable, str(worker), str(task_path), str(worker_out)], check=False)
+    proc = subprocess.run(
+        [sys.executable, str(worker), str(task_path), str(worker_out)],
+        text=True,
+        capture_output=True,
+    )
+    if proc.stdout:
+        print(proc.stdout.strip())
     result_path = worker_out / "result.json"
     report_path = worker_out / "report.md"
-    if worker_proc.returncode != 0 and (not result_path.exists() or not report_path.exists()):
-        raise RuntimeError(f"WORKER_NONZERO_WITHOUT_TERMINAL_RECEIPT:{worker_proc.returncode}")
-    result = json.loads(result_path.read_text(encoding="utf-8"))
-    report = report_path.read_text(encoding="utf-8")
-    validate_worker_result(result, selected)
+    result = None
+    report = None
+    classification = None
+    if result_path.exists() and report_path.exists():
+        try:
+            result = json.loads(result_path.read_text(encoding="utf-8"))
+            report = report_path.read_text(encoding="utf-8")
+            validate_worker_result(result, selected)
+            if proc.returncode != 0 and terminal_state_for(result) == "PASS":
+                classification = "WORKER_NONZERO_PASS_CONTRADICTION"
+        except (json.JSONDecodeError, OSError, RuntimeError) as exc:
+            classification = f"WORKER_TERMINAL_RECEIPT_INVALID:{type(exc).__name__}:{exc}"
+    else:
+        classification = (
+            f"WORKER_NONZERO_WITHOUT_TERMINAL_RECEIPT:{proc.returncode}"
+            if proc.returncode != 0
+            else "WORKER_ZERO_WITHOUT_TERMINAL_RECEIPT"
+        )
+
+    if classification is not None:
+        failure = record_worker_failure(
+            token, args.repo, args.issue, comments, selected, task, proc, worker_out,
+            selection["selection_sha256"], classification,
+        )
+        comments_after_failure = issue_comments(token, args.repo, args.issue)
+        next_selection = select_work(args.task_dir, comment_ledger(comments_after_failure))
+        failure["next_work_id"] = (
+            next_selection["selected_work"]["work_id"] if next_selection["selected"] else None
+        )
+        failure["continuation_mode"] = (
+            "SCHEDULED_RECONCILE" if next_selection["selected"] else "MISSION_COMPLETE"
+        )
+        failure["receipt_sha256"] = sha256(failure)
+        (outdir / "runtime-receipt.json").write_text(
+            json.dumps(failure, indent=2), encoding="utf-8"
+        )
+        print(json.dumps(failure, sort_keys=True))
+        return 0
+
 
     ack = get_or_create_consumer_ack(
         token, args.repo, args.issue, comments, selected, report, selection["selection_sha256"]
@@ -277,7 +427,7 @@ def main() -> int:
     summary = {
         "schema": "hfo.workcell-runtime-receipt.v1",
         "status": terminal_state_for(result),
-        "worker_exit_code": worker_proc.returncode,
+        "worker_exit_code": proc.returncode,
         "work_id": result["work_id"],
         "result_sha256": result["result_sha256"],
         "consumer_ack": ack["html_url"],
