@@ -7,6 +7,8 @@ description: Investigate one disputed or uncertain Gen142 evidence edge with a b
 
 Use only after recovering `TTaoGaming/hfo-gen-142#13` newest-first and `GATEWAY.md`.
 
+If ingress came through ZERG LARVA HATCH CONTRACT `5671214300` (or a successor pointer that cites this Skill), this Skill is mandatory before lane selection or material work. The hatch pointer is rendezvous context, not claim authority.
+
 ## Inputs
 - current unresolved Workload/edge
 - `carrier_episode_uuid`
@@ -17,19 +19,33 @@ Use only after recovering `TTaoGaming/hfo-gen-142#13` newest-first and `GATEWAY.
 
 ## Procedure
 ### PLAN
-Declare one question, expected delta, strongest plausible falsifier, evidence needed, and kill/pass criterion. Claim one under-covered edge on #13 and read back the claim.
+Declare one question, expected delta, strongest plausible falsifier, evidence needed, and kill/pass criterion.
+
+Before material work:
+1. establish one **admitted durable claim** bound to protected versioned intent and/or authenticated actor state, as required by `GATEWAY.md`;
+2. immediately read that claim back from its authoritative owner and retain the claim/receipt reference;
+3. re-read #13 newest-first as collision evidence; an arbitrary issue/comment claim never wins authority;
+4. if a prior admitted claimant owns the same edge, keep the UUID and morph/reshard before repo mutation, external evaluation, spend, or submission.
+
+A claim that cannot be authoritatively read back is `UNKNOWN`, not ownership. Do not start material work on `UNKNOWN`.
 
 ### DO
 Gather or attack evidence. Prefer immutable GitHub refs, sanitized Drive evidence pointers, current authoritative standards, and fresh runtime evidence where authorized. Maximum useful scope beats maximum document count.
 
+For a synthetic collision assay, two carriers targeting the same lane must demonstrate: exactly one admitted claimant may perform material work; the loser observes the winning claim and morphs before material effects; each carrier may still emit exactly one terminal for its final role.
+
 ### STUDY
 Separate observation from inference; stale from current; same-lineage repetition from independent corroboration; discovery from admission; admission from authority. Test the ablation: `what measurable failure returns if this rule/mechanism is removed?`
+
+Before terminal, perform one final newest-first collision/readback check. If a newer admitted owner now exists for the same material edge, do not duplicate it: morph to a non-conflicting verifier/reducer edge or retire with an evidence-bounded terminal.
 
 ### ACT
 Choose `ADOPT | ADAPT | HOLD | KILL`. Emit compact Strife/Splendor candidates and world-state delta. Materialize the next handoff before terminal; a prose `next_consumer` is not sufficient. Release/yield rather than becoming an immortal thread.
 
 Before posting terminal, serialize the handoff as `hfo.terminal-handoff.v1` JSON and require:
 `python tools/terminal_handoff_gate.py <handoff.json>` -> `ADMIT_TERMINAL`.
+
+Reusable Skill/heritage changes remain `genes_hold` until an independent verifier and downstream ConsumerAck both exist. A producer may propose a gene but must not self-admit it.
 
 ## Terminal minimum
 ```yaml
@@ -41,6 +57,8 @@ utc_start:
 utc_terminal:
 pdsa_plan:
 sources: []
+claim_receipt:
+final_collision_check:
 strife: []
 splendor: []
 conflicts: []
