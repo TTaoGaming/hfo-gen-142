@@ -1,0 +1,37 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-TRUNK-REDQUEEN-RELEASE-GATE-20260915-2246",
+  "issue_number": 13,
+  "admitted": true,
+  "priority": 200,
+  "question": "Does the current public GEN142 recovery state consistently encode that the evolution spine is proven while operator relief, trusted GB10 fitness, productive proposer admission, and scheduler promotion remain unclosed, with success defined by verified receipts rather than narrative?",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/TTaoGaming/hfo-gen-142/main/TRUNK/PARTIAL_WORLD_STATE.md",
+      "assertions": [
+        "OPERATOR_RELIEF=false",
+        "CROWN_WON=false",
+        "FRONTIER_EVOLUTION_SPINE_PROVEN__LOCAL_PROPOSER_WEAK__TRUSTED_GB10_FITNESS_AND_AUTH_PENDING",
+        "STRONG_PROPOSER__TRUSTED_GB10_CANARY__SCHEDULER_PROMOTION__TWO_ZERO_TAO_CYCLES"
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/TTaoGaming/hfo-gen-142/main/HIVE/HIVE_META_LOOP_V1.md",
+      "assertions": [
+        "EMIT != ACCEPT != CLAIM != ASSIGN != EXECUTE != VERIFY != SUCCESS",
+        "TAO_HOT_LOOP_ACTIONS target=0",
+        "SUCCESS=VERIFIED_RECEIPT_NOT_NARRATIVE"
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/TTaoGaming/hfo-gen-142/main/CROWN/frontier-fast/evolution/RESOURCE_REQUIREMENTS.md",
+      "assertions": [
+        "PROPOSER_READY",
+        "LOCAL_FITNESS_READY",
+        "CROWN_WON=false",
+        "GAINZ_TOKEN"
+      ]
+    }
+  ]
+}
