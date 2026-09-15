@@ -22,7 +22,7 @@ Hard law:
 | HATCHERY | launch/admission/replacement mechanism | platform workflow/scheduler, Gateway contract | native platform | No |
 | OVERLORD | observation/current-state projection, not effect authority | OTel/Trace Context + world-state reducer | telemetry/projection owners | No by default |
 | BURROW | durable responsibility/state slot for a Roach | Cloudflare Agent/DO state; GitHub shadow/receipt | Cloudflare Agent/DO after assay | No; topology/state is not identity |
-| EVOLUTION_CHAMBER | mutate/evaluate/select mechanisms | COTS evolution engine + frozen evaluator + archive/reducer | COTS engine/workflow | No |
+| EVOLUTION_CHAMBER | QD/MOME mutate/evaluate/select mechanisms | COTS evolution engine + frozen evaluator + behavior archive + per-niche Pareto reducer | COTS engine/workflow | No |
 | HIVE | integrated organism / control loop | composition of Gateway, actors, skills, tools, evidence, reducers | multiple native owners | One card only if an actual Hive gateway/service endpoint exists |
 
 ## Larva law
@@ -49,6 +49,26 @@ Examples:
 - correctness or freshness boundary -> VERIFIER;
 - resource/currentness uncertainty -> EXTRACTOR;
 - multiple eligible carriers for admitted demand -> QUEEN policy may become relevant.
+
+## QD / MOME exploration law
+
+The evolution chamber has three distinct phases:
+
+`EXPLORE -> DEVELOP -> SEND`
+
+- **EXPLORE:** maximize behavior-space coverage and measured novelty. Maintain islands/niches. There is no global champion and no global primary.
+- **DEVELOP:** spend more budget on measured elites **within multiple niches** while preserving the archive and independent falsifiers.
+- **SEND:** only after an explicit phase transition, choose protocol-complete package(s) for external submission. Global convergence is legal here, not before.
+
+A `MOME champion` is a nondominated elite inside a behavior cell. The archive itself is the product of exploration; one scalar routing score may not erase orthogonal niches. Exact-cell crowding beyond the admitted producer/falsifier or elite budget forces the next carrier to morph.
+
+Canonical donor patterns to assimilate without importing authority:
+- isolated islands, archive inspirations, crowding replacement, bounded migration, stagnation-triggered new islands;
+- archive / emitter / scheduler separation and novelty/local competition;
+- Pareto-efficient proposal selection from full execution traces;
+- a bounded Pareto front inside each behavior cell.
+
+The frozen benchmark/verifier remains authoritative for fitness. QD preserves diversity; it does not preserve invalid candidates.
 
 ## A2A projection law
 
