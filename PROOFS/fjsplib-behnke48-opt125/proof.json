@@ -1,7 +1,7 @@
 {
   "schema": "hfo.public-crown-proof.v1",
   "claim_id": "fjsplib-behnke48-optimum-125",
-  "status": "INTERNAL_TECHNICAL_CROWN_VERIFIED",
+  "status": "INTERNAL_TECHNICAL_CROWN_VERIFIED__EXTERNAL_REVIEW_SUBMITTED",
   "claim_ceiling": "internal optimum proof verified; external ScheduleOpt acceptance pending",
   "battlefield": {
     "repository": "ScheduleOpt/benchmarks",
@@ -75,7 +75,9 @@
   "external_acceptance": {
     "required": true,
     "surface": "ScheduleOpt/benchmarks public GitHub issue / maintainer archive update",
-    "submitted": false,
+    "submitted": true,
+    "submission_url": "https://github.com/ScheduleOpt/benchmarks/issues/6",
+    "submission_type": "reversible_public_bound_verification_report",
     "accepted": false
   },
   "internal_claim": "behnke48 has optimum makespan 125 under the frozen ScheduleOpt/FJSPLib instance; the frozen public 124..125 gap is technically closed by this independently verified proof packet.",
