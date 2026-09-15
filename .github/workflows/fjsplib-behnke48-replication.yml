@@ -1,0 +1,49 @@
+name: fjsplib-behnke48-replication
+
+on:
+  push:
+    branches: [roach/fjsplib-evo-r2-a25dbdca]
+    paths:
+      - '.github/workflows/fjsplib-behnke48-replication.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  replicate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        seed: [13, 997, 4242]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --disable-pip-version-check 'ortools==9.15.6755'
+      - name: Independent seeded producer replay
+        run: >-
+          python experiments/fjsplib/solve_cp_sat_r3.py
+          --instance behnke48
+          --seed '${{ matrix.seed }}'
+          --constructs 256
+          --seconds 600
+          --workers 4
+          --outdir out
+      - name: Verify any returned certificate independently
+        shell: bash
+        run: |
+          set -euo pipefail
+          f="out/behnke48-seed${{ matrix.seed }}-r3.json"
+          python experiments/fjsplib/verify_certificate_independent.py "$f" | tee verifier.jsonl
+      - uses: actions/upload-artifact@v4
+        with:
+          name: behnke48-replication-seed${{ matrix.seed }}-${{ github.run_id }}
+          path: |
+            out/
+            verifier.jsonl
+          retention-days: 30

@@ -1,0 +1,87 @@
+{
+  "schema": "hfo.public-crown-proof.v1",
+  "claim_id": "fjsplib-behnke48-optimum-125",
+  "status": "INTERNAL_TECHNICAL_CROWN_VERIFIED__EXTERNAL_REVIEW_SUBMITTED",
+  "claim_ceiling": "internal optimum proof verified; external ScheduleOpt acceptance pending",
+  "battlefield": {
+    "repository": "ScheduleOpt/benchmarks",
+    "track": "FJSPLib / flexible job shop scheduling",
+    "instance": "behnke48",
+    "source_commit": "7b3f6fb1384309bd4abca866fe3bef2993139b91",
+    "fresh_main_commit_before_external_report": "7b3f6fb1384309bd4abca866fe3bef2993139b91",
+    "frozen_public_status": "open",
+    "published_lower_bound": 124,
+    "published_upper_bound": 125,
+    "instance_sha256": "4ded969f2695ef8be7d4bdb8963d9b3063bd392bcf03f465e145030c0c5905ef",
+    "bks_sha256": "3b0dd080fdc966b556830538d776590bf58b333d000425aceadc15ab62b0353f"
+  },
+  "producer": {
+    "actor_uuid": "a25dbdca-e813-4270-8129-50885ef68f81",
+    "algorithm": "constructive donor portfolio -> CP-SAT improvement",
+    "run_id": 34921926574,
+    "job_id": 104231761158,
+    "artifact_id": 10378048638,
+    "artifact_zip_sha256": "8c4e8e2673214cd9a97e8ff4433f8a563c9687214cf0be6b7bf88b789a3615fa",
+    "solver": "OR-Tools CP-SAT 9.15.6755",
+    "constructive_parent_makespan": 134,
+    "objective": 125,
+    "best_objective_bound": 125,
+    "producer_status": "OPTIMAL",
+    "wall_time_s": 574.479,
+    "solution_fingerprint": "0x60d4c5685696864e"
+  },
+  "independent_primal_verifier": {
+    "verifier_commit": "8b7b6103dbc3b1489028c6d5704d28758f50f948",
+    "run_id": 34923588992,
+    "job_id": 104236765690,
+    "artifact_id": 10378259000,
+    "artifact_zip_sha256": "aa9c5a481628802026ea7003eec997f2e62bc3c274c494886c459129bd5923f8",
+    "verdict": "CERTIFICATE_FEASIBLE",
+    "certificate_sha256": "8ba641446ecc51e28fc07743a0745084aa8c0e4d485cbefc11b6380ab78168b8",
+    "recomputed_makespan": 125,
+    "operations_verified": 100
+  },
+  "dual_verifiers": [
+    {
+      "name": "PyJobShop independent formulation",
+      "implementation_commit": "b66b575c8b42a10bc60fd2397e764cc5e1535e7f",
+      "normalization_fix_commit": "1f540d4624b11ac7d33a9b3b4688256cc787ea49",
+      "target": 124,
+      "local_600s_status": "TIME_LIMIT",
+      "public_run_id": 34923588992,
+      "public_job_id": 104236765464,
+      "public_artifact_id": 10379885027,
+      "public_artifact_zip_sha256": "86381a0d50836fc5cd0bbb1554d215e5faeb6f448f17a8c5d00aad0ce4eb85d6",
+      "raw_status": "SolveStatus.INFEASIBLE",
+      "runtime_s": 807.937058072,
+      "verdict": "INFEASIBLE",
+      "proves_no_schedule_at_or_below_target": true,
+      "note": "The original artifact's derived boolean was false due only to a case-sensitive status-string comparison; raw solver status is INFEASIBLE. The wrapper normalization was fixed without rerunning the expensive proof."
+    },
+    {
+      "name": "reified alternative CP-SAT decision formulation",
+      "implementation_commit": "3b9cb39cbddb03b5ced50eef450ed2b9c49d2c60",
+      "workflow_commit": "1e6715cf31eb92e4df1f11f03b302e82852edd34",
+      "target": 124,
+      "public_run_id": 34923871072,
+      "public_job_id": 104237615485,
+      "public_artifact_id": 10379606479,
+      "public_artifact_zip_sha256": "85cd7e4d91359ce59561db9aa415765238b95dd2e39de843dc982d5313232e9e",
+      "raw_status": "UNKNOWN",
+      "verdict": "INCONCLUSIVE",
+      "note": "Preserved as negative evidence; it neither proves nor falsifies the optimum claim."
+    }
+  ],
+  "external_acceptance": {
+    "required": true,
+    "surface": "ScheduleOpt/benchmarks public GitHub issue / maintainer archive update",
+    "submitted": true,
+    "submission_url": "https://github.com/ScheduleOpt/benchmarks/issues/6",
+    "submission_type": "reversible_public_bound_verification_report",
+    "accepted": false
+  },
+  "internal_claim": "behnke48 has optimum makespan 125 under the frozen ScheduleOpt/FJSPLib instance; the frozen public 124..125 gap is technically closed by this independently verified proof packet.",
+  "proposed_public_claim_after_external_acceptance": "The evolutionary swarm closed the previously open ScheduleOpt/FJSPLib behnke48 gap by establishing optimum makespan 125.",
+  "internal_technical_crown_verified": true,
+  "crown_won": false
+}

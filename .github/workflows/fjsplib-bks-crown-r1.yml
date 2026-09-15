@@ -1,0 +1,52 @@
+name: FJSPLib BKS Crown R1
+
+on:
+  push:
+    branches: [roach/fjsplib-bks-crown-r1]
+    paths:
+      - 'experiments/fjsplib/**'
+      - '.github/workflows/fjsplib-bks-crown-r1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hunt:
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        instance: [abz7_edata, abz7_rdata, abz8_edata, abz8_rdata, abz8_vdata, abz9_rdata]
+        seed: [1, 37]
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install frozen reference solver
+        run: python -m pip install --disable-pip-version-check 'ortools==9.15.6755'
+      - name: Hunt one strict public-UB improvement
+        run: >-
+          python experiments/fjsplib/solve_cp_sat.py
+          --instance '${{ matrix.instance }}'
+          --seed '${{ matrix.seed }}'
+          --seconds 420
+          --workers 2
+          --outdir out
+      - name: Independently verify any produced certificate
+        shell: bash
+        run: |
+          set -euo pipefail
+          f="out/${{ matrix.instance }}-seed${{ matrix.seed }}.json"
+          python experiments/fjsplib/verify_schedule.py "$f"
+      - name: Publish bounded evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fjsplib-${{ matrix.instance }}-seed${{ matrix.seed }}-${{ github.run_id }}
+          path: out/
+          if-no-files-found: warn
+          retention-days: 14

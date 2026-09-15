@@ -1,0 +1,71 @@
+name: fjsplib-evo-r3
+
+on:
+  push:
+    branches: [roach/fjsplib-evo-r2-a25dbdca]
+    paths:
+      - 'experiments/fjsplib/solve_cp_sat_r3.py'
+      - '.github/workflows/fjsplib-evo-r3.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evolve:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        include:
+          - instance: behnke29
+            seed: 39
+          - instance: behnke29
+            seed: 76
+          - instance: behnke48
+            seed: 206
+          - instance: abz8_vdata
+            seed: 148
+          - instance: abz8_vdata
+            seed: 39
+          - instance: behnke33
+            seed: 76
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install frozen solver
+        run: python -m pip install --disable-pip-version-check 'ortools==9.15.6755'
+      - name: Evolve from constructive donor
+        run: >-
+          python experiments/fjsplib/solve_cp_sat_r3.py
+          --instance '${{ matrix.instance }}'
+          --seed '${{ matrix.seed }}'
+          --constructs 256
+          --seconds 600
+          --workers 4
+          --outdir out
+      - name: Verify only strict improvements
+        shell: bash
+        run: |
+          set -euo pipefail
+          f="out/${{ matrix.instance }}-seed${{ matrix.seed }}-r3.json"
+          python - "$f" <<'PY'
+          import json, subprocess, sys
+          p=sys.argv[1]
+          x=json.load(open(p))
+          print({k:x.get(k) for k in ('instance','seed','constructive_makespan','status','objective','published_ub','improves_public_ub','closes_public_gap')})
+          if x.get('improves_public_ub') is True:
+              subprocess.check_call([sys.executable,'experiments/fjsplib/verify_schedule.py',p])
+          else:
+              print('NO_STRICT_IMPROVEMENT_TO_VERIFY')
+          PY
+      - name: Publish bounded evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: fjsplib-r3-${{ matrix.instance }}-seed${{ matrix.seed }}-${{ github.run_id }}
+          path: out/
+          retention-days: 14
