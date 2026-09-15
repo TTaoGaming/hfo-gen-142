@@ -27,7 +27,7 @@ def admitted():
         "verifier": {"id": "frozen-test-verifier", "frozen": True},
         "deadline_utc": deadline,
         "max_attempts": 2,
-        "max_spend_usd": 5.0,
+        "max_spend_usd": 0.0,
         "effect_ceiling": "NO_EXTERNAL_EFFECT",
         "receipt_sink": "github:TTaoGaming/hfo-gen-142#13",
         "semantic_owner": "hfo-sigrun-va-r0",
@@ -37,6 +37,12 @@ def admitted():
             "provider_live": True,
             "provider_class": "frontier_subscription_bridge",
             "allow_local_fallback": False,
+            "billing_class": "ZERO_MARGINAL",
+            "allow_paid_fallback": False,
+            "zero_marginal_verified": True,
+            "billing_evidence_ref": "test:billing-zero",
+            "quota_source": "test:free-quota",
+            "quota_exhaustion": "ROTATE_OR_HOLD",
         },
         "human_boundaries": [],
         "tao_relay_required": False,
@@ -67,6 +73,22 @@ class HolonGateTests(unittest.TestCase):
 
     def test_frontier_cannot_fallback_local(self):
         m = admitted(); m["provider_policy"]["allow_local_fallback"] = True
+        self.assertEqual(mod.evaluate(m), 1)
+
+    def test_incremental_spend_above_standing_authority_is_blocked(self):
+        m = admitted(); m["max_spend_usd"] = 0.01
+        self.assertEqual(mod.evaluate(m), 1)
+
+    def test_paid_provider_fallback_is_blocked(self):
+        m = admitted(); m["provider_policy"]["allow_paid_fallback"] = True
+        self.assertEqual(mod.evaluate(m), 1)
+
+    def test_nonzero_marginal_provider_is_blocked_at_zero_daily_spend(self):
+        m = admitted(); m["provider_policy"]["billing_class"] = "METERED_PAID"
+        self.assertEqual(mod.evaluate(m), 1)
+
+    def test_zero_marginal_provider_requires_billing_evidence(self):
+        m = admitted(); m["provider_policy"]["billing_evidence_ref"] = None
         self.assertEqual(mod.evaluate(m), 1)
 
     def test_new_control_plane_is_blocked(self):
