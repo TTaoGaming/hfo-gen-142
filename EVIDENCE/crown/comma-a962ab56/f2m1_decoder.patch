@@ -1,0 +1,139 @@
+diff --git a/submissions/semantic-pose-HPAC_CPR1_polished/runtime/residual_archive.py b/submissions/semantic-pose-HPAC_CPR1_polished/runtime/residual_archive.py
+index 822cf66..46af01d 100644
+--- a/submissions/semantic-pose-HPAC_CPR1_polished/runtime/residual_archive.py
++++ b/submissions/semantic-pose-HPAC_CPR1_polished/runtime/residual_archive.py
+@@ -5,6 +5,7 @@ from __future__ import annotations
+ import hashlib
+ import lzma
+ import os
++import struct
+ import time
+ import zipfile
+ from dataclasses import dataclass
+@@ -35,6 +36,7 @@ FIXED_MAGIC = b"RCF1"
+ FIXED_STATES = 25
+ FIXED_BITS = 6
+ F24S_MAGIC = b"F24S"
++F2M1_MAGIC = b"F2M1"
+ IHS2_HEADER = b"IHS2\x03\x31"
+ IHS2_BYTES = 16_599
+ IHS2_BODY_BYTES = IHS2_BYTES - len(IHS2_HEADER)
+@@ -57,6 +59,19 @@ LZMA_FILTERS = [
+         "depth": 0,
+     }
+ ]
++F2M1_LZMA_FILTERS = [
++    {
++        "id": lzma.FILTER_LZMA2,
++        "dict_size": 1 << 20,
++        "lc": 0,
++        "lp": 1,
++        "pb": 0,
++        "mode": lzma.MODE_NORMAL,
++        "nice_len": 32,
++        "mf": lzma.MF_BT2,
++        "depth": 8,
++    }
++]
+ 
+ 
+ class ResidualArchiveError(ValueError):
+@@ -130,6 +145,63 @@ def _restore_cap1(raw: bytes) -> bytes:
+     return CAP1_PREFIX + raw[:6] + b"".join(fields[name] for name in CAP_FIELDS)
+ 
+ 
++def _unpack_fixed_bits(raw: bytes, count: int, width: int, *, signed: bool = False) -> list[int]:
++    values: list[int] = []
++    acc = available = offset = 0
++    for _ in range(count):
++        while available < width:
++            if offset >= len(raw):
++                raise ResidualArchiveError("truncated F2M1 packed metadata")
++            acc = (acc << 8) | raw[offset]
++            offset += 1
++            available += 8
++        available -= width
++        value = (acc >> available) & ((1 << width) - 1)
++        acc &= (1 << available) - 1 if available else 0
++        if signed and value & (1 << (width - 1)):
++            value -= 1 << width
++        values.append(value)
++    return values
++
++
++def _expand_f2m1(models: bytes) -> bytes:
++    """Expand exact F2M1 metadata back to canonical F24S bytes."""
++    if not models.startswith(F2M1_MAGIC):
++        return models
++    base = 4 + IHS2_BODY_BYTES + WANS_BODY_BYTES
++    if len(models) <= base + 1 + 6 + 96 + 12 + 9 + 24 + 6:
++        raise ResidualArchiveError("truncated F2M1 model payload")
++    compact = models[base:]
++    if compact[0] != 0x0F:
++        raise ResidualArchiveError("unsupported F2M1 metadata flags")
++    offset = 1
++    counts = compact[offset:offset + 6]; offset += 6
++    basis_bits = int.from_bytes(counts[:3], "little")
++    residual_bits = int.from_bytes(counts[3:], "little")
++    scales = compact[offset:offset + 96]; offset += 96
++    factors = compact[offset:offset + 12]; offset += 12
++    biases = compact[offset:offset + 9]; offset += 9
++    lengths = compact[offset:offset + 24]; offset += 24
++    ks = compact[offset:offset + 6]; offset += 6
++    basis_bytes = (basis_bits + 7) // 8
++    residual_bytes = (residual_bits + 7) // 8
++    end = offset + basis_bytes + residual_bytes
++    if end >= len(compact):
++        raise ResidualArchiveError("truncated F2M1 carrier or selector")
++    carrier_tail = compact[offset:end]
++    selector = compact[end:]
++    factor_values = list(factors)
++    bias_values = _unpack_fixed_bits(biases, 12, 6, signed=True)
++    length_values = _unpack_fixed_bits(lengths, 16, 12)
++    k_values = _unpack_fixed_bits(ks, 12, 4)
++    predictor = struct.pack("<12h", *factor_values) + struct.pack("<12b", *bias_values)
++    canonical_cap = (
++        counts + scales + predictor + struct.pack("<16H", *length_values)
++        + bytes(k_values) + carrier_tail
++    )
++    return F24S_MAGIC + models[4:base] + canonical_cap + selector
++
++
+ def _decode_models(models: bytes) -> tuple[bytes, bytes, bytes]:
+     if not models.startswith(F24S_MAGIC):
+         raise ResidualArchiveError("F26 requires the fixed F24S model container")
+@@ -196,18 +268,23 @@ def read_residual_archive(archive_path: Path) -> ResidualArchiveParts:
+         if archive.namelist() != ["p"]:
+             raise ResidualArchiveError("archive must contain exactly member p")
+         outer = archive.read("p")
+-    try:
+-        decoder = lzma.LZMADecompressor(
+-            format=lzma.FORMAT_RAW,
+-            filters=LZMA_FILTERS,
+-        )
+-        models = decoder.decompress(outer)
+-    except lzma.LZMAError as error:
+-        raise ResidualArchiveError("invalid raw-LZMA model section") from error
+-    section = decoder.unused_data
+-    if not decoder.eof or not section:
+-        raise ResidualArchiveError("truncated F24S model section")
++    decoder = None
++    models = b""
++    section = b""
++    last_error: Exception | None = None
++    for filters in (LZMA_FILTERS, F2M1_LZMA_FILTERS):
++        try:
++            candidate = lzma.LZMADecompressor(format=lzma.FORMAT_RAW, filters=filters)
++            payload = candidate.decompress(outer)
++            if candidate.eof and candidate.unused_data and payload.startswith((F24S_MAGIC, F2M1_MAGIC)):
++                decoder, models, section = candidate, payload, candidate.unused_data
++                break
++        except lzma.LZMAError as error:
++            last_error = error
++    if decoder is None:
++        raise ResidualArchiveError("invalid raw-LZMA F24S/F2M1 model section") from last_error
+     compressed = outer[: len(outer) - len(section)]
++    models = _expand_f2m1(models)
+     semantic, carrier, hpac = _decode_models(models)
+ 
+     fixed_size = len(FIXED_MAGIC) + 2 + packed_length(
