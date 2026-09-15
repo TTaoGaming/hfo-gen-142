@@ -14,6 +14,13 @@ const MODEL = "@cf/moonshotai/kimi-k2.7-code";
 const ISSUE_API = "https://api.github.com/repos/TTaoGaming/hfo-gen-142/issues/13";
 const LANES = ["CROWN", "DONOR", "BENCHMARK", "REDUCER"] as const;
 type Lane = typeof LANES[number];
+const HATCH_SLOTS = [
+  { name: "SIGRUN-GEN142-LARVA-CROWN", seedLane: "CROWN" as Lane },
+  { name: "SIGRUN-GEN142-LARVA-DONOR", seedLane: "DONOR" as Lane },
+  { name: "SIGRUN-GEN142-LARVA-BENCHMARK", seedLane: "BENCHMARK" as Lane },
+  { name: "SIGRUN-GEN142-LARVA-REDUCER", seedLane: "REDUCER" as Lane },
+] as const;
+const HATCH_BACKPRESSURE_MINUTES = 30;
 type Phase = "IDLE" | "COGNITION_RUNNING" | "READY" | "RECOVERY_REQUIRED" | "FAILED";
 
 type ScoutState = {
@@ -154,17 +161,19 @@ export class Gen142Scout extends Agent<any, ScoutState> {
     return { ...this.normalizedState(), anchorClaim: ANCHOR_CLAIM, debateVersion: DEBATE_VERSION };
   }
 
-  async runScout(runId: string) {
+  async runScout(runId: string, initialLane?: Lane) {
     const current = this.normalizedState();
     if (current.phase === "COGNITION_RUNNING") {
       return { accepted: false, reason: "BUSY", lastRunId: current.lastRunId };
     }
     const laneAfter = (value: Lane): Lane => LANES[(LANES.indexOf(value) + 1) % LANES.length];
-    const lane = (current.phase === "FAILED" || current.phase === "RECOVERY_REQUIRED") && current.lastAttemptLane
-      ? (current.sameFailureCount >= 2 ? laneAfter(current.lastAttemptLane) : current.lastAttemptLane)
-      : current.phase === "READY" && current.lastLane
-        ? laneAfter(current.lastLane)
-        : LANES[current.epoch % LANES.length];
+    const lane = current.phase === "IDLE" && initialLane
+      ? initialLane
+      : (current.phase === "FAILED" || current.phase === "RECOVERY_REQUIRED") && current.lastAttemptLane
+        ? (current.sameFailureCount >= 2 ? laneAfter(current.lastAttemptLane) : current.lastAttemptLane)
+        : current.phase === "READY" && current.lastLane
+          ? laneAfter(current.lastLane)
+          : LANES[current.epoch % LANES.length];
     const canonical = await canonicalIssueSnapshot();
     const started = new Date().toISOString();
     this.setState({
@@ -313,16 +322,43 @@ export class Gen142Scout extends Agent<any, ScoutState> {
   }
 }
 
-async function getScout(env: any) {
-  return (await getAgentByName(env.GEN142_SCOUT, ACTOR_ID, {
+async function getScout(env: any, actorName = ACTOR_ID) {
+  return (await getAgentByName(env.GEN142_SCOUT, actorName, {
     routingRetry: { maxAttempts: 3 },
   })) as any;
 }
 
+function recentRepeatedFailure(state: ScoutState, nowMs: number) {
+  if (!state.lastCompletedUtc || state.sameFailureCount < 2) return false;
+  if (state.phase !== "FAILED" && state.phase !== "RECOVERY_REQUIRED") return false;
+  const ageMs = nowMs - Date.parse(state.lastCompletedUtc);
+  return Number.isFinite(ageMs) && ageMs >= 0 && ageMs < HATCH_BACKPRESSURE_MINUTES * 60_000;
+}
+
+async function hatcheryState(env: any) {
+  return Promise.all(HATCH_SLOTS.map(async (slot) => {
+    const scout = await getScout(env, slot.name);
+    return { ...slot, state: await scout.readPublicState() };
+  }));
+}
+
 async function runScheduled(env: any, scheduledTime: number) {
-  const scout = await getScout(env);
   const stamp = new Date(scheduledTime).toISOString().replace(/[^0-9TZ]/g, "");
-  return scout.runScout(`cron-${stamp}`);
+  const slots = await Promise.all(HATCH_SLOTS.map(async (slot) => {
+    const scout = await getScout(env, slot.name);
+    const publicState = await scout.readPublicState();
+    return { slot, scout, publicState };
+  }));
+  const nowMs = Date.now();
+  const pressured = slots.filter(({ publicState }) => recentRepeatedFailure(publicState, nowMs));
+  if (pressured.length >= 2) {
+    return { mode: "BACKPRESSURE_HOLD", pressured: pressured.map((x) => x.slot.name) };
+  }
+  const results = await Promise.all(slots.map(async ({ slot, scout, publicState }) => {
+    if (publicState.phase === "COGNITION_RUNNING") return { actor: slot.name, accepted: false, reason: "BUSY" };
+    return { actor: slot.name, ...(await scout.runScout(`cron-${stamp}-${slot.seedLane}`, slot.seedLane)) };
+  }));
+  return { mode: "HATCH", results };
 }
 
 export default {
@@ -347,6 +383,16 @@ export default {
     if (request.method === "GET" && url.pathname === "/state") {
       const scout = await getScout(env);
       return Response.json(await scout.readPublicState());
+    }
+    if (request.method === "GET" && url.pathname === "/hatchery") {
+      const slots = await hatcheryState(env);
+      return Response.json({
+        ok: true,
+        policy: "bounded-four-slot-hatchery-v1",
+        schedule: "*/15 * * * *",
+        backpressure_minutes: HATCH_BACKPRESSURE_MINUTES,
+        slots,
+      });
     }
     return new Response("Not found", { status: 404 });
   },
