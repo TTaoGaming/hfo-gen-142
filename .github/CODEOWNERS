@@ -1,0 +1,9 @@
+# Critical policy/control surfaces should always request owner review.
+* @TTaoGaming
+/PUBLIC_AUTHORITY_BOUNDARY.md @TTaoGaming
+/DETERMINISTIC_RECONCILER_CONTRACT.md @TTaoGaming
+/GATEWAY.md @TTaoGaming
+/AGENTS.md @TTaoGaming
+/tools/public_boundary_gate.py @TTaoGaming
+/tools/reconcile_kernel.py @TTaoGaming
+/.github/workflows/ @TTaoGaming
