@@ -1,0 +1,52 @@
+name: FJSPLib Evo R4 Gap
+
+on:
+  push:
+    branches: [roach/fjsplib-evo-r4-gap-6b2ab587]
+    paths:
+      - 'experiments/fjsplib/solve_cp_sat_r4_gap.py'
+      - '.github/workflows/fjsplib-evo-r4-gap.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evolve-gap:
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        seed: [101, 211, 337]
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned solver
+        run: python -m pip install --disable-pip-version-check 'ortools==9.15.6755'
+      - name: Gap-insertion constructive population then exact improve
+        run: >-
+          python experiments/fjsplib/solve_cp_sat_r4_gap.py
+          --instance abz8_vdata
+          --seed '${{ matrix.seed }}'
+          --seconds 180
+          --workers 4
+          --constructs 1200
+          --outdir out
+      - name: Independent certificate verification
+        shell: bash
+        run: |
+          set -euo pipefail
+          f="out/abz8_vdata-seed${{ matrix.seed }}-r4-gap.json"
+          python experiments/fjsplib/verify_schedule.py "$f"
+      - name: Publish bounded R4 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fjsp-r4-gap-abz8_vdata-seed${{ matrix.seed }}-${{ github.run_id }}
+          path: out/
+          if-no-files-found: warn
+          retention-days: 14
