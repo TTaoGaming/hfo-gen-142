@@ -13,6 +13,8 @@ SCHEMA = "hfo.holon-mission.v1"
 SEMANTIC_OWNER = "hfo-sigrun-va-r0"
 RECEIPT_SINK = "github:TTaoGaming/hfo-gen-142#13"
 FRONTIER_CLASSES = {"frontier", "frontier_api", "frontier_subscription_bridge"}
+BILLING_CLASSES = {"ZERO_MARGINAL", "PREPAID_OR_HARD_CAPPED", "METERED_PAID"}
+AUTHORITY_ENVELOPE = Path(__file__).resolve().parents[1] / "AUTHORITY_ENVELOPE_V1.json"
 HUMAN_BOUNDARIES = {
     "secret", "oauth", "2fa", "payment", "permission",
     "protected_merge", "irreversible_external_submit",
@@ -77,8 +79,17 @@ def evaluate(mission, raw=b""):
     if not isinstance(attempts, int) or not 1 <= attempts <= 20:
         return verdict("ATTEMPT_BOUND_INVALID", mission, max_attempts=attempts)
     spend = mission.get("max_spend_usd")
-    if not isinstance(spend, (int, float)) or spend < 0:
+    if not isinstance(spend, (int, float)) or isinstance(spend, bool) or spend < 0:
         return verdict("SPEND_BOUND_INVALID", mission, max_spend_usd=spend)
+    try:
+        authority_envelope = json.loads(AUTHORITY_ENVELOPE.read_text(encoding="utf-8"))
+        spend_ceiling = authority_envelope["spend"]["incremental_usd_per_day"]
+    except Exception as exc:
+        return verdict("AUTHORITY_ENVELOPE_UNREADABLE", mission, error=type(exc).__name__)
+    if not isinstance(spend_ceiling, (int, float)) or isinstance(spend_ceiling, bool) or spend_ceiling < 0:
+        return verdict("AUTHORITY_SPEND_CEILING_INVALID", mission, declared=spend_ceiling)
+    if spend > spend_ceiling:
+        return verdict("BLOCKED_SPEND_AUTHORITY", mission, declared=spend, ceiling=spend_ceiling)
     if not mission.get("effect_ceiling"):
         return verdict("EFFECT_CEILING_REQUIRED", mission)
 
@@ -98,6 +109,22 @@ def evaluate(mission, raw=b""):
     pp = mission.get("provider_policy")
     if not isinstance(pp, dict) or pp.get("role") != "leaf":
         return verdict("PROVIDER_NOT_LEAF", mission)
+    billing_class = pp.get("billing_class")
+    if billing_class not in BILLING_CLASSES:
+        return verdict("BLOCKED_PROVIDER_BILLING_CLASS", mission, declared=billing_class)
+    if pp.get("allow_paid_fallback") is not False:
+        return verdict("BLOCKED_PAID_PROVIDER_FALLBACK", mission)
+    if spend_ceiling == 0 and billing_class != "ZERO_MARGINAL":
+        return verdict("BLOCKED_NONZERO_MARGINAL_ROUTE", mission, declared=billing_class)
+    if billing_class == "ZERO_MARGINAL":
+        if pp.get("zero_marginal_verified") is not True:
+            return verdict("BLOCKED_ZERO_MARGINAL_UNVERIFIED", mission)
+        if not pp.get("billing_evidence_ref"):
+            return verdict("BILLING_EVIDENCE_REQUIRED", mission)
+        if not pp.get("quota_source"):
+            return verdict("QUOTA_SOURCE_REQUIRED", mission)
+        if pp.get("quota_exhaustion") not in {"ROTATE_OR_HOLD", "HOLD"}:
+            return verdict("QUOTA_EXHAUSTION_POLICY_REQUIRED", mission)
     if pp.get("frontier_required") is True:
         if pp.get("provider_live") is not True:
             return verdict("BLOCKED_PROVIDER_AUTH", mission)
