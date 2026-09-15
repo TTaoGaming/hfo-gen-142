@@ -1,0 +1,32 @@
+name: native-scout-contract
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cloudflare/gen142-native-scout-r0/**'
+      - '.github/workflows/native-scout-contract.yml'
+  pull_request:
+    paths:
+      - 'cloudflare/gen142-native-scout-r0/**'
+      - '.github/workflows/native-scout-contract.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: cloudflare/gen142-native-scout-r0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: cloudflare/gen142-native-scout-r0/package-lock.json
+      - run: npm ci
+      - run: npm run check
