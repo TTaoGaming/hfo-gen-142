@@ -1,0 +1,124 @@
+{
+  "battlefield_id": "optil-cvrptw-crown-r0",
+  "budget": {
+    "max_operator_minutes": 20,
+    "max_spend_usd": 100.0,
+    "max_wallclock_hours": 168
+  },
+  "commercial": {
+    "buyer_personas": [
+      "logistics software buyers",
+      "fleet and dispatch operators",
+      "routing SaaS founders"
+    ],
+    "case_study_claim": "Built an evolutionary routing solver that reached #1 on the public OPTIL.io CVRPTW benchmark against a real incumbent field.",
+    "demand_evidence_urls": [
+      "https://www.upwork.com/freelance-jobs/apply/Dispatch-and-Routing-Specialist_~022092956131225657304/",
+      "https://www.upwork.com/freelance-jobs/apply/Full-Stack-Developer-Needed-Build-Powered-School-Bus-Routing-MVP_~022082798453940272691/"
+    ],
+    "expected_cash_30d": 2000,
+    "expected_cash_90d": 9000,
+    "offer": "Build or tune a vehicle-routing optimizer with capacity and time-window constraints, with reproducible cost, route-quality, and service-level metrics.",
+    "p_paid_conversation_7d": 0.32
+  },
+  "domain": "logistics vehicle routing with time windows",
+  "evidence": [
+    "https://www.optil.io/optilion/problems",
+    "https://www.optil.io/optilion/about",
+    "https://www.optil.io/optilion/help",
+    "https://github.com/PyVRP/PyVRP",
+    "https://www.upwork.com/freelance-jobs/apply/Dispatch-and-Routing-Specialist_~022092956131225657304/"
+  ],
+  "evolution": {
+    "canary": {
+      "cost_usd": 0,
+      "promotion_rule": "Promote only if the first legal generic solver submission is valid and reaches at least 97.5, then require an improving survivor before full search.",
+      "runtime_minutes": 60,
+      "status": "NOT_RUN"
+    },
+    "donors": [
+      {
+        "allowed": true,
+        "contribution": "hybrid genetic search, time windows, capacity constraints",
+        "type": "open-source state-of-the-art VRP solver",
+        "url": "https://github.com/PyVRP/PyVRP"
+      },
+      {
+        "allowed": true,
+        "contribution": "OR-Tools routing/time-window modeling and search strategies",
+        "type": "public solver documentation",
+        "url": "https://developers.google.com/optimization/routing/vrptw"
+      }
+    ],
+    "full_run": {
+      "cost_usd": 20,
+      "runtime_minutes": 1440
+    },
+    "gap_evidence_urls": [
+      "https://www.optil.io/optilion/problems",
+      "https://www.optil.io/optilion/problem/3022",
+      "https://github.com/PyVRP/PyVRP"
+    ],
+    "mutable_axes": [
+      "initial solution construction",
+      "neighborhood operators",
+      "destroy/repair mix",
+      "population parameters",
+      "penalty adaptation",
+      "time allocation",
+      "seed portfolio",
+      "instance-feature routing"
+    ],
+    "weakness_hypothesis": "The public field has only 20 users and the leader is 99.87 rather than 100.00; current open-source VRPTW solvers expose hybrid genetic and adaptive local-search machinery that can be ensembled and tuned against a small official-shaped canary before spending the week."
+  },
+  "execution": {
+    "carrier": "C++/Python routing solver submitted to OPTIL judge",
+    "evaluator_frozen": true,
+    "external_auth_ready": false,
+    "frontier_required": false,
+    "local_reproduction_ready": false,
+    "no_weak_fallback": true,
+    "provider_class": "deterministic_cpu",
+    "provider_live": true,
+    "provider_route": "Lenovo/Oracle bounded solver workers"
+  },
+  "mission_class": "prestige_crown",
+  "notes": "Live browser readback: b804 99.87, swats 99.27, HiryBudaj 98.92. Submit enabled with 20-minute cooldown. Precise claim: #1 on OPTIL.io CVRPTW.",
+  "observed_at_utc": "2026-09-15T00:26:12Z",
+  "prestige": {
+    "accepted_submission_protocol": true,
+    "buyer_legibility": 0.97,
+    "competitor_count": 20,
+    "durable_public_evidence": true,
+    "independent_verifier": true,
+    "institution_or_platform": "OPTIL.io / Poznan University of Technology optimization judge",
+    "public_attribution": true,
+    "real_incumbent_competition": true,
+    "tier": "B",
+    "verifier_url": "https://www.optil.io/optilion/about"
+  },
+  "probability": {
+    "basis": "Live standing shows only 20 users but a very strong 99.87 incumbent; PyVRP and OR-Tools supply excellent donors and the commercial translation is unusually legible, yet the remaining 0.13-point gap may be hard and local reproduction is not yet proven.",
+    "confidence": 0.42,
+    "p_beat_incumbent": 0.24,
+    "p_public_proof_24h": 0.09,
+    "p_public_proof_7d": 0.21
+  },
+  "schema_version": "battlefield.v1",
+  "stage": "scout",
+  "target": {
+    "board": "OPTIL.io",
+    "direction": "maximize",
+    "incumbent_checked_at_utc": "2026-09-15T00:26:12Z",
+    "incumbent_name": "b804",
+    "incumbent_score": 99.87,
+    "incumbent_url": "https://www.optil.io/optilion/problem/3022",
+    "metric": "OPTIL aggregate score",
+    "open_to_user": true,
+    "proof_latency_hours": 1,
+    "public_proof_before_merge": true,
+    "rules_url": "https://www.optil.io/optilion/help",
+    "submission_url": "https://www.optil.io/optilion/problem/3022",
+    "track": "Capacitated Vehicle Routing Problem with Time Windows"
+  }
+}

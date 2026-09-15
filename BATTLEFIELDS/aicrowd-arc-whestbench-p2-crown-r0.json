@@ -1,0 +1,128 @@
+{
+  "battlefield_id": "aicrowd-arc-whestbench-p2-crown-r0",
+  "budget": {
+    "max_operator_minutes": 20,
+    "max_spend_usd": 150.0,
+    "max_wallclock_hours": 120
+  },
+  "commercial": {
+    "buyer_personas": [
+      "AI research labs",
+      "scientific-computing teams",
+      "ML performance engineering buyers"
+    ],
+    "case_study_claim": "Reached public #1 in an independently graded $100k ARC/AIcrowd scientific-computing challenge using an evolutionary donor-and-falsification search.",
+    "demand_evidence_urls": [
+      "https://www.upwork.com/freelance-jobs/apply/and-Machine-Learning-Workflow_~022098435692833842321/",
+      "https://www.upwork.com/freelance-jobs/apply/PhD-Engineer-Computer-Scientist-Physics-Informed-Edge-Systems_~022094837674631073524/"
+    ],
+    "expected_cash_30d": 1500,
+    "expected_cash_90d": 8000,
+    "offer": "Run an evidence-driven optimization sprint on a scientific or ML algorithm under a fixed compute budget, including ablations, cost-quality Pareto search, and reproducible performance receipts.",
+    "p_paid_conversation_7d": 0.25
+  },
+  "domain": "scientific computing and white-box neural-network estimation",
+  "evidence": [
+    "https://discourse.aicrowd.com/t/arc-white-box-estimation-challenge-is-now-open/17997",
+    "https://discourse.aicrowd.com/t/everything-we-tried-a-factorized-k-3-cumulant-propagation-estimator-at-0-25-x-b-where-its-flops-go-and-25-measured-dead-ends-team-504aldo-rank-10/18218",
+    "https://github.com/504aldo/whest-p2-cumulant-k3",
+    "https://www.aicrowd.com/challenges/arc-white-box-estimation-challenge-2026/submissions"
+  ],
+  "evolution": {
+    "canary": {
+      "cost_usd": 10,
+      "promotion_rule": "Promote only if local official-shaped validation beats the best public donor by at least 20% adjusted score without rule-sensitive accounting tricks.",
+      "runtime_minutes": 120,
+      "status": "NOT_RUN"
+    },
+    "donors": [
+      {
+        "allowed": true,
+        "contribution": "factorized K=3 cumulant estimator, compute ledger, 25 measured dead ends",
+        "type": "MIT public rank-10 method",
+        "url": "https://github.com/504aldo/whest-p2-cumulant-k3"
+      },
+      {
+        "allowed": true,
+        "contribution": "official evaluator-shaped baseline and packaging",
+        "type": "public challenge starter kit",
+        "url": "https://github.com/AIcrowd/whest-starterkit"
+      },
+      {
+        "allowed": true,
+        "contribution": "independent closure/calibration donor",
+        "type": "public method write-up",
+        "url": "https://discourse.aicrowd.com/t/phase-2-write-up-zero-fitted-constants-measured-what-the-64-calibration-numbers-in-a-relu-mlp-mean-propagator-are-actually-absorbing-submission-330001/18216"
+      }
+    ],
+    "full_run": {
+      "cost_usd": 80,
+      "runtime_minutes": 2880
+    },
+    "gap_evidence_urls": [
+      "https://discourse.aicrowd.com/t/everything-we-tried-a-factorized-k-3-cumulant-propagation-estimator-at-0-25-x-b-where-its-flops-go-and-25-measured-dead-ends-team-504aldo-rank-10/18218",
+      "https://discourse.aicrowd.com/latest",
+      "https://github.com/504aldo/whest-p2-cumulant-k3"
+    ],
+    "mutable_axes": [
+      "cumulant representation",
+      "old-source compression",
+      "fourth-cumulant approximation",
+      "matrix multiplication strategy",
+      "compute allocation",
+      "layer-specific policy",
+      "hybrid estimator blend"
+    ],
+    "weakness_hypothesis": "A public rank-10 donor reports that the leader achieves both lower raw error and about 0.15x budget while its own old-source tier consumes roughly 0.10x budget; combining independently published closure, calibration, compression, and compute-engineering donors may discover a representation on the missing Pareto frontier, but no public donor currently demonstrates the leader mechanism."
+  },
+  "execution": {
+    "carrier": "single-file estimator evaluated by AIcrowd whestbench",
+    "evaluator_frozen": true,
+    "external_auth_ready": false,
+    "frontier_required": false,
+    "local_reproduction_ready": false,
+    "no_weak_fallback": true,
+    "provider_class": "deterministic_cpu",
+    "provider_live": true,
+    "provider_route": "local CPU scientific-compute worker"
+  },
+  "mission_class": "prestige_crown",
+  "notes": "Tier-A moonshot, not primary. Deadline Sep 19 23:59 UTC; $100k prize pool; final winner uses private rerun, so a temporary public #1 is not equivalent to final #1.",
+  "observed_at_utc": "2026-09-15T00:26:12Z",
+  "prestige": {
+    "accepted_submission_protocol": true,
+    "buyer_legibility": 0.78,
+    "competitor_count": 139,
+    "durable_public_evidence": true,
+    "independent_verifier": true,
+    "institution_or_platform": "Alignment Research Center + AIcrowd",
+    "public_attribution": true,
+    "real_incumbent_competition": true,
+    "tier": "A",
+    "verifier_url": "https://www.aicrowd.com/challenges/arc-white-box-estimation-challenge-2026"
+  },
+  "probability": {
+    "basis": "This is the highest-prestige active target but not a weak incumbent: a public rank-10 entrant at 5.40e-9 says the top method is materially better on both raw error and compute, with roughly 139 active competitors on Sep 10. Public donor density is excellent and the Sep 19 deadline fits the week, but a #1 upset is a low-probability moonshot.",
+    "confidence": 0.62,
+    "p_beat_incumbent": 0.045,
+    "p_public_proof_24h": 0.01,
+    "p_public_proof_7d": 0.04
+  },
+  "schema_version": "battlefield.v1",
+  "stage": "scout",
+  "target": {
+    "board": "AIcrowd ARC White-Box Estimation Challenge 2026",
+    "direction": "minimize",
+    "incumbent_checked_at_utc": "2026-09-15T00:26:12Z",
+    "incumbent_name": "marius_binner",
+    "incumbent_score": "~2.70e-9 derived from public raw 1.71e-8 at 0.158x budget",
+    "incumbent_url": "https://discourse.aicrowd.com/t/everything-we-tried-a-factorized-k-3-cumulant-propagation-estimator-at-0-25-x-b-where-its-flops-go-and-25-measured-dead-ends-team-504aldo-rank-10/18218",
+    "metric": "adjusted score",
+    "open_to_user": true,
+    "proof_latency_hours": 2,
+    "public_proof_before_merge": true,
+    "rules_url": "https://discourse.aicrowd.com/t/arc-white-box-estimation-challenge-is-now-open/17997",
+    "submission_url": "https://www.aicrowd.com/challenges/arc-white-box-estimation-challenge-2026/submissions",
+    "track": "Phase 2"
+  }
+}

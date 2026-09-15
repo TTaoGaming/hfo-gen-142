@@ -1,0 +1,130 @@
+{
+  "battlefield_id": "optil-jobshop-crown-r0",
+  "budget": {
+    "max_operator_minutes": 20,
+    "max_spend_usd": 100.0,
+    "max_wallclock_hours": 168
+  },
+  "commercial": {
+    "buyer_personas": [
+      "manufacturing SaaS founders",
+      "production planners and APS teams",
+      "operations-research consulting buyers"
+    ],
+    "case_study_claim": "Built an evolutionary solver portfolio that reached #1 on the public OPTIL.io Jobshop scheduling benchmark against a real incumbent field.",
+    "demand_evidence_urls": [
+      "https://www.upwork.com/freelance-jobs/apply/Full-stack-Developer-manufacturing-projection-planning-SaaS-multi-Tenant-scheduling_~022096159673648145414/",
+      "https://www.upwork.com/freelance-jobs/apply/Senior-Manufacturing-Software-Technical-Lead-MES-MRP-MPS-APS_~022090284636999426261/"
+    ],
+    "expected_cash_30d": 2500,
+    "expected_cash_90d": 10000,
+    "offer": "Build or audit a finite-capacity production scheduling optimizer and demonstrate measurable schedule-quality improvements on the client constraints.",
+    "p_paid_conversation_7d": 0.35
+  },
+  "domain": "manufacturing production scheduling",
+  "evidence": [
+    "https://www.optil.io/optilion/problems",
+    "https://www.optil.io/optilion/about",
+    "https://www.optil.io/optilion/help",
+    "https://github.com/PyJobShop/PyJobShop",
+    "https://www.upwork.com/freelance-jobs/apply/Full-stack-Developer-manufacturing-projection-planning-SaaS-multi-Tenant-scheduling_~022096159673648145414/"
+  ],
+  "evolution": {
+    "canary": {
+      "cost_usd": 0,
+      "promotion_rule": "Promote only if a legal generic baseline submission is valid and scores at least 97.0, then require monotonic gain across the next two survivor submissions.",
+      "runtime_minutes": 60,
+      "status": "NOT_RUN"
+    },
+    "donors": [
+      {
+        "allowed": true,
+        "contribution": "CP-SAT job-shop model and search controls",
+        "type": "open-source solver",
+        "url": "https://github.com/google/or-tools/blob/stable/examples/python/flexible_job_shop_sat.py"
+      },
+      {
+        "allowed": true,
+        "contribution": "modern job-shop CP models, warm starts, objectives",
+        "type": "MIT open-source solver library",
+        "url": "https://github.com/PyJobShop/PyJobShop"
+      },
+      {
+        "allowed": true,
+        "contribution": "dispatching, simulated annealing, CP-SAT and learning-based policies",
+        "type": "open-source solver library",
+        "url": "https://github.com/Pabloo22/job_shop_lib"
+      }
+    ],
+    "full_run": {
+      "cost_usd": 20,
+      "runtime_minutes": 1440
+    },
+    "gap_evidence_urls": [
+      "https://www.optil.io/optilion/problems",
+      "https://www.optil.io/optilion/problem/3021",
+      "https://github.com/PyJobShop/PyJobShop"
+    ],
+    "mutable_axes": [
+      "solver family",
+      "dispatch priority rule",
+      "CP-SAT parameters",
+      "warm-start construction",
+      "local-search neighborhoods",
+      "time allocation",
+      "random seed portfolio",
+      "instance-feature routing"
+    ],
+    "weakness_hypothesis": "The public field is only 22 users and the incumbent aggregate score is 99.70 rather than 100.00; a modern generic portfolio combining CP-SAT, dispatching, and local-search donors can search per-instance tradeoffs that the current single incumbent configuration does not simultaneously dominate."
+  },
+  "execution": {
+    "carrier": "C++/Python optimization solver submitted to OPTIL judge",
+    "evaluator_frozen": true,
+    "external_auth_ready": false,
+    "frontier_required": false,
+    "local_reproduction_ready": false,
+    "no_weak_fallback": true,
+    "provider_class": "deterministic_cpu",
+    "provider_live": true,
+    "provider_route": "Lenovo/Oracle bounded solver workers"
+  },
+  "mission_class": "prestige_crown",
+  "notes": "Live browser readback at observation time: Krzysiek C++ 99.70 / 2934.77s; swats 98.45; KarolinaK 97.03. Submit enabled with 20-minute cooldown. Crown language must be precise: #1 on OPTIL.io Jobshop, not global proof of optimality for all JSSP.",
+  "observed_at_utc": "2026-09-15T00:26:12Z",
+  "prestige": {
+    "accepted_submission_protocol": true,
+    "buyer_legibility": 0.95,
+    "competitor_count": 22,
+    "durable_public_evidence": true,
+    "independent_verifier": true,
+    "institution_or_platform": "OPTIL.io / Poznan University of Technology optimization judge",
+    "public_attribution": true,
+    "real_incumbent_competition": true,
+    "tier": "B",
+    "verifier_url": "https://www.optil.io/optilion/about"
+  },
+  "probability": {
+    "basis": "Live standing shows 22 users with #1 at 99.70 and #2 at 98.45, leaving a nonzero quality gap; donor density is strong and commercial mapping is direct, but the final 0.30 points may be genuinely difficult and local instance reproduction has not yet been assayed.",
+    "confidence": 0.45,
+    "p_beat_incumbent": 0.32,
+    "p_public_proof_24h": 0.12,
+    "p_public_proof_7d": 0.28
+  },
+  "schema_version": "battlefield.v1",
+  "stage": "scout",
+  "target": {
+    "board": "OPTIL.io",
+    "direction": "maximize",
+    "incumbent_checked_at_utc": "2026-09-15T00:26:12Z",
+    "incumbent_name": "Krzysiek",
+    "incumbent_score": 99.7,
+    "incumbent_url": "https://www.optil.io/optilion/problem/3021",
+    "metric": "OPTIL aggregate score",
+    "open_to_user": true,
+    "proof_latency_hours": 1,
+    "public_proof_before_merge": true,
+    "rules_url": "https://www.optil.io/optilion/help",
+    "submission_url": "https://www.optil.io/optilion/problem/3021",
+    "track": "Jobshop"
+  }
+}
