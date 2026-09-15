@@ -27,9 +27,12 @@ ln -sfn "$ROOT/tools/janitor_gate.py" "$BIN/hfo-janitor-gate"
 ln -sfn "$ROOT/ops/janitor_exec.py" "$BIN/hfo-janitor-exec"
 chmod +x "$ROOT/tools/holon_gate.py" "$ROOT/ops/vps_exec_guard.py" "$ROOT/tools/reconcile_kernel.py" "$ROOT/tools/janitor_gate.py" "$ROOT/ops/janitor_exec.py"
 
-python3 -m unittest discover -s "$ROOT/tests" -p 'test_holon_gate.py'
-python3 -m unittest discover -s "$ROOT/tests" -p 'test_reconcile_kernel.py'
-python3 -m unittest discover -s "$ROOT/tests" -p 'test_janitor_gate.py'
+(
+  cd "$ROOT"
+  python3 -m unittest discover -s tests -p 'test_holon_gate.py'
+  python3 -m unittest discover -s tests -p 'test_reconcile_kernel.py'
+  python3 -m unittest discover -s tests -p 'test_janitor_gate.py'
+)
 
 commit="$(git -C "$ROOT" rev-parse HEAD)"
 python3 - "$STATE/install.json" "$commit" <<'PY'
