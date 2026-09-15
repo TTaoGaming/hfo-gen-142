@@ -133,12 +133,20 @@ def observe_schedule(token: str, repo: str, workflow: str) -> dict:
     return base
 
 
+def terminal_state_for(result: dict) -> str:
+    for key in ("next_state", "verdict"):
+        value = str(result.get(key, "")).upper()
+        if value in {"PASS", "FAIL", "HOLD", "KILL"}:
+            return value
+    return "FAIL"
+
+
 def build_handoff(result: dict, ack_url: str, watch_receipt: dict | None) -> dict:
     handoff = {
         "schema": "hfo.terminal-handoff.v1",
         "mission_id": result["work_id"],
         "actor_id": "workcell-runtime-v1",
-        "terminal_state": "PASS",
+        "terminal_state": terminal_state_for(result),
         "tao_relay_required": False,
         "operator_action_required": "NONE",
         "verifier_receipt": {
@@ -205,9 +213,13 @@ def main() -> int:
     worker = worker_for(task)
     worker_out = outdir / "worker"
     worker_out.mkdir(exist_ok=True)
-    subprocess.run([sys.executable, str(worker), str(task_path), str(worker_out)], check=True)
-    result = json.loads((worker_out / "result.json").read_text(encoding="utf-8"))
-    report = (worker_out / "report.md").read_text(encoding="utf-8")
+    worker_proc = subprocess.run([sys.executable, str(worker), str(task_path), str(worker_out)], check=False)
+    result_path = worker_out / "result.json"
+    report_path = worker_out / "report.md"
+    if worker_proc.returncode != 0 and (not result_path.exists() or not report_path.exists()):
+        raise RuntimeError(f"WORKER_NONZERO_WITHOUT_TERMINAL_RECEIPT:{worker_proc.returncode}")
+    result = json.loads(result_path.read_text(encoding="utf-8"))
+    report = report_path.read_text(encoding="utf-8")
 
     ack = get_or_create_consumer_ack(
         token, args.repo, args.issue, comments, selected, report, selection["selection_sha256"]
@@ -236,6 +248,7 @@ def main() -> int:
         retirement_body = (
             f"## WORKCELL RETIREMENT v1\n\n"
             f"- WorkItem: `{result['work_id']}`\n"
+            f"- Terminal state: `{terminal_state_for(result)}`\n"
             f"- ConsumerAck: {ack['html_url']}\n"
             f"- Result SHA256: `{result['result_sha256']}`\n"
             f"- Next WorkItem: `{next_id}`\n"
@@ -247,7 +260,8 @@ def main() -> int:
 
     summary = {
         "schema": "hfo.workcell-runtime-receipt.v1",
-        "status": "PASS",
+        "status": terminal_state_for(result),
+        "worker_exit_code": worker_proc.returncode,
         "work_id": result["work_id"],
         "result_sha256": result["result_sha256"],
         "consumer_ack": ack["html_url"],

@@ -35,6 +35,15 @@ class WorkCellRuntimeTest(unittest.TestCase):
         self.assertEqual(self.gate(handoff), 0)
         self.assertEqual(handoff["next"]["mode"], "RECONCILE")
 
+    def test_hold_result_is_bounded_terminal_not_controller_failure(self):
+        result = {
+            "work_id": "W-HOLD", "result_sha256": "c" * 64, "sources": [],
+            "verdict": "FAIL", "next_state": "HOLD",
+        }
+        handoff = runtime.build_handoff(result, "https://github.com/x/y/issues/1#issuecomment-2", None)
+        self.assertEqual(handoff["terminal_state"], "HOLD")
+        self.assertEqual(self.gate(handoff), 0)
+
     def test_unknown_worker_schema_fails_closed(self):
         with self.assertRaises(RuntimeError):
             runtime.worker_for({"schema": "hfo.unknown.v9"})
