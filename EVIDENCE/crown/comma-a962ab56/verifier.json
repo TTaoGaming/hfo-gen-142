@@ -1,0 +1,26 @@
+{
+  "schema": "hfo.crown-evo-verifier.v1",
+  "batch_uuid": "comma-evo-20260915T070000Z-a962ab56",
+  "producer_carrier_uuid": "a962ab56-2fb0-492e-a63c-462c9a1cfae3",
+  "verifier": {
+    "host": "Oracle VPS - ARM64",
+    "role": "independent deterministic verifier",
+    "producer_host_separation": true,
+    "verifier_report_sha256": "323645b1df96a34c7212f2c853f5da9212d2521420e7c901ac1bab406a46c766",
+    "verifier_program_sha256": "677483a5918285892367f4771028082746ef6df499812d935141407cf49b1490"
+  },
+  "readback": {
+    "incumbent_sha256": "12cf5d71a94065184f097c3e40dfe9f1db8402a1a76a80efc76a6956fe1e4004",
+    "incumbent_bytes": 186724,
+    "candidate_bytes": 186709,
+    "candidate_sha256": "8e5d806cb3da2e2e4bee2087844cbde1382d2e34ccd13e7c181dbc570c231e0f",
+    "compressed_model_bytes": 71807,
+    "candidate_models_sha256": "e480ca7cac3830087b2eea62289de12ebb7b87cc4484ede956d1d6ec5fc0082b",
+    "reconstructed_f24s_sha256": "4e8d63a98dc7e42ccf17ee7d3fe15a44c8020a3c511838994c6039a673557bde",
+    "unchanged_residual_plus_rc64_sha256": "fd3e5617a130d194f65ce1540ed778bedc963ceebc0d5ca1ae64830b425bddb2",
+    "matches_producer_hash": true,
+    "published_threshold_beaten": true
+  },
+  "verdict": "PASS_INDEPENDENT_REPLAY",
+  "claim_ceiling": "SUBMISSION_READY_INTERNAL only. This is not an external leaderboard/keeper acceptance and is not a public crown."
+}
