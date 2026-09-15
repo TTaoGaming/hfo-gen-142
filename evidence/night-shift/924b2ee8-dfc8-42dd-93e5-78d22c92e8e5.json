@@ -1,0 +1,172 @@
+{
+  "schema": "gen142.night-shift-crown-pdsa.v1",
+  "carrier_uuid": "924b2ee8-dfc8-42dd-93e5-78d22c92e8e5",
+  "observed_at_utc": "2026-09-15T07:08:00Z",
+  "tao_hot_loop_actions": 0,
+  "base_main_sha": "a4e59326eb3435853b935b6af4521d956ee4a4e5",
+  "governance_readback": {
+    "main_protected": false,
+    "rulesets": [],
+    "main_mutated": false
+  },
+  "workcell_readback": {
+    "last_retired": "GEN142-QD-LEARN2DESIGN-018",
+    "result_sha256": "bc74261a490a878db11acd28eebfc388799c91ca90f5d59f52178a19e79b6879",
+    "next": "GEN142-PRESTIGE-SWEEP-008",
+    "continuation": "SCHEDULED_RECONCILE",
+    "ecdsa_research_cell": {
+      "status": "PASS/RETIRED",
+      "result_sha256": "572b7e007fd7741a64246cab1a82ce9abd8c882239231eabefd0d4f7ff99f705"
+    }
+  },
+  "native_scout_readback": {
+    "url": "https://hfo-gen142-native-scout-r0.tommytai3.workers.dev/state",
+    "phase": "FAILED",
+    "epoch": 12,
+    "recoveryCount": 1,
+    "failureCount": 23,
+    "sameFailureCount": 2,
+    "updatedAt": "2026-09-15T07:02:42.794Z",
+    "lastLane": "REDUCER",
+    "lastAttemptLane": "CROWN",
+    "lastError": "EMPTY_SYNTHESIS",
+    "lastFailureFingerprint": "ecc528ffe5337352dea6cc284c83ea77f4204b62db6619445201b6493be5fada",
+    "anchor_status": "CANDIDATE_NOT_ADMITTED"
+  },
+  "carrier_capability": {
+    "ovh_x86_64": {
+      "online": true,
+      "nproc": 4,
+      "ram_gib": 7.6,
+      "python": "3.12.3",
+      "git": "2.43.0",
+      "node": "22.23.2",
+      "docker": "29.7.2",
+      "docker_socket_access": false,
+      "rust": false
+    },
+    "oracle_arm64": {
+      "online": true,
+      "nproc": 2,
+      "ram_gib": 11,
+      "python": "3.12.3",
+      "git": "2.43.0",
+      "node": "22.23.2",
+      "rust": false
+    },
+    "lenovo_amd64": {
+      "online": true,
+      "python": "3.12.10",
+      "git": "2.53.0.windows.1",
+      "rustc": "1.93.1",
+      "cargo": "1.93.1",
+      "node": "24.19.0",
+      "wsl": "2.6.3.0"
+    }
+  },
+  "gather": [
+    {
+      "id": "micro2026-moa-npu-stage1",
+      "source": "BATTLEFIELDS/main",
+      "hard_gate": "HOLD",
+      "reason": "existing card lacks local reproduction and public attack requires external arena auth"
+    },
+    {
+      "id": "ieee-bigdata-traffic-flow-bench-2026",
+      "source": "BATTLEFIELDS/main",
+      "hard_gate": "HOLD",
+      "reason": "existing card lacks local reproduction and declares nonzero canary spend"
+    },
+    {
+      "id": "tartanimu-iros2026",
+      "source": "BATTLEFIELDS/main",
+      "hard_gate": "HOLD",
+      "reason": "existing card lacks local reproduction and bounded canary is too slow/costly"
+    },
+    {
+      "id": "buildbench-icse2027",
+      "source": "fresh official public gather",
+      "hard_gate": "KILL_THIS_CARRIER",
+      "reason": "prestigious and locally testable, but full leaderboard evaluation is organizer-run; registration closes 2026-09-30 and official publication is by 2026-11-20, failing this run's fast-public-proof objective"
+    },
+    {
+      "id": "drdocbench-emnlp2026",
+      "source": "fresh official public gather",
+      "hard_gate": "HOLD",
+      "reason": "live through 2026-10-10 but accepted-score path is EvalAI external auth/submission; no no-auth public-proof canary selected"
+    },
+    {
+      "id": "optimization-arena-semicircle",
+      "source": "current WorkCell portfolio",
+      "hard_gate": "COLLISION",
+      "reason": "GEN142-QD-OPTARENA-017 already retired with ConsumerAck; avoid duplicate attack"
+    },
+    {
+      "id": "ecdsa-fail-secp256k1-pointadd-20260915",
+      "source": "fresh official site + retired WorkCell research cell",
+      "hard_gate": "ADMIT",
+      "reason": "real public incumbent, 70 solvers, exact open local verifier, legal public donors, zero-dollar local canary, live public leaderboard"
+    }
+  ],
+  "hard_gate_contract": {
+    "rules": [
+      "real public incumbent and accepted public verification protocol",
+      "local no-external-effect reproduction path",
+      "canary cost_usd == 0",
+      "no registration/login/TOS/payment/public submission required for local canary",
+      "frozen deterministic readback",
+      "collision exclusion",
+      "repeated failed fingerprint requires strategy change"
+    ],
+    "survivors": [
+      "ecdsa-fail-secp256k1-pointadd-20260915"
+    ],
+    "primary": "ecdsa-fail-secp256k1-pointadd-20260915"
+  },
+  "repo_gate_readback": {
+    "decision": "ADMIT",
+    "verdict": "ADMIT_CANARY",
+    "routing_score": 0.011352,
+    "reducer_primary": "ecdsa-fail-secp256k1-pointadd-20260915",
+    "gate_tested_card_sha256": "7d21b7b9ff128f7149342022e347f54dd85f457eea5aad6c9da6d7399fa25f89"
+  },
+  "primary": {
+    "battlefield": "ECDSA.fail secp256k1 Point-Addition Challenge",
+    "incumbent": "REgonLevy / DeepSeek-V4",
+    "incumbent_score": 1140989148,
+    "incumbent_metrics": {
+      "toffoli": 903396,
+      "qubits": 1263
+    },
+    "incumbent_source": "https://ecdsa.fail/",
+    "metric": "average executed Toffoli count × peak qubit width; lower is better",
+    "competition": "590 frontier advances / 70 solvers shown on official board",
+    "official_repo_head": "97003969b1d3809c6829954bb520c37c1879efbf",
+    "donor_genes": [
+      "official 9024-shot Fiat-Shamir-derived correctness/reversibility/phase verifier",
+      "benhuang2025 profile-first peak-binder and Toffoli-attribution loop",
+      "value-exact mutation preference before probabilistic/truncation mutations",
+      "huntability/clean-island nonce gating after op-stream changes",
+      "frozen evaluator bake + frontier recheck before submit"
+    ],
+    "mutation_axes": [
+      "peak-qubit liveness/ancilla reuse/recompute",
+      "exact Toffoli-count arithmetic/circuit rewrites",
+      "clean-island nonce search/huntability"
+    ]
+  },
+  "canary": {
+    "fingerprint": "ecdsa.fail:official-head-97003969:OVH-docker-baseline:v1",
+    "carrier": "OVH VPS x86_64",
+    "attempt": "clone exact official HEAD then run unchanged official harness in rust:1.93-bookworm with 300s cap",
+    "result": "FAIL_INFRA_DOCKER_SOCKET_DENIED",
+    "evaluator_entered": false,
+    "score_observed": null,
+    "successive_halving": "KILL this OVH Docker carrier fingerprint; no retry without carrier/runtime strategy change",
+    "negative_preserved": true
+  },
+  "strongest_falsifier": "The live frontier is already heavily optimized: the official board shows 590 advances by 70 solvers and a 1,140,989,148 current score, roughly 9.43x below the challenge clone's recorded ~10.76B baseline; public submission also requires creating an API key and logging in. This carrier did not yet prove local evaluator throughput because OVH Docker access failed before execution.",
+  "public_proof_path": "After a distinct local strategy produces an official-harness-valid score strictly below 1,140,989,148 and rechecks the live frontier, the documented CLI submit path can publish to the ECDSA.fail leaderboard. This run performed no login/API-key creation/submission.",
+  "next_machine_owned_action": "Strategy change only: on the already-online Lenovo native Rust 1.93.1 carrier, clone exact HEAD 97003969..., run one unchanged official harness baseline to completion, freeze score.json/results.tsv and runtime, then successive-half mutation families from public donor methodology. Do not use OVH Docker again unless socket permission is independently repaired.",
+  "human_only_authority_boundary": "External ECDSA.fail API-key creation/login and public submit are explicit human-authority boundaries; no such action occurred."
+}
