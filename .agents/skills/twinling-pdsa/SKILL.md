@@ -17,7 +17,7 @@ Use only after recovering `TTaoGaming/hfo-gen-142#13` newest-first and `GATEWAY.
 
 ## Procedure
 ### PLAN
-Declare one question, expected delta, strongest plausible falsifier, evidence needed, and kill/pass criterion. Claim one under-covered edge on #13 and read back the claim.
+Declare one question, expected delta, strongest plausible falsifier, evidence needed, and kill/pass criterion. Acquire exactly one semantic claim/fence for the under-covered edge through the authenticated internal controller and immediately read back owner, fence/generation, and deadline. `HOLD` before material work if that readback is unavailable or contradictory. Only after authoritative readback, project a sanitized claim to #13 for public recovery; the public comment is evidence only and never selects ownership.
 
 ### DO
 Gather or attack evidence. Prefer immutable GitHub refs, sanitized Drive evidence pointers, current authoritative standards, and fresh runtime evidence where authorized. Maximum useful scope beats maximum document count.
