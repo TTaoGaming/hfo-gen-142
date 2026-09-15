@@ -12,9 +12,23 @@ permissions:
   contents: read
 
 jobs:
-  abz8-vdata-506:
+  crown-portfolio:
     runs-on: ubuntu-latest
     timeout-minutes: 7
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - instance: abz8_vdata
+            target: 506
+          - instance: behnke7
+            target: 123
+          - instance: behnke11
+            target: 227
+          - instance: behnke12
+            target: 218
+          - instance: behnke14
+            target: 229
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -26,11 +40,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          url='https://raw.githubusercontent.com/ScheduleOpt/benchmarks/7b3f6fb1384309bd4abca866fe3bef2993139b91/flexible-jobshop/instances/json/abz8_vdata.json'
-          curl -fsSL "$url" -o "$RUNNER_TEMP/abz8_vdata.json"
-          sha=$(sha256sum "$RUNNER_TEMP/abz8_vdata.json" | awk '{print $1}')
+          instance='${{ matrix.instance }}'
+          target='${{ matrix.target }}'
+          url="https://raw.githubusercontent.com/ScheduleOpt/benchmarks/7b3f6fb1384309bd4abca866fe3bef2993139b91/flexible-jobshop/instances/json/${instance}.json"
+          curl -fsSL "$url" -o "$RUNNER_TEMP/instance.json"
+          sha=$(sha256sum "$RUNNER_TEMP/instance.json" | awk '{print $1}')
           cat > "$RUNNER_TEMP/task.json" <<EOF
-          {"schema":"hfo.fjsp-crown-workitem.v1","work_id":"GEN142-FJSPLIB-ABZ8-506-R0","instance_url":"$url","instance_sha256":"$sha","target_makespan":506,"max_seconds":300,"workers":4,"seed":1}
+          {"schema":"hfo.fjsp-crown-workitem.v1","work_id":"GEN142-FJSPLIB-${instance^^}-${target}-R0","instance_url":"$url","instance_sha256":"$sha","target_makespan":$target,"max_seconds":300,"workers":4,"seed":1}
           EOF
       - name: Run hard feasibility assay
         env:
@@ -40,6 +56,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: fjsp-abz8-vdata-506-${{ github.run_id }}
+          name: fjsp-${{ matrix.instance }}-${{ matrix.target }}-${{ github.run_id }}
           path: ${{ runner.temp }}/fjsp-crown/
           retention-days: 14
