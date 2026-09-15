@@ -23,7 +23,7 @@ def base_package():
         "max_runtime_minutes": 60,
         "max_attempts": 6,
         "max_spend_usd": 3.0,
-        "effect_ceiling": "OBSERVE_ONLY",
+        "effect_ceiling": "NO_EXTERNAL_EFFECT",
         "receipt_sink": "github:TTaoGaming/hfo-gen-142#13",
         "semantic_owner": "hfo-sigrun-va-r0",
         "provider_policy": {
@@ -51,7 +51,7 @@ def base_package():
                 "verifier_formation_id": "verify",
                 "max_attempts_each": 1,
                 "max_spend_usd_each": 0.5,
-                "effect_ceiling": "OBSERVE_ONLY",
+                "effect_ceiling": "NO_EXTERNAL_EFFECT",
             },
             {
                 "formation_id": "verify",
@@ -62,7 +62,7 @@ def base_package():
                 "verifier_formation_id": None,
                 "max_attempts_each": 1,
                 "max_spend_usd_each": 0.5,
-                "effect_ceiling": "OBSERVE_ONLY",
+                "effect_ceiling": "NO_EXTERNAL_EFFECT",
             },
         ],
     }
@@ -131,7 +131,7 @@ class ForcePackageGateTests(unittest.TestCase):
             "verifier_formation_id": "verify",
             "max_attempts_each": 1,
             "max_spend_usd_each": 0.1,
-            "effect_ceiling": "OBSERVE_ONLY",
+            "effect_ceiling": "NO_EXTERNAL_EFFECT",
         })
         p["formations"][0]["verifier_formation_id"] = "gather2"
         self.assertEqual("VERIFIER_FORMATION_NOT_VERIFIER", self.verdict(p))
