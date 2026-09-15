@@ -45,9 +45,10 @@ def fake_worker_script(root, exit_code=0):
     else:
         body = (
             "import hashlib,json,sys\nfrom pathlib import Path\n"
-            "task=json.loads(Path(sys.argv[1]).read_text())\n"
+            "task_path=Path(sys.argv[1]); task=json.loads(task_path.read_text())\n"
             "out=Path(sys.argv[2]); out.mkdir(parents=True,exist_ok=True)\n"
-            "base={'schema':'hfo.research-cell-result.v1','work_id':task['work_id'],'verdict':'PASS','sources':[],'next_state':'RETIRE','tao_hot_loop_actions':0}\n"
+            "spec_sha=hashlib.sha256(task_path.read_bytes()).hexdigest()\n"
+            "base={'schema':'hfo.research-cell-result.v1','work_id':task['work_id'],'spec_sha256':spec_sha,'verdict':'PASS','sources':[],'next_state':'RETIRE','tao_hot_loop_actions':0}\n"
             "base['result_sha256']=hashlib.sha256(json.dumps(base,sort_keys=True,separators=(',',':')).encode()).hexdigest()\n"
             "(out/'result.json').write_text(json.dumps(base))\n"
             "(out/'report.md').write_text('held-out report')\n"
