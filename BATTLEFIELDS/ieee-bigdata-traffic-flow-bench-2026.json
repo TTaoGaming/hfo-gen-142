@@ -1,0 +1,117 @@
+{
+  "schema_version": "battlefield.v1",
+  "battlefield_id": "ieee-bigdata-traffic-flow-bench-2026",
+  "observed_at_utc": "2026-09-15T00:28:16Z",
+  "mission_class": "prestige_crown",
+  "stage": "scout",
+  "domain": "traffic-flow-forecasting-and-physics",
+  "target": {
+    "board": "2026 IEEE Big Data — Traffic Flow Bench",
+    "track": "Kaggle public leaderboard / IEEE Big Data Cup",
+    "metric": "competition score",
+    "direction": "maximize",
+    "incumbent_name": "Pardheev Krishna",
+    "incumbent_score": 0.92406,
+    "incumbent_checked_at_utc": "2026-09-15T00:28:16Z",
+    "incumbent_url": "https://www.kaggle.com/competitions/2026-ieee-big-data-traffic-flow-bench/leaderboard",
+    "rules_url": "https://www.kaggle.com/competitions/2026-ieee-big-data-traffic-flow-bench/rules",
+    "submission_url": "https://www.kaggle.com/competitions/2026-ieee-big-data-traffic-flow-bench",
+    "open_to_user": true,
+    "public_proof_before_merge": true,
+    "proof_latency_hours": 0.5
+  },
+  "prestige": {
+    "tier": "B",
+    "institution_or_platform": "IEEE Big Data Cup 2026 + Kaggle",
+    "independent_verifier": true,
+    "verifier_url": "https://www.kaggle.com/competitions/2026-ieee-big-data-traffic-flow-bench/leaderboard",
+    "public_attribution": true,
+    "durable_public_evidence": true,
+    "real_incumbent_competition": true,
+    "competitor_count": 40,
+    "accepted_submission_protocol": true,
+    "buyer_legibility": 0.8
+  },
+  "commercial": {
+    "buyer_personas": [
+      "transportation analytics and ITS teams",
+      "forecasting and demand-planning clients",
+      "simulation and operations-research clients"
+    ],
+    "offer": "Physics-aware forecasting and optimization sprint: diagnose dynamic bottlenecks, benchmark multiple forecasting models, add interpretable queue/demand constraints, and deliver reproducible decision-ready forecasts.",
+    "demand_evidence_urls": [
+      "https://www.upwork.com/freelance-jobs/apply/PTV-VISSIM-Python-Deep-Reinforcement-Learning-DQN-Developer-for-Autonomous-Intersection-Control_~022082485644013167188/",
+      "https://www.upwork.com/freelance-jobs/apply/Data-Scientist-Forecasting-Full-Time-Months_~022090405839412308784/"
+    ],
+    "p_paid_conversation_7d": 0.25,
+    "expected_cash_30d": 1000,
+    "expected_cash_90d": 5000,
+    "case_study_claim": "Current #1 on the public IEEE Big Data Traffic Flow Bench leaderboard, if and only if Kaggle publicly shows Tao's team at rank 1 under the accepted competition protocol."
+  },
+  "evolution": {
+    "donors": [
+      {
+        "url": "https://www.kaggle.com/code/lamhuy8904/traffic-flow-bench-pipeline",
+        "allowed": true,
+        "type": "Apache-2.0-public-competition-notebook",
+        "contribution": "Runnable public TrafficFlowBench pipeline and benchmark integration."
+      },
+      {
+        "url": "https://github.com/asu-trans-ai-lab/cbi_plus",
+        "allowed": true,
+        "type": "MIT-traffic-engineering-toolkit",
+        "contribution": "TrafficFlowBench-integrated CBI/FD/QVDF physics diagnostics, bottleneck and queue features."
+      }
+    ],
+    "mutable_axes": [
+      "forecast model family, ensemble weights and temporal feature design",
+      "physics-aware queue, bottleneck, demand and conservation features/constraints"
+    ],
+    "weakness_hypothesis": "The current public #1 score is only 0.00180 above #2 on a field of roughly 40 teams. The task exposes separable forecasting and traffic-physics structure, while public donor pipelines leave substantial score headroom, making ensemble plus mechanism-based feature evolution a plausible narrow-gap attack.",
+    "gap_evidence_urls": [
+      "https://www.kaggle.com/competitions/2026-ieee-big-data-traffic-flow-bench/leaderboard",
+      "https://www.kaggle.com/code/lamhuy8904/traffic-flow-bench-pipeline",
+      "https://github.com/asu-trans-ai-lab/cbi_plus"
+    ],
+    "canary": {
+      "runtime_minutes": 60,
+      "cost_usd": 5,
+      "status": "NOT_RUN",
+      "promotion_rule": "PROMOTE only if a reproducible local/public canary improves the Apache donor pipeline materially and the first accepted public submission reaches >=0.88 or top-10; otherwise kill before broad MOME spend."
+    },
+    "full_run": {
+      "runtime_minutes": 2880,
+      "cost_usd": 50
+    }
+  },
+  "execution": {
+    "frontier_required": false,
+    "provider_live": false,
+    "provider_class": "not_required",
+    "provider_route": "Python-forecasting-plus-physics-MOME",
+    "no_weak_fallback": true,
+    "evaluator_frozen": true,
+    "local_reproduction_ready": false,
+    "external_auth_ready": false,
+    "carrier": "Lenovo/VPS Python workers + Kaggle evaluator"
+  },
+  "probability": {
+    "p_beat_incumbent": 0.24,
+    "p_public_proof_24h": 0.45,
+    "p_public_proof_7d": 0.7,
+    "confidence": 0.58,
+    "basis": "The live public leaderboard gap from #1 0.92406 to #2 0.92226 is only 0.00180, and there are about 40 teams. That makes the crown numerically close, but the private-set robustness and distance from public donor scores create substantial model-risk uncertainty."
+  },
+  "budget": {
+    "max_spend_usd": 100,
+    "max_operator_minutes": 20,
+    "max_wallclock_hours": 168
+  },
+  "evidence": [
+    "https://www.kaggle.com/competitions/2026-ieee-big-data-traffic-flow-bench/leaderboard",
+    "https://www.kaggle.com/code/lamhuy8904/traffic-flow-bench-pipeline",
+    "https://github.com/asu-trans-ai-lab/cbi_plus",
+    "https://www.upwork.com/freelance-jobs/apply/PTV-VISSIM-Python-Deep-Reinforcement-Learning-DQN-Developer-for-Autonomous-Intersection-Control_~022082485644013167188/"
+  ],
+  "notes": "Fast-crown challenger. Tiny public #1/#2 gap and modest field; less direct buyer signal than accelerator optimization but stronger runway and lower account/setup friction once Kaggle rules are accepted."
+}
