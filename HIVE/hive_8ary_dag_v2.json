@@ -1,0 +1,93 @@
+{
+  "schema": "hive.dag.v2",
+  "name": "HIVE 8-ary Double-Diamond DAG",
+  "arity": 8,
+  "default_schedule": "2120",
+  "schedule_semantics": {
+    "digits": ["h", "i", "v", "e"],
+    "width_formula": "W_phase = 8^digit",
+    "example_2120": {"H": 64, "I": 8, "V": 64, "E": 1},
+    "degraded_0000": {"H": 1, "I": 1, "V": 1, "E": 1},
+    "minimal_1010": {"H": 8, "I": 1, "V": 8, "E": 1},
+    "multi_champion_2121": {"H": 64, "I": 8, "V": 64, "E": 8},
+    "normal_constraints": ["h > i", "v > e", "all widths are powers of 8"]
+  },
+  "geometry": {
+    "H": "fan_out",
+    "I": "fan_in",
+    "V": "fan_out",
+    "E": "fan_in",
+    "atomic_unit": "1->8->1",
+    "generation_shape": "ROOT->H[8^h]->I[8^i]->V[8^v]->E[8^e]->VERIFY->CONSUMER_ACK->RECEIPTS",
+    "temporal_recursion": "RECEIPTS_t->H_t+1"
+  },
+  "phases": {
+    "H": {
+      "name": "Hindsight",
+      "ports": ["P0_OBSERVE", "P7_NAVIGATE"],
+      "purpose": "recover and reverse-engineer history, incumbents, exemplars, failures, champions and donor genes",
+      "output": "donor_pack.v2"
+    },
+    "I": {
+      "name": "Insight",
+      "ports": ["P1_BRIDGE", "P6_ASSIMILATE"],
+      "purpose": "cross-domain transformation and composition through explicit interfaces/ABIs",
+      "output": "transformation_graph.v2"
+    },
+    "V": {
+      "name": "Validated Foresight",
+      "ports": ["P4_DISRUPT", "P5_IMMUNIZE"],
+      "purpose": "fan out alternate futures into falsifiable scenarios, experiments, red teams and verifier paths",
+      "output": "validation_envelope.v2"
+    },
+    "E": {
+      "name": "Evolve",
+      "ports": ["P2_SHAPE", "P3_INJECT"],
+      "purpose": "bounded mutation/recombination/selection under frozen validation envelopes",
+      "output": "evolution_manifest.v2"
+    }
+  },
+  "archive": {
+    "type": "MOME_PARETO_ECOLOGY",
+    "candidate_fields": ["artifact", "niche", "objective_vector", "lineage", "time_horizon", "scenario", "provenance", "confidence", "receipts"],
+    "execution_champion_is_not_archive": true,
+    "archive_size_may_be_non_power_of_8": true,
+    "admission_requires": ["independent_verifier_pass", "downstream_consumer_ack"]
+  },
+  "state_lens": ["past", "present", "future", "alternate_futures"],
+  "actor_ecology": {
+    "known_operator_described_champions": {"APEX": 8, "Valkyrie": 32},
+    "crossbreeding_donor_families": ["Zerg", "Tyranid", "Sliver"],
+    "note": "mythosemantic families are genotype/archetype donors, not authority and not vendor identities"
+  },
+  "deterministic_owner": [
+    "schedule_code",
+    "slot_identity",
+    "lineage",
+    "leases",
+    "timeouts",
+    "retries",
+    "dedupe",
+    "budget",
+    "effect_ceiling",
+    "fan_in_membership",
+    "evaluator_version",
+    "verifier_separation",
+    "pareto_archive_admission",
+    "terminal_consumer_ack"
+  ],
+  "llm_allowed": ["research", "reverse_engineer", "transform", "propose", "mutate", "critique", "synthesize"],
+  "llm_forbidden": ["silently_change_topology", "silently_change_authority", "silently_change_evaluator", "self_award_success", "erase_lineage"],
+  "invariants": [
+    "no_hindsight_bypass",
+    "no_insight_without_provenance",
+    "no_validated_foresight_without_falsifiable_evidence",
+    "no_evolution_before_evaluator_freeze",
+    "producer_not_verifier",
+    "emit_not_equal_accept_not_equal_claim_not_equal_assign_not_equal_execute_not_equal_verify_not_equal_success",
+    "public_observation_is_byzantine",
+    "failure_is_genetic_material",
+    "evolution_engine_is_plugin_not_governor",
+    "tao_hot_loop_actions_target_zero"
+  ]
+}
