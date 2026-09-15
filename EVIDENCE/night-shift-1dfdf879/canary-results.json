@@ -1,0 +1,21 @@
+[
+  {
+    "instance": "ta32js",
+    "lb": {
+      "value": 1774,
+      "date": "2026-09-15",
+      "solver": "CP-SAT",
+      "hardware": "Oracle ARM64 / Gen142 bounded canary",
+      "time": 2,
+      "certificate": "no"
+    },
+    "ub": {
+      "value": 1953,
+      "date": "2026-09-15",
+      "solver": "CP-SAT",
+      "hardware": "Oracle ARM64 / Gen142 bounded canary",
+      "time": 2,
+      "certificate": "yes"
+    }
+  }
+]
