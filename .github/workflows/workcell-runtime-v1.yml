@@ -10,6 +10,8 @@ on:
       - 'tools/select_research_workitem.py'
       - 'tools/research_cell_r0.py'
       - 'tools/terminal_handoff_gate.py'
+      - 'tools/scout_fanin_v1.py'
+      - 'cloudflare/gen142-native-scout-r0/**'
       - 'tests/test_select_research_workitem.py'
       - 'tests/test_workcell_runtime_v1.py'
       - '.github/workflows/workcell-runtime-v1.yml'
@@ -36,7 +38,11 @@ jobs:
         with:
           python-version: '3.12'
       - name: Contract regressions
-        run: python -m unittest tests.test_select_research_workitem tests.test_workcell_runtime_v1 -v
+        run: python -m unittest tests.test_select_research_workitem tests.test_workcell_runtime_v1 tests.test_scout_fanin_v1 -v
+      - name: Fan in admitted Cloudflare scout state
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python tools/scout_fanin_v1.py
       - name: Run exactly one WorkItem
         env:
           GH_TOKEN: ${{ github.token }}

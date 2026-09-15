@@ -1,0 +1,21 @@
+{
+  "name": "gen142-native-scout-r0",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "types": "wrangler types env.d.ts",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "agents": "^0.17.4",
+    "ai": "^6.0.197",
+    "workers-ai-provider": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.1",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.127.0"
+  }
+}
