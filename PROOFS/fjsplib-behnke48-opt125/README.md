@@ -1,6 +1,8 @@
 # FJSPLib `behnke48` — optimum-125 proof packet
 
-Status: **INTERNAL_TECHNICAL_CROWN_VERIFIED / EXTERNAL SCHEDULEOPT ACCEPTANCE PENDING**.
+Status: **INTERNAL_TECHNICAL_CROWN_VERIFIED / EXTERNAL SCHEDULEOPT REVIEW SUBMITTED**.
+
+External public review: https://github.com/ScheduleOpt/benchmarks/issues/6
 
 This packet supports one narrow claim only: under the frozen public ScheduleOpt/FJSPLib `behnke48` instance, makespan `125` is feasible and makespan `<=124` is infeasible. External maintainer review/archive update remains the public crown gate.
 
@@ -75,12 +77,22 @@ A separately coded reified target-124 CP-SAT formulation ran for 900 seconds and
 
 A seeded PyJobShop optimization replay independently reproduced the feasible 125 schedule but only raised its lower bound to 121 in 300 seconds; again, it is supporting evidence, not the dual proof.
 
+## External submission
+
+The standing authority envelope admitted one free/reversible benchmark report after a fresh read confirmed ScheduleOpt `main` had not changed and `behnke48` remained open at `124..125`.
+
+Submitted public maintainer report:
+
+**https://github.com/ScheduleOpt/benchmarks/issues/6**
+
+The report asks maintainers to review the proof for updating `behnke48` to `lower_bound=125`, `upper_bound=125` / closed. No payment, identity change, terms acceptance, or irreversible effect was required.
+
 ## Conclusion and claim ceiling
 
 Internal evidence now supports:
 
 > `behnke48` has optimum makespan 125 under the frozen ScheduleOpt/FJSPLib instance; the frozen public archive's `124..125` open gap is technically closed by this proof packet.
 
-Current state: **internal technical crown verified**.
+Current state: **internal technical crown verified, external public review submitted**.
 
 Public crown status remains **pending** until ScheduleOpt maintainers independently review the evidence and update/accept the archive result. Do not inflate this into “world's best scheduler” or a generic world-#1 claim.
