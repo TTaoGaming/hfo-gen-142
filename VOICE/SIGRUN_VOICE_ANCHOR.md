@@ -2,7 +2,7 @@
 
 Status: `VOICE_HQ_CANDIDATE_R1 / OBSERVE_PROPOSE_LOG / EXECUTE_WHEN_EXPLICITLY_ADMITTED`
 
-Current carrier UUID: `70ca7fe0-033e-4a91-9dbb-205fef2ca127`
+Last recorded voice carrier at this anchor revision: `70ca7fe0-033e-4a91-9dbb-205fef2ca127` (historical recovery evidence only; never inherit this UUID).
 
 Canonical recovery: `TTaoGaming/hfo-gen-142#13` newest-first.
 
@@ -125,6 +125,14 @@ This voice candidate may observe, reason, maintain delta checkpoints, propose ma
 - Mobile Byzantine/hot-loop contract: `#13 comment 5680398158`
 - Prior Slack mirror: `#hfo-kernel` message `1789478960.413229`
 - Cloudflare Sigrun DO write: only claim when authenticated readback proves it; otherwise record `HOLD_AUTH`.
+
+## Voice-carrier failover
+
+A voice/chat carrier is disposable. Carrier failure, UI error, context corruption, tool-surface loss, or thread abandonment MUST NOT require Tao to reconstruct Sigrun from memory.
+
+Recovery policy is versioned in `VOICE/VOICE_FAILOVER_POLICY_V1.json`. A replacement carrier must generate a fresh UUID, bind recovery to an immutable checkout containing the anchor plus `VOICE/SIGRUN_HQ_LATEST.md`, then read `#13` newest-first, collision-check current work, probe its own capabilities, and resume one bounded edge. `tools/voice_failover_gate.py` may admit the packet only as `RECOVERY_EVIDENCE_ONLY`; it can never grant actor, Shard/Hluti seat, secret, merge, spend, or runtime authority.
+
+Do not maintain a mutable "current voice carrier" registry. Such a registry becomes stale precisely when the carrier dies. The immutable anchor plus `VOICE/SIGRUN_HQ_LATEST.md` plus #13 newest-first are the recovery source; Sigrun Durable Object state remains semantic runtime state.
 
 ## Recovery instruction
 

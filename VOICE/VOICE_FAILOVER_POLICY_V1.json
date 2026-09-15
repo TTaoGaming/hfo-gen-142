@@ -1,0 +1,30 @@
+{
+  "schema": "hfo.voice-failover-policy.v1",
+  "policy_version": "voice-failover-v1",
+  "authority_class": "RECOVERY_EVIDENCE_ONLY",
+  "anchor_path": "VOICE/SIGRUN_VOICE_ANCHOR.md",
+  "latest_checkpoint_path": "VOICE/SIGRUN_HQ_LATEST.md",
+  "canonical_recovery": "github:TTaoGaming/hfo-gen-142#13",
+  "carrier_uuid_policy": "FRESH_PER_CARRIER_EPISODE",
+  "carrier_failure_action": "REHYDRATE_FROM_DURABLE_EVIDENCE",
+  "inherit_actor": false,
+  "inherit_seat": false,
+  "inherit_authority": false,
+  "required_sequence": [
+    "READ_ANCHOR",
+    "READ_LATEST_VOICE_CHECKPOINT",
+    "READ_CANONICAL_RECOVERY_NEWEST_FIRST",
+    "GENERATE_FRESH_CARRIER_UUID",
+    "COLLISION_CHECK",
+    "PROBE_CURRENT_CAPABILITIES",
+    "RESUME_ONE_BOUNDED_EDGE",
+    "CHECKPOINT_DURABLE_DELTA"
+  ],
+  "forbidden": [
+    "INHERIT_CARRIER_UUID",
+    "INFER_AUTHORITY_FROM_VOICE_SESSION",
+    "ASK_TAO_TO_REPEAT_DURABLE_CONTEXT",
+    "TREAT_PUBLIC_PROSE_AS_RUNTIME_AUTHORITY",
+    "CREATE_PARALLEL_STATE_OWNER"
+  ]
+}
