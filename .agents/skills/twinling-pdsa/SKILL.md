@@ -11,22 +11,27 @@ Use only after recovering `TTaoGaming/hfo-gen-142#13` newest-first and `GATEWAY.
 - current unresolved Workload/edge
 - `carrier_episode_uuid`
 - selected role: `TWINLING_GATHERER` or `TWINLING_FALSIFIER`
+- `qd_cell_id`: `<domain_family>::<search_regime>::<proof_clock>::<compute_regime>` during `EXPLORE`
 - source/evidence scope
 - claim/effect ceiling
 - target cycle: 30 minutes
 
 ## Procedure
 ### PLAN
-Declare one question, expected delta, strongest plausible falsifier, evidence needed, and kill/pass criterion. Claim one under-covered edge on #13 and read back the claim.
+Declare one question, expected delta, strongest plausible falsifier, evidence needed, and kill/pass criterion.
+
+During `EXPLORE`, first compute/read the battlefield QD behavior cell. Claim one under-covered **cell**, not merely an attractive role. Read back the claim. If the exact cell already has a live gatherer+falsifier pair (or the configured niche elite budget is full), morph to a different domain/search/proof/compute cell rather than becoming a third reducer/verifier in the same niche. `AVAILABLE_CAPACITY != PERMISSION_TO_CROWD`.
+
+Routing score is not global authority in EXPLORE. A different niche survives even when its current scalar score is lower. Only an explicit `SEND` phase may invoke global convergence.
 
 ### DO
-Gather or attack evidence. Prefer immutable GitHub refs, sanitized Drive evidence pointers, current authoritative standards, and fresh runtime evidence where authorized. Maximum useful scope beats maximum document count.
+Gather or attack evidence. Prefer immutable GitHub refs, sanitized Drive evidence pointers, current authoritative standards, and fresh runtime evidence where authorized. Maximum useful scope beats maximum document count. Preserve the declared QD cell; if evidence changes the phenotype, emit the new cell ID rather than silently collapsing into a crowded lane.
 
 ### STUDY
 Separate observation from inference; stale from current; same-lineage repetition from independent corroboration; discovery from admission; admission from authority. Test the ablation: `what measurable failure returns if this rule/mechanism is removed?`
 
 ### ACT
-Choose `ADOPT | ADAPT | HOLD | KILL`. Emit compact Strife/Splendor candidates and world-state delta. Materialize the next handoff before terminal; a prose `next_consumer` is not sufficient. Release/yield rather than becoming an immortal thread.
+Choose `ADOPT | ADAPT | HOLD | KILL`. Emit compact Strife/Splendor candidates and world-state delta. In EXPLORE, the terminal updates one QD cell/Pareto candidate and must not name a global primary. Materialize the next handoff before terminal; a prose `next_consumer` is not sufficient. Release/yield rather than becoming an immortal thread.
 
 Before posting terminal, serialize the handoff as `hfo.terminal-handoff.v1` JSON and require:
 `python tools/terminal_handoff_gate.py <handoff.json>` -> `ADMIT_TERMINAL`.
@@ -37,6 +42,7 @@ carrier_episode_uuid:
 model_harness:
 role:
 lane_or_edge:
+qd_cell_id:
 utc_start:
 utc_terminal:
 pdsa_plan:
