@@ -1,0 +1,34 @@
+{
+  "schema": "hfo.b917.provider-redqueen-local.v1.checkpoint",
+  "parent_uuid": "b91706cc-6b96-4b63-aaff-a8a548b83080",
+  "observed_utc": "2026-09-15T23:14Z",
+  "producer_uuid": "882fa988-91c4-4132-a685-91d64f9e2fa8",
+  "producer_commits": [
+    "cedb9c129b4dbd1f9fa62df4140454096b06f1ae",
+    "03e2d97e13cfe82add35a6d2549448f06a2eee28"
+  ],
+  "network_calls": 0,
+  "secrets_read": false,
+  "harness_scar": "First dynamic-import attempt omitted sys.modules registration; corrected without changing test semantics.",
+  "pass_count": 8,
+  "total": 8,
+  "tests": [
+    ["openrouter_free_shape", "PASS"],
+    ["openrouter_nonfree_refused", "PASS:OPENROUTER_FREE_ROUTE_NOT_PROVEN_ZERO_COST"],
+    ["paid_route_refused", "PASS:PAID_ROUTE_NOT_AUTHORIZED"],
+    ["unknown_provider_refused", "PASS:UNKNOWN_PROVIDER_ROUTE"],
+    ["missing_secret_before_network", "PASS:SECRET_ABSENT_BEFORE_NETWORK"],
+    ["session_positive_hash_bound", "PASS:ADMIT_STATIC_PROPOSAL/HOLD_SHARED_EVALUATOR"],
+    ["session_effect_refused", "PASS:EFFECT_CEILING_VIOLATED"],
+    ["session_hash_mismatch_refused", "PASS:ARTIFACT_BINDING_MISMATCH"]
+  ],
+  "semantic_receipt_sha256": "a22ca93f8ede659621183967edb291125f8ed9be62985cc3d6bb69a6eb1b682e",
+  "persisted_receipt_file_sha256": "13e9f896e4af52fddfd836362f475d587aa4a4cdc1aab7eeb45108f2b4035d74",
+  "decision": "STATIC_BOUNDARY_PASS__LIVE_PROVIDER_STILL_UNPROVEN",
+  "required_before_provider_ready": [
+    "OpenRouter response usage.cost == 0 postcondition or equivalent authoritative zero-charge receipt",
+    "Kimi/Cloudflare route + billing authority independently bound before network",
+    "caller timeout hard-capped internally",
+    "real strong-provider artifact passes shared evaluator with quota/cost/provenance receipt"
+  ]
+}
