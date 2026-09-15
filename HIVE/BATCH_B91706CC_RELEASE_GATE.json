@@ -1,0 +1,99 @@
+{
+  "schema": "hfo.hive.batch.v1",
+  "batch_id": "BATCH-B91706CC-20260915",
+  "parent_uuid": "b91706cc-6b96-4b63-aaff-a8a548b83080",
+  "created_utc": "2026-09-15T22:52:00Z",
+  "authority": "PUBLIC_RECOVERY_ONLY",
+  "success_semantics": "VERIFIED_RECEIPT_NOT_NARRATIVE",
+  "tao_hot_loop_actions_target": 0,
+  "crown_won": false,
+  "operator_relief": false,
+  "release_policy": {
+    "collision_check_issue": 13,
+    "terminal_exactly_once": true,
+    "no_new_control_plane": true,
+    "no_silent_paid_fallback": true,
+    "producer_ne_verifier": true
+  },
+  "work": [
+    {
+      "work_id": "B917-PROPOSER-INTEGRATOR",
+      "state": "CLAIMED_OTHER_ACTOR",
+      "claimed_by_uuid": "882fa988-91c4-4132-a685-91d64f9e2fa8",
+      "owner_class": "OTHER_VIRTUAL_ACTOR",
+      "objective": "Prove one provider-neutral strong proposer path through the shared Frontier evaluator with provenance and hard quota/cost receipt.",
+      "release_now": false,
+      "reason": "collision: existing actor owns implementation"
+    },
+    {
+      "work_id": "B917-PROPOSER-REDQUEEN",
+      "state": "WAIT_DEPENDENCY",
+      "owner_class": "OTHER_VIRTUAL_ACTOR",
+      "depends_on": ["B917-PROPOSER-INTEGRATOR"],
+      "objective": "Independently falsify provider/model allowlist, credential stripping, timeout/max-token ceiling, no paid fallback, artifact hash binding, and shared-evaluator handoff.",
+      "release_now": false
+    },
+    {
+      "work_id": "B917-GB10-FITNESS-PREP",
+      "state": "READY_NO_SPEND",
+      "owner_class": "OTHER_VIRTUAL_ACTOR",
+      "objective": "Prepare exact GB10 worker bootstrap/runbook, stock-baseline/noise gate, Maple A/B/A+B assay, receipt schema and teardown; do not rent or spend.",
+      "release_now": true,
+      "effect_ceiling": "READ_WRITE_GITHUB_AND_AUTHORIZED_HOST_NO_NEW_SPEND"
+    },
+    {
+      "work_id": "B917-FRONTIER-SUBMITTER-PREP",
+      "state": "READY_NO_SECRET",
+      "owner_class": "OTHER_VIRTUAL_ACTOR",
+      "objective": "Prepare isolated Frontier submitter leaf and dry-run checklist without GAINZ_TOKEN; candidates/evaluators must have zero submit credential access.",
+      "release_now": true,
+      "effect_ceiling": "NO_EXTERNAL_SUBMIT"
+    },
+    {
+      "work_id": "B917-CDEV-PROMOTION-WATCHER",
+      "state": "READY_READ_ONLY",
+      "owner_class": "OTHER_VIRTUAL_ACTOR",
+      "objective": "Watch TTaoGaming/cdev-control#5 approval/check/merge state without modifying its head. After legitimate merge only, verify a natural 7,37 scheduled wake and receipts.",
+      "release_now": true,
+      "effect_ceiling": "READ_ONLY_UNTIL_MERGED"
+    },
+    {
+      "work_id": "B917-MAPLE-TWO-CYCLE-RELIEF",
+      "state": "WAIT_DEPENDENCY",
+      "owner_class": "MACHINE_RUNTIME",
+      "depends_on": ["B917-PROPOSER-INTEGRATOR", "B917-CDEV-PROMOTION-WATCHER"],
+      "objective": "Bind exactly one useful Maple evolution ForcePackage and prove two consecutive natural cycles wake->reconcile->worker->verify->ConsumerAck->successor/quiescence with TAO_INTERVENTION_COUNT=0.",
+      "release_now": false
+    },
+    {
+      "work_id": "B917-PACKOMANIA-READBACK",
+      "state": "READY_READ_ONLY",
+      "owner_class": "OTHER_VIRTUAL_ACTOR",
+      "objective": "Re-read live keeper/incumbent state and re-hash existing N120/N122/N124 packet; report SEND_READY or STALE without sending externally.",
+      "release_now": true,
+      "effect_ceiling": "READ_ONLY_EXTERNAL"
+    }
+  ],
+  "tao_batch": [
+    {
+      "boundary": "FRONTIER_IDENTITY",
+      "action": "Create/login/accept current terms/fork as needed and mint submit-only token; keep secret out of GitHub/chat.",
+      "when": "before trusted external submission"
+    },
+    {
+      "boundary": "GB10_NEW_SPEND",
+      "action": "Approve exact GB10 rental only if dense local evolution is desired after proposer path is green; no automatic purchase.",
+      "when": "optional"
+    },
+    {
+      "boundary": "CDEV_PROTECTED_PROMOTION",
+      "action": "Provide/arrange legitimate independent last-push approval for cdev-control#5 if branch protection requires it; never weaken protection.",
+      "when": "before production schedule"
+    },
+    {
+      "boundary": "FIRST_IRREVERSIBLE_SUBMIT",
+      "action": "Approve first Frontier/keeper external submission after independent verifier packet is green.",
+      "when": "champion only"
+    }
+  ]
+}
