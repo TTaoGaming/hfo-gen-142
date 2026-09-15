@@ -1,0 +1,24 @@
+{
+  "schema": "hfo.frontier.gb10-worker-probe.v1.checkpoint",
+  "parent_uuid": "b91706cc-6b96-4b63-aaff-a8a548b83080",
+  "observed_utc": "2026-09-15T23:12:52.067647Z",
+  "probe_commit": "43fc7515a6bd0df6cb9c40243a8c4c21a6d05f54",
+  "source_ref": "deepgrove-ai/llama.cpp@8ce8ca6c6d370b6235dfa8e2a0611a9adb6d77d1",
+  "patch_sha256": "02f8f85d64eea5712a7773fb883b97318ba0e4bfbe896511d8dd9edfb46b562c",
+  "host_label": "Oracle VPS ARM64",
+  "host": "thrud-a1-free-20260830",
+  "arch": "aarch64",
+  "checks": {
+    "arch_aarch64": true,
+    "gpu_reports_gb10": false,
+    "nvcc_available": false
+  },
+  "fitness_class": "NOT_EXACT_GB10",
+  "status": "HOLD_NOT_EXACT_GB10",
+  "probe_exit_code": 20,
+  "probe_receipt_sha256": "d60c9e337e8178244bf47ac3be49c7a20e0e50374e51fe021e2942d10ae2150d",
+  "persisted_receipt_file_sha256": "9fbd3a72f98f4ec90bdcf67446b033ddbc62db790326e1ceef160536b3d4b5fe",
+  "effect_ceiling": "OBSERVE_ONLY",
+  "credential_probe": "NONE",
+  "interpretation": "Negative control PASS: ARM64 alone is insufficient. This host may run controller/static compile work but MUST NOT be admitted as exact GB10 performance fitness."
+}
