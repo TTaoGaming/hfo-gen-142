@@ -63,7 +63,10 @@ def main():
     ap=argparse.ArgumentParser(); ap.add_argument('--parent',required=True); ap.add_argument('--iterations',type=int,default=250000); ap.add_argument('--seed',type=int,default=1); ap.add_argument('--outdir',default='out-r5'); a=ap.parse_args()
     parent=json.loads(Path(a.parent).read_text()); name=parent['instance']; inst,inst_sha=fetch_json(f'{ROOT}/instances/json/{name}.json'); bks,bks_sha=fetch_json(f'{ROOT}/solutions/bks.json'); row=next(x for x in bks if x['instance']==name)
     alts,preds=load_problem(inst); assign,seq=from_certificate(parent['certificate']); ev=evaluate(alts,preds,assign,seq)
-    if ev is None: raise SystemExit('PARENT_CYCLIC'); cur_ms,cur_cert,cur_crit=ev; best=(cur_ms,dict(assign),{m:list(v) for m,v in seq.items()},cur_cert)
+    if ev is None:
+        raise SystemExit('PARENT_CYCLIC')
+    cur_ms,cur_cert,cur_crit=ev
+    best=(cur_ms,dict(assign),{m:list(v) for m,v in seq.items()},cur_cert)
     rng=random.Random(a.seed); accepted=0; feasible=0
     for it in range(a.iterations):
         na,ns=mutate(alts,assign,seq,cur_crit,rng); nev=evaluate(alts,preds,na,ns)
