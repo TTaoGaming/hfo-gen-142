@@ -1,7 +1,7 @@
 import { Agent, getAgentByName, type FiberRecoveryContext } from "agents";
 import { createQuickActionTools } from "agents/browser/ai";
 import { createWorkersAI } from "workers-ai-provider";
-import { generateText, Output, stepCountIs } from "ai";
+import { generateText, hasToolCall, stepCountIs, tool } from "ai";
 import { z } from "zod";
 import { parseFalsifier, parseProposer, reduceDebate } from "./result-policy";
 import { carrierUuidFromDigest, isExplicitProviderThrottle, isRepeatedFailurePressure, selectHatchCandidate } from "./hatch-policy";
@@ -11,7 +11,7 @@ const PARENT_ACTOR = "SIGRUN/C2";
 const RADIX = [4, 4] as const;
 const SEAT_ROLE = "THUNDER_DISRUPT";
 const ROACH_UUID = "0771446a-3b95-45ea-baa4-5140c3e1510b";
-const DEBATE_VERSION = "twinling-structured-output-v3";
+const DEBATE_VERSION = "twinling-submit-tool-v4";
 const MODEL = "@cf/moonshotai/kimi-k2.7-code";
 const ISSUE_API = "https://api.github.com/repos/TTaoGaming/hfo-gen-142/issues/13";
 const LANES = ["CROWN", "DONOR", "BENCHMARK", "REDUCER"] as const;
@@ -230,9 +230,17 @@ export class Gen142Scout extends Agent<any, ScoutState> {
             actions: ["markdown", "links", "scrape", "extract"],
             maxChars: 26000,
           });
+          const submitName = role === "PROPOSER" ? "submitProposer" : "submitFalsifier";
+          const submitTool = tool({
+            description: `Final ${role.toLowerCase()} packet. Call exactly once after research; plain-text final answers are not accepted.`,
+            inputSchema: schema,
+            execute: async () => ({ accepted: true }),
+          });
+          const tools = { ...browserTools, [submitName]: submitTool };
           const r = await generateText({
             model: workersai(MODEL),
-            system,
+            system: `${system}
+You MUST finish by calling ${submitName} exactly once. Do not return the final packet as prose.`,
             prompt: JSON.stringify({
               runId, lane, canonical, ...extra,
               objective: lane === "CROWN"
@@ -243,15 +251,17 @@ export class Gen142Scout extends Agent<any, ScoutState> {
                     ? "Verify incumbent/rules/submission/publication surfaces and design the smallest frozen canary."
                     : "Reduce newest swarm evidence; identify the highest-value next machine-owned edge and any architecture leak.",
             }).slice(0, 24000),
-            tools: browserTools,
-            stopWhen: stepCountIs(6),
+            tools,
+            stopWhen: [hasToolCall(submitName), stepCountIs(7)],
             maxOutputTokens: 1600,
-            output: Output.object({ schema }),
           });
-          if (!r.output) throw new Error(`${role}_STRUCTURED_OUTPUT_MISSING`);
+          const submissions = r.steps
+            .flatMap((step) => step.toolCalls ?? [])
+            .filter((call) => call.toolName === submitName);
+          if (submissions.length !== 1) throw new Error(`${role}_SUBMISSION_TOOL_COUNT_${submissions.length}`);
           return {
             role,
-            output: r.output,
+            output: submissions[0].input as T,
             steps: r.steps.map((step, index) => ({
               index,
               text: step.text?.slice(0, 1800) ?? "",
