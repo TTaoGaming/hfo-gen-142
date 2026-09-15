@@ -21,7 +21,7 @@ A fresh thread is disposable cognition. It does not become durable by staying al
 - select/recover one fan-in edge;
 - generate fresh `carrier_episode_uuid`;
 - state exact fan-in question, expected delta, strongest falsifier, evidence needed, and effect ceiling;
-- claim + immediate readback; earlier durable claim wins.
+- acquire the semantic claim/fence through the authenticated internal controller and immediately read back owner, fence/generation, and deadline; earlier authoritative claim/fence wins. Only then project a sanitized claim to #13; public issue/comment ordering never decides ownership.
 
 ### DO
 Prefer reducer work:
