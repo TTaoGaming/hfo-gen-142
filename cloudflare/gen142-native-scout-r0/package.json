@@ -6,7 +6,8 @@
   "scripts": {
     "check": "tsc --noEmit",
     "types": "wrangler types env.d.ts",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "test:policy": "node --test src/result-policy.test.ts"
   },
   "dependencies": {
     "agents": "^0.17.4",

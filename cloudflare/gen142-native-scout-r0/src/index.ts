@@ -2,6 +2,7 @@ import { Agent, getAgentByName, type FiberRecoveryContext } from "agents";
 import { createQuickActionTools } from "agents/browser/ai";
 import { createWorkersAI } from "workers-ai-provider";
 import { generateText, stepCountIs } from "ai";
+import { emptySynthesisNoClaim } from "./result-policy";
 
 const ACTOR_ID = "SIGRUN-GEN142-SCOUT-R0";
 const PARENT_ACTOR = "SIGRUN/C2";
@@ -22,6 +23,7 @@ type ScoutState = {
   recoveryCount: number;
   failureCount: number;
   sameFailureCount: number;
+  degradedResultCount: number;
   lastLane?: Lane;
   lastAttemptLane?: Lane;
   lastRunId?: string;
@@ -133,6 +135,7 @@ export class Gen142Scout extends Agent<any, ScoutState> {
     recoveryCount: 0,
     failureCount: 0,
     sameFailureCount: 0,
+    degradedResultCount: 0,
     updatedAt: new Date(0).toISOString(),
   };
 
@@ -142,6 +145,7 @@ export class Gen142Scout extends Agent<any, ScoutState> {
       ...this.state,
       failureCount: this.state.failureCount ?? 0,
       sameFailureCount: this.state.sameFailureCount ?? 0,
+      degradedResultCount: this.state.degradedResultCount ?? 0,
       recoveryCount: this.state.recoveryCount ?? 0,
     };
   }
@@ -225,10 +229,23 @@ export class Gen142Scout extends Agent<any, ScoutState> {
             system: REDUCER_SYSTEM,
             prompt: JSON.stringify({ runId, lane, canonical, proposer, falsifier, debate_sha256: debateSha }).slice(0, 30000),
             maxOutputTokens: 1800,
-          });          const text = synthesis.text.trim().slice(0, 12000);
-          if (!text) throw new Error("EMPTY_SYNTHESIS");
+          });
+          let text = synthesis.text.trim().slice(0, 12000);
+          let degraded = false;
+          let degradedFingerprint: string | undefined;
+          let degradedSameFailureCount = 0;
+          if (!text) {
+            degraded = true;
+            degradedFingerprint = await sha256(`${lane}|EMPTY_SYNTHESIS`);
+            const prior = this.normalizedState();
+            degradedSameFailureCount = prior.lastFailureFingerprint === degradedFingerprint
+              ? prior.sameFailureCount + 1
+              : 1;
+            text = JSON.stringify(emptySynthesisNoClaim(lane, new Date().toISOString()));
+          }
           parseStrictResult(text, lane);
           const completed = new Date().toISOString();
+          const prior = this.normalizedState();
           this.setState({
             ...this.state,
             phase: "READY",
@@ -239,9 +256,11 @@ export class Gen142Scout extends Agent<any, ScoutState> {
             lastResult: text,
             lastResultSha256: await sha256(text),
             lastDebateSha256: debateSha,
-            lastError: undefined,
-            lastFailureFingerprint: undefined,
-            sameFailureCount: 0,
+            lastError: degraded ? "EMPTY_SYNTHESIS_DEGRADED_TO_NO_CLAIM" : undefined,
+            lastFailureFingerprint: degraded ? degradedFingerprint : undefined,
+            failureCount: prior.failureCount + (degraded ? 1 : 0),
+            sameFailureCount: degraded ? degradedSameFailureCount : 0,
+            degradedResultCount: prior.degradedResultCount + (degraded ? 1 : 0),
             updatedAt: completed,
           });
         } catch (error) {
