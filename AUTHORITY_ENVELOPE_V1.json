@@ -1,0 +1,48 @@
+{
+  "schema": "hfo.authority-envelope.v1",
+  "effective_scope": "ALL_SIGRUN_HLUTI_AND_ADMITTED_CROWN_WORKERS",
+  "purpose": "Remove Tao from routine benchmark submission and compute routing while preserving explicit human authority boundaries.",
+  "submission": {
+    "automatic_allowed": true,
+    "conditions": [
+      "submission_is_free",
+      "submission_is_reversible_or_replaceable_under_platform_rules",
+      "existing_terms_already_accepted",
+      "public_identity_unchanged",
+      "candidate_passed_current_battlefield_canary_and_verifier",
+      "candidate_is_promoted_best_attempt_not_raw_population_member"
+    ],
+    "daily_cap": {
+      "mode": "BATTLEFIELD_DECLARED_FROM_CURRENT_PLATFORM_RULES",
+      "if_cap_not_verified": "HOLD",
+      "never_exceed_platform_limit": true,
+      "anti_flood": true,
+      "submit_best_promoted_attempts_only": true
+    }
+  },
+  "spend": {
+    "incremental_usd_per_day": 0,
+    "prefer_existing_resources": [
+      "existing_memberships",
+      "existing_free_vendor_quota",
+      "existing_cloudflare_resources",
+      "existing_vps_capacity"
+    ],
+    "new_membership_or_paid_compute": "HUMAN_APPROVAL_REQUIRED"
+  },
+  "stop_and_escalate_for": [
+    "new_or_changed_terms",
+    "payment_or_incremental_spend",
+    "identity_or_public_handle_change",
+    "oauth_2fa_captcha_or_account_authority",
+    "protected_merge_or_permission_change",
+    "irreversible_external_effect"
+  ],
+  "operator_protection": {
+    "tao_hot_loop_required": false,
+    "tao_must_not_poll_or_route": true,
+    "batch_human_blockers": true,
+    "auto_resume_after_unlock": true
+  },
+  "notes": "N is intentionally not invented globally. Each battlefield must derive and version its submission cap from current platform rules/cooldown. Existing resources must be saturated before requesting new paid compute."
+}
