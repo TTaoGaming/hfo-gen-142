@@ -7,8 +7,8 @@
   "solver_source": "ucsandman/discovery-loop@ce97256043f7813e0beaeeb7ca5cafacbf77fbdb",
   "independent_verifier": "jasonzliang/circle-packing-sota@28e129593b1c696627db67911b0392c439c64610",
   "candidates": [
-    {"n":120,"sum_radii":"5.7742848313038259","record":"5.773179664810","pck":"csqv120.pck","sha256":"a5222477917e40b4fd6f908ced5576687169e15ddc3332d6ffcaf3a25124470d","seed":142120,"search_seconds":20},
-    {"n":122,"sum_radii":"5.8242710218195016","record":"5.822533741917","pck":"csqv122.pck","sha256":"b82b2943c8861dcf30c44772fed9de77d11b2357f6e2e286f5b8a9d9bb15ab1b","seed":142122,"search_seconds":20}
+    {"n":120,"sum_radii":"5.7742848313038259","record":"5.773179664810","pck":"csqv120.pck","sha256":"5921e2ca32b2da8c8f908caaeaa9decc6498fd51b5e98006c96b1fe0571fa63a","seed":142120,"search_seconds":20},
+    {"n":122,"sum_radii":"5.8242710218195016","record":"5.822533741917","pck":"csqv122.pck","sha256":"87af14334f54bb1c517e8e5d5cd36c38302f5b34bc0eca9a851641e59e73247f","seed":142122,"search_seconds":20}
   ],
   "tao_hot_loop_actions": 0,
   "external_submission_performed": false
