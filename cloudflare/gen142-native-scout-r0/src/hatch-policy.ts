@@ -4,9 +4,45 @@ export type HatchCandidate = {
   pressured: boolean;
 };
 
+export type HatchSignalState = {
+  phase: string;
+  lastCompletedUtc?: string;
+  lastError?: string | null;
+  sameFailureCount?: number;
+};
+
+function recentTerminal(state: HatchSignalState, nowMs: number, windowMinutes: number) {
+  if (!state.lastCompletedUtc) return false;
+  const completed = Date.parse(state.lastCompletedUtc);
+  if (!Number.isFinite(completed)) return false;
+  const ageMs = nowMs - completed;
+  return ageMs >= 0 && ageMs < windowMinutes * 60_000;
+}
+
 export type HatchDecision =
   | { mode: "HATCH_ONE"; name: string; rotation: number }
   | { mode: "BACKPRESSURE_HOLD"; pressured: string[]; busy: string[] };
+
+export function isExplicitProviderThrottle(
+  state: HatchSignalState,
+  nowMs: number,
+  windowMinutes = 30,
+) {
+  if (!recentTerminal(state, nowMs, windowMinutes)) return false;
+  if (state.phase !== "FAILED" && state.phase !== "RECOVERY_REQUIRED") return false;
+  const error = String(state.lastError ?? "").toLowerCase();
+  return /(^|\D)429(\D|$)|3021|rate.?limit|quota/.test(error);
+}
+
+export function isRepeatedFailurePressure(
+  state: HatchSignalState,
+  nowMs: number,
+  windowMinutes = 30,
+) {
+  if (!recentTerminal(state, nowMs, windowMinutes)) return false;
+  if (state.phase !== "FAILED" && state.phase !== "RECOVERY_REQUIRED") return false;
+  return (state.sameFailureCount ?? 0) >= 2;
+}
 
 export function selectHatchCandidate(
   candidates: HatchCandidate[],

@@ -3,7 +3,7 @@ import { createQuickActionTools } from "agents/browser/ai";
 import { createWorkersAI } from "workers-ai-provider";
 import { generateText, stepCountIs } from "ai";
 import { emptySynthesisNoClaim } from "./result-policy";
-import { carrierUuidFromDigest, selectHatchCandidate } from "./hatch-policy";
+import { carrierUuidFromDigest, isExplicitProviderThrottle, isRepeatedFailurePressure, selectHatchCandidate } from "./hatch-policy";
 
 const ACTOR_ID = "SIGRUN-GEN142-SCOUT-R0";
 const PARENT_ACTOR = "SIGRUN/C2";
@@ -332,13 +332,6 @@ async function getScout(env: any, actorName = ACTOR_ID) {
   })) as any;
 }
 
-function recentRepeatedFailure(state: ScoutState, nowMs: number) {
-  if (!state.lastCompletedUtc || state.sameFailureCount < 2) return false;
-  if (state.phase !== "FAILED" && state.phase !== "RECOVERY_REQUIRED") return false;
-  const ageMs = nowMs - Date.parse(state.lastCompletedUtc);
-  return Number.isFinite(ageMs) && ageMs >= 0 && ageMs < HATCH_BACKPRESSURE_MINUTES * 60_000;
-}
-
 async function hatcheryState(env: any) {
   return Promise.all(HATCH_SLOTS.map(async (slot) => {
     const scout = await getScout(env, slot.name);
@@ -358,7 +351,8 @@ async function runScheduled(env: any, scheduledTime: number) {
     slots.map(({ slot, publicState }) => ({
       name: slot.name,
       phase: publicState.phase,
-      pressured: recentRepeatedFailure(publicState, nowMs),
+      pressured: isExplicitProviderThrottle(publicState, nowMs, HATCH_BACKPRESSURE_MINUTES) ||
+        isRepeatedFailurePressure(publicState, nowMs, HATCH_BACKPRESSURE_MINUTES),
     })),
     scheduledTime,
     HATCH_CADENCE_MINUTES,
