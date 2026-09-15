@@ -1,0 +1,70 @@
+name: fjsplib-dual-proof
+
+on:
+  push:
+    branches: [roach/fjsplib-evo-r2-a25dbdca]
+    paths:
+      - 'experiments/fjsplib/verify_certificate_independent.py'
+      - 'experiments/fjsplib/prove_bound_pyjobshop.py'
+      - '.github/workflows/fjsplib-dual-proof.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  primal-certificate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download original R3 producer artifact
+        uses: actions/download-artifact@v4
+        with:
+          github-token: '${{ github.token }}'
+          repository: TTaoGaming/hfo-gen-142
+          run-id: 34921926574
+          name: fjsplib-r3-behnke48-seed206-34921926574
+          path: producer
+      - name: Independently verify public-instance certificate
+        run: >-
+          python experiments/fjsplib/verify_certificate_independent.py
+          producer/behnke48-seed206-r3.json
+          | tee primal-verifier.jsonl
+      - uses: actions/upload-artifact@v4
+        with:
+          name: behnke48-primal-verifier-${{ github.run_id }}
+          path: primal-verifier.jsonl
+          retention-days: 30
+
+  dual-bound:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install independent modeling layer
+        run: python -m pip install --disable-pip-version-check 'pyjobshop==0.0.9'
+      - name: Falsify existence of schedule at 124
+        run: >-
+          python experiments/fjsplib/prove_bound_pyjobshop.py
+          --instance behnke48
+          --target 124
+          --seconds 900
+          --workers 4
+          --out behnke48-target124-pyjobshop.json
+          | tee pyjobshop-bound.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: behnke48-dual-proof-${{ github.run_id }}
+          path: |
+            behnke48-target124-pyjobshop.json
+            pyjobshop-bound.log
+          retention-days: 30
