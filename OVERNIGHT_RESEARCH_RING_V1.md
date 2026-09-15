@@ -38,7 +38,7 @@ Produces at most three evidence-backed proposals. Must bind current incumbent/ru
 Reads the newest scout receipts independently. Its job is to kill recommendations. It checks stale incumbents, hidden auth, publication traps, donor illegality, evaluator gaming, weak buyer translation, and inflated crown language.
 
 ### 3. REDUCER
-Consumes only admitted scout + falsifier receipts. Runs versioned gates/reducer and emits exactly one primary next edge or `NONE`. LLM interpretation may propose facts; machine readback/gates must establish control truth.
+Consumes only admitted scout + falsifier receipts. Runs versioned gates plus QD archive and emits per-niche elites/coverage during EXPLORE; exactly one primary is legal only in explicit SEND, otherwise `NONE` only when no cell passes. LLM interpretation may propose facts; machine readback/gates must establish control truth.
 
 Agents do not debate peer-to-peer. They communicate through immutable receipts so disagreement is replayable and Byzantine evidence can be isolated.
 
@@ -75,7 +75,7 @@ Over any >=6 hour unattended window:
 2. At least one complete `SCOUT -> RED_QUEEN -> REDUCER` evidence chain executes or all three independently prove `NO_MATERIAL_CHANGE` without noise.
 3. No duplicate accepted external effects.
 4. No unchanged failure fingerprint is retried more than the declared budget.
-5. Reducer leaves exactly one primary next edge or `NONE`.
+5. EXPLORE leaves a multi-niche QD archive with `primary=null`; SEND may later reduce to exactly one primary or `NONE`.
 6. Morning state is recoverable from #13 + versioned repo without chat CPR.
 
 Primary fitness: `externally_verified_useful_progress / Tao_operator_minute`.
