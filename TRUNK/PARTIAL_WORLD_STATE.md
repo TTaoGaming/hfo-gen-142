@@ -1,7 +1,7 @@
 # GEN142 PARTIAL WORLD STATE
 
-Snapshot UTC: `2026-09-15T22:26:30Z`  
-Reducer UUID: `79b8067a-8517-4b1c-8d88-ac907c00ce3e`  
+Snapshot UTC: `2026-09-15T22:57:03Z`  
+Reducer UUID: `b9685c01-0959-423b-b488-352a3fb5f144`  
 Recovery order: **this file first**, then `#13` newest-first only for deltas.  
 Public GitHub is evidence/recovery and Byzantine by default; it is **not** private execution authority. Cloudflare Sigrun remains semantic owner.
 
@@ -10,30 +10,38 @@ Public GitHub is evidence/recovery and Byzantine by default; it is **not** priva
 `TAO_HOT_LOOP_ACTIONS_TARGET=0`
 
 ## Reduced diagnosis
-GEN142 has proved most individual lifecycle primitives. The remaining systems problem is integration: a useful mission still has not completed **two consecutive natural cycles** of wake -> authenticated reconcile -> useful worker -> independent verifier -> ConsumerAck -> successor/quiescence with Tao intervention `0`.
+GEN142 has proved most lifecycle primitives and now has credible strong-model capacity available in principle. The remaining operator-relief problem is still integration and admission, not lack of schedulers or model ideas: the protected production scheduler is not merged, the latest authenticated reconcile has **no admitted useful demand and zero worker routes**, and no useful Frontier evolution mission has yet completed the required natural wake -> worker -> verifier -> ConsumerAck chain twice with Tao intervention `0`.
 
-Do not build another scheduler, queue, registry, actor store, provider router or memory plane. The forcing sequence is promotion + useful worker + real external fitness.
+Do not build another scheduler, queue, registry, actor store, provider router or memory plane. Do not push a new acceptance-adjacent `cdev-control` canary merely because a public hatchery proposed one. The forcing sequence is protected promotion + one admitted useful worker route + real fitness + two natural zero-Tao cycles.
 
 ## PROVEN
 
+### Authenticated Sigrun / Oracle reconcile — FRESH
+Existing trusted control surface `TTaoGaming/cdev-control` Actions run `35033300934`, job `104596899909`, completed successfully at `2026-09-15T22:57:03Z` on the Oracle self-hosted runner.
+
+The run:
+- verified pinned GEN142 forcing source `fcf2b5914bfe4b70562ada915d792e1c24908d84`;
+- passed the forcing-source gate suites `8/15/15` plus `43` integrated GEN142 controller tests;
+- used scoped `SVA_ACTIONS_TOKEN` for the trusted reconcile step;
+- returned exactly: `plan=NO_ADMITTED_DEMAND`, `effect=NO_EFFECT`, `pending_demands=0`, `worker_routes=0`, `accepted_new=null`;
+- emitted reconcile receipt SHA256 `58af22f0d3e00d50e79207c945a281acd1449d979e19e3fbb903049e7d8dfd1b` and CPR-ledger SHA256 `6b497d2fa9497cc272d75b2baa43e39af33ebf1f38ef9666fb2ef55af980d33c`.
+
+This is a **push-triggered branch checkpoint**, not a natural default-branch scheduled wake, and it executed no useful neural mission. It therefore refreshes trusted state but does not advance the operator-relief acceptance count.
+
 ### Sigrun / Cloudflare semantic state
 - Authenticated Actions -> `hfo-sigrun-va-r0` works with scoped `SVA_ACTIONS_TOKEN`.
-- Private version-bound ForcePackage admission, terminal history, ConsumerAck/replay protection and disarm have live receipts.
-- Last reduced private checkpoint was terminal/consumed and the package was disarmed; no invented public-GitHub authority is admitted.
+- Private version-bound ForcePackage admission, terminal history, ConsumerAck/replay protection and disarm semantics have live receipts.
+- A newer private branch checkpoint (`cdev-control@937809ba2d07211386c265414deb583d8bde0c33`) enabled one effect-`NONE` HASH_ECHO checkpoint package. Its authenticated reconcile produced no admitted demand/effect. Do not infer promotion or useful-work admission from the package merely being enabled.
 
 ### Deterministic WorkCell mechanics
 - Bounded WorkCells have completed PASS/FAIL/HOLD -> verifier/ConsumerAck -> retirement with `TAO_HOT_LOOP_ACTIONS=0` in scoped assays.
 - Failure terminalization, replay protection, backpressure and deterministic reduction have executable regressions/live receipts.
+- Fresh public witness `GEN142-TRUNK-REDQUEEN-RELEASE-GATE-20260915-2246` ended PASS with ConsumerAck `#5689137113`, retirement `#5689138502`, result SHA256 `f578af75157f6b1b5881d8ac8fd626d899c6498a4cdff7052893b5394c6eb6d2`. This is useful evidence that the public research-cell mechanics still close cleanly; it is **not** private execution authority and is not the target Frontier evolution chain.
 
-### Oracle/OVH execution surfaces
-- Oracle ARM64 and OVH x86_64 Desktop Commander bridges are online and laptop-independent.
-- Oracle has ~11 GiB RAM and persistent user storage; OVH has ~7.6 GiB RAM and Docker.
-- Both VPSs are CPU-only: no NVIDIA GPU is present.
-
-### Frontier Fast shared evaluator — NEW PASS
+### Frontier Fast shared evaluator
 Target: `maple-preview-gguf-gb10cuda-v1`; source pin `deepgrove-ai/llama.cpp@8ce8ca6c6d370b6235dfa8e2a0611a9adb6d77d1`.
 
-One shared fail-closed evaluator now exists at `CROWN/frontier-fast/evolution/shared_eval.py`. It is the single static-fitness truth for ShinkaEvolve/OpenEvolve/GEPA:
+One shared fail-closed evaluator exists at `CROWN/frontier-fast/evolution/shared_eval.py`:
 
 `candidate patch -> exact source pin -> git apply --check -> diff check -> touched-TU compile -> HOLD for trusted GB10 fitness`
 
@@ -41,88 +49,103 @@ The lawful public Maple donor patch SHA256 `02f8f85d64eea5712a7773fb883b97318ba0
 
 An intentionally corrupted patch failed `git apply --check` and exited nonzero before build. Static success always emits `trusted_fitness=null` and `promotion=HOLD_TRUSTED_GB10_FITNESS`; compile success cannot self-award a crown.
 
-### GEPA engine — NEW PASS
-GEPA `0.1.4` ran a complete bounded proposal -> evaluation -> selection cycle against the shared evaluator. Seed scored `1.0`; a deliberate bad mutation scored `0.0`; GEPA rejected it and retained the seed. `metric_calls=3`.
+### Evolution engines
+- **GEPA 0.1.4:** full bounded proposal -> evaluation -> selection cycle against the shared evaluator; good seed retained and deliberate bad mutation rejected, `metric_calls=3`.
+- **ShinkaEvolve 0.0.7:** persistent runner/DB/scheduler/evaluator/OpenAI-compatible transport work; local Granite 3B mutation output failed closed with durable `llm_output_invalid` receipt SHA256 `79bf19c89cb37bc65a54ea314618972242750f4d45dff296dcfea85e6177005a`.
+- **OpenEvolve 0.3.2:** evaluator/MAP-Elites/checkpoint path works; local Granite 3B proposal timed out after 120 s and preserved the seed. Smoke receipt SHA256 `e34645467cced46370fde3b81666bf97bb32e8a419ad9b2582fcbbfd4ab2ed74`.
 
-### ShinkaEvolve substrate — PASS / proposer blocked
-ShinkaEvolve `0.0.7` persistent runner, DB, local scheduler, evaluator and local OpenAI-compatible transport are working. Seed evaluation/archival scored `1.0`. A direct Shinka local-provider query to Oracle Ollama returned valid content at `$0` incremental API cost.
+Conclusion: evolutionary substrate is proven; the old local 3B proposer is not productive for the real prompt shape.
 
-A forced generation-1 mutation assay made three Granite 3B calls, then failed closed before evaluation with durable `failure_class=llm_output_invalid`, `failure_reason=LLM response content was None`. Failure receipt SHA256: `79bf19c89cb37bc65a54ea314618972242750f4d45dff296dcfea85e6177005a`.
-
-Conclusion: Shinka is installed/wired; the 2-core/local-3B proposer is not productive for the real evolution prompt shape.
-
-### OpenEvolve substrate — PASS / proposer blocked
-OpenEvolve `0.3.2` loaded the same evaluator, initialized MAP-Elites/islands, scored/checkpointed the legal seed as `1.0`, then attempted one Granite 3B mutation. The proposal call timed out after 120 s. Controller failed closed and preserved the seed. Smoke receipt SHA256: `e34645467cced46370fde3b81666bf97bb32e8a419ad9b2582fcbbfd4ab2ed74`.
-
-Conclusion: controller/evaluator works; local CPU mutation throughput/model quality is the blocker.
-
-### Persistent-state scar — NEW
-An initial evolution worktree under `/tmp` vanished between tool calls while the Oracle host itself remained up. `/tmp` is therefore **inadmissible for evolutionary DB/population/checkpoint state**. Persistent assay state under `$HOME/.local/state/frontier-pdsa-79b8067a` survived independent readbacks and is the required pattern.
+### Execution surfaces / persistent-state scar
+- Oracle ARM64 and OVH x86_64 Desktop Commander bridges remain online and laptop-independent; both previously verified CPU-only.
+- An evolution worktree under `/tmp` vanished between calls while Oracle remained up. Persistent evolutionary DB/population/checkpoints must live under durable user state such as `$HOME/.local/state/...`, not `/tmp`.
 
 ## PARTIAL
 
 ### Production scheduler / reducer
-`TTaoGaming/cdev-control#5` contains the intended `7,37 * * * *` Oracle wake, authenticated Sigrun observation/history, pinned forcing source, private ForcePackage, worker adapter and durable receipts. Its branch canaries are green, but it is **not merged to protected default branch**. Natural scheduled production autonomy therefore remains unproven.
+`TTaoGaming/cdev-control#5` remains **OPEN and unmerged** (`merged=false`, current reviewed head `b7f79d83c4582ce1c0beccd1ce3fdfa38e21cb39`). It contains the intended `7,37 * * * *` Oracle wake, authenticated Sigrun observation/history, pinned forcing source, private ForcePackage handling, worker adapter and durable receipts. Branch canaries are green, but default-branch scheduled autonomy is still unproven.
 
-### Useful neural worker route
-Kimi worker isolation/credential stripping is tested, but the latest authenticated world state did not have a live useful worker route. Frontier evolution has not yet been bound as a useful ForcePackage traversing Sigrun -> worker -> verifier -> successor.
+Its own promotion contract still requires an independent approval including last-push approval. Do not weaken protection and do not push gratuitous changes to the PR head.
+
+### Strong proposer capacity exists; runtime admission does not
+Operator-supplied capacity is now durably documented in `CROWN/frontier-fast/evolution/RESOURCE_REQUIREMENTS.md`:
+- Cloudflare API / Workers AI capacity;
+- Kimi.ai API with Kimi 3-class frontier access;
+- OpenRouter free frontier-model capacity;
+- ChatGPT A/B, Codex and other authenticated subscription sessions as possible browser-backed emitters.
+
+This changes the diagnosis from **"find a strong model"** to **"admit one provider adapter + secret path"**. These remain capacity claims pending machine readback; the fresh authenticated reconcile still reports `worker_routes=0`.
+
+### Private no-effect checkpoint
+`cdev-control@937809ba2d07211386c265414deb583d8bde0c33` enabled one private effect-`NONE` HASH_ECHO checkpoint package. The existing Autonomic Cell workflow ran successfully against it and found no admitted pending demand. Treat this as a bounded state/readback checkpoint, not a scheduler promotion and not a useful-worker cycle.
 
 ### Native Cloudflare research hatchery
-Wake/fan-in/backpressure/failure rotation exist, but recent live lanes have still failed at typed proposer/falsifier submission boundaries. Treat it as a partially working research producer, not the trusted evolution fitness owner.
+Wake/fan-in/backpressure/failure rotation exist, but recent public lanes still show typed submission/binding failures (`FALSIFIER_BINDING_REFUSED`, `FALSIFIER_SUBMISSION_TOOL_COUNT_0`, etc.). Latest public machine reduction `#5689180044` emitted `NEXT_RESEARCH_EDGE` and suggested a no-secret provider canary. Because public GitHub is proposal evidence only, this does not authorize a new `cdev-control` branch/PR and should not displace the existing acceptance-critical PR #5.
 
-## FRONTIER FAST LIVE STATE
-Fresh readback in this PDSA:
-- Maple GB10 non-baseline `trusted-runner` records: **0**.
-- Frontier queue: depth `0`, running `0`, platform estimate `22 min/run`.
-- Maple is therefore still an attractive open first crown target, but `CROWN_WON=false`.
+## BLOCKED — ordered for operator relief
 
-DeepSeek V4 Flash remains secondary/HOLD for speculative automation because published metadata still conflicts on `draft-dspark` vs `draft-dflash`. Qwen3.6 GB10 already has a meaningful incumbent and is not the easiest first crown.
+### B0 — protected scheduler promotion
+`cdev-control#5` needs its existing independent/last-push approval and protected merge. Until merged, a natural default-branch wake cannot count.
 
-## BLOCKERS — ordered
+### B1 — one admitted useful strong-provider route
+Strong-model capacity is available in principle, but no trusted runtime readback shows an admitted Kimi/OpenRouter/Cloudflare proposal route. Bind **one** provider first using the existing secret boundary and a thin provider-neutral adapter; fail closed on missing credentials/quota and never silently fall back to paid capacity.
 
-### B0 — trusted performance fitness
-Oracle/OVH have no GPU. The shared evaluator can cheaply kill malformed/unbuildable candidates, but it cannot measure GB10 CUDA throughput. The official Frontier trusted runner can evaluate a small survivor set, not economically serve as the inner loop at ~22 min/run.
+### B2 — useful Frontier evolution mission binding
+After the production wake path is promoted, bind exactly one bounded Maple evolution demand to the admitted proposer + shared evaluator. Do not fan out broadly until this closes naturally through verifier + ConsumerAck.
 
-For **first canary**, rented GB10 is optional. For **high-throughput overnight evolution**, an admitted GB10/near-GB10 GPU fitness worker is the missing compute resource.
+### B3 — trusted GB10 performance fitness
+Oracle/OVH are not GB10 fitness machines. No reducer receipt yet proves an exact/near-exact GB10 box has been rented and admitted. For high-throughput Maple evolution, exact DGX Spark / GB10 is preferred; near-GPU results remain `DIRECTIONAL_FITNESS_ONLY`.
 
-### B1 — productive mutation model
-Current Oracle service environment has no OpenRouter/OpenAI/Anthropic API credential and no Codex/Claude CLI. Local Granite 3B is demonstrably too slow/unreliable for Shinka/OpenEvolve proposal generation. Need one admitted stronger proposer route: API or authenticated supported coding CLI. Keep provider credential outside candidate/evaluator environments.
+### B4 — Frontier identity / submit leaf
+No fresh trusted receipt proves `frontierfast` submit tooling plus `GAINZ_TOKEN` is installed/admitted in a narrow submitter leaf. Account/login/token/fork/TOS and irreversible final submission remain legitimate human boundaries. Evolution workers must not receive this credential.
 
-### B2 — Frontier identity/submit leaf
-Oracle currently has no `frontierfast` CLI/Bun and no `GAINZ_TOKEN`. Account/login/token/fork/TOS is a legitimate human boundary. Token belongs only in a narrow submitter leaf; evolutionary workers and Cloudflare prompts should never receive it.
+## UNKNOWN — do not infer
+- Whether Kimi.ai, OpenRouter or Cloudflare provider credentials are currently bound in a trusted runtime secret scope.
+- Whether any ChatGPT A/B/Codex browser adapter is implemented and can return a hash-bound artifact without Tao context ferrying.
+- Whether an exact GB10 box has been rented, configured and baseline-verified.
+- Whether Frontier identity/token/CLI setup has been completed elsewhere.
 
-### B3 — scheduler promotion / operator relief
-`cdev-control#5` must cross its existing independent/last-push approval and merge boundary. After merge, require a natural default-branch wake. Do not weaken protection and do not push gratuitous changes to the PR head.
+## OPERATOR-RELIEF ACCEPTANCE EDGE
+| Edge | State | Evidence / blocker |
+|---|---|---|
+| 1. merged default-branch scheduler | **BLOCKED** | `cdev-control#5` open, `merged=false` |
+| 2. natural default-branch wake | **BLOCKED** | cannot count before edge 1 |
+| 3. one useful admitted worker | **BLOCKED** | fresh authenticated reconcile: `worker_routes=0`, `pending_demands=0` |
+| 4. verifier + ConsumerAck | **PROVEN_SCOPED / NOT TARGET CHAIN** | WorkCell mechanics and fresh release-gate Ack/retirement close, but not a useful Frontier mission |
+| 5. two consecutive zero-Tao natural cycles | **UNMET** | no target cycle has completed yet |
 
-### B4 — useful evolution mission binding
-After B3, bind exactly one bounded Maple evolution ForcePackage member and one admitted proposer/evaluator route. Do **not** fan out broadly until it closes two natural zero-Tao cycles.
-
-## ACCEPTANCE TEST FOR OPERATOR RELIEF
-Require two consecutive real cycles with:
-1. natural default-branch wake;
-2. authenticated Sigrun observe/reconcile;
-3. admitted Frontier evolution demand;
-4. real proposal worker with controller credentials stripped;
-5. shared static evaluator + trusted performance evidence when promoted;
-6. independent verifier + ConsumerAck/retirement;
-7. next generation selected or deterministic quiescence;
-8. `TAO_INTERVENTION_COUNT=0`, duplicate effects `=0`, invented authority `=0`.
-
-Until then, `OPERATOR_RELIEF=false`.
+`OPERATOR_RELIEF=false` until all five edges close in sequence without duplicate effects or invented authority.
 
 ## CROWN / FITNESS PORTFOLIO
 - **Packomania:** verified packet is send-ready; external keeper acceptance still required.
-- **ECDSA.fail:** justified compute lane from prior reduction.
-- **Frontier Fast Maple GB10:** now upgraded from “unwired backup” to **evolution substrate proven / trusted fitness pending**.
-- **FJSPLib / MICRO MOA / generic scouting:** remain parked unless fresh evidence changes their gates.
+- **ECDSA.fail:** justified new-compute survivor from prior reduction; repeated trusted verification remains mandatory.
+- **Frontier Fast Maple GB10:** evolution substrate proven; trusted GB10 fitness pending.
+- **FJSPLib / MICRO MOA / generic scouting:** parked unless fresh verified evidence changes their gates.
+
+Last reduced Frontier readback before this checkpoint had Maple GB10 non-baseline `trusted-runner` records = `0`; this reducer did **not** refresh the Frontier service directly, so do not label that count current beyond the prior snapshot.
+
+## BATCH WORK — machine-routable
+
+### Tao / human-only boundaries
+1. Obtain the existing required independent approval and protected merge for `cdev-control#5`; do not bypass governance.
+2. Bind exactly **one** already-available strong-provider credential into the existing trusted secret path. Prefer free/included/prepaid hard-capped capacity; no silent paid fallback and no key in public GitHub.
+3. If proceeding with dense local Maple fitness, rent/admit an exact GB10/DGX Spark-class box. Payment/spend remains human-only.
+4. Complete Frontier login/token/fork/TOS only when needed for the narrow submitter leaf; final irreversible submission remains explicitly authorized/manual.
+
+### Virtual actors / hive
+1. **Provider-adapter integrator:** implement the thinnest provider-neutral proposer adapter against the existing evolution substrate, outside the PR #5 head if possible; one bounded proposal -> shared evaluator -> reducer receipt; fail closed on absent credentials/quota.
+2. **Browser-adapter worker:** treat ChatGPT A/B/Codex sessions as proposal-only emitters on an authorized browser host; bounded input, hash-bound output/provenance, deterministic timeout, no password/2FA/cookie export, no execution authority.
+3. **GB10 verifier:** once a box exists, independently read back hardware/CUDA/ARM64/disk, reproduce stock baseline, then A/B/A+B paired fitness. Near-hardware must be labeled directional only.
+4. **Reducer/verifier:** watch PR #5 only. After protected merge, observe the first natural scheduled default-branch wake. Do not push the PR head to manufacture activity.
+5. **Mission binder:** after one provider route is admitted, bind one Maple evolution ForcePackage member and require useful worker -> shared evaluator -> independent verifier -> ConsumerAck -> successor/quiescence before any fan-out.
 
 ## NEXT FORCING SEQUENCE
-1. Human boundary once: Frontier identity/token/fork; choose whether to admit a strong API/coding-CLI proposer and whether to rent GB10-class compute.
-2. Machine: install Frontier submit tooling in a credential-isolated leaf; keep the shared evaluator unchanged.
-3. Machine: use Shinka/GEPA/OpenEvolve as isolated proposal pools sharing that evaluator. GEPA is already full-loop green; Shinka/OpenEvolve need a stronger proposer route.
-4. Promote only static survivors to trusted GB10 runs; successive-halve repeated positive results.
-5. Independently replay a putative champion, then manual/authorized final submission.
-6. In parallel, finish `cdev-control#5` promotion and bind this exact useful workload into the natural scheduler.
+Run two lanes in parallel without creating a new control plane:
+1. **Promotion lane:** independent approval -> merge `cdev-control#5` -> natural default-branch wake.
+2. **Useful-worker lane:** admit one existing/free strong API proposer -> one real Maple mutation -> shared evaluator -> verifier receipt.
+3. Join them: bind that useful workload to the promoted natural wake and close cycle #1 with ConsumerAck/retirement.
+4. Require a second consecutive natural cycle with `TAO_INTERVENTION_COUNT=0`, duplicate effects `=0`, invented authority `=0`.
+5. Only then scale proposal/browser/GB10 populations by successive halving.
 
-`RESULT=FRONTIER_EVOLUTION_SPINE_PROVEN__LOCAL_PROPOSER_WEAK__TRUSTED_GB10_FITNESS_AND_AUTH_PENDING`  
-`NEXT=STRONG_PROPOSER__TRUSTED_GB10_CANARY__SCHEDULER_PROMOTION__TWO_ZERO_TAO_CYCLES`
+`RESULT=AUTHENTICATED_NO_DEMAND_REFRESH__PROVIDER_CAPACITY_EXISTS_BUT_UNADMITTED__PR5_STILL_UNMERGED__OPERATOR_RELIEF_FALSE`  
+`NEXT=PR5_PROTECTED_PROMOTION__ONE_ADMITTED_API_PROPOSER__NATURAL_USEFUL_CYCLE_X2`
