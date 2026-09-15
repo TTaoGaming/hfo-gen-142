@@ -37,8 +37,8 @@ Final exact-coordinate slacks:
 
 Final file SHA-256:
 
-- `csqv120.pck`: `a5222477917e40b4fd6f908ced5576687169e15ddc3332d6ffcaf3a25124470d`
-- `csqv122.pck`: `b82b2943c8861dcf30c44772fed9de77d11b2357f6e2e286f5b8a9d9bb15ab1b`
+- `csqv120.pck`: `5921e2ca32b2da8c8f908caaeaa9decc6498fd51b5e98006c96b1fe0571fa63a`
+- `csqv122.pck`: `87af14334f54bb1c517e8e5d5cd36c38302f5b34bc0eca9a851641e59e73247f`
 
 ## Claim ceiling
 
