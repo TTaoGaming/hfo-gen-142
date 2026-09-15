@@ -1,6 +1,6 @@
 # Packomania csqv crown candidates — 2026-09-14
 
-**Status:** `CANDIDATE_RECORD / R2_EXACT_BYTES_AWAIT_INDEPENDENT_VERIFY`, not yet a third-party accepted/public crown.
+**Status:** `CANDIDATE_RECORD / R2_EXACT_BYTES_VERIFIER_PASS / READY_FOR_HUMAN_SEND`, not yet a third-party accepted/public crown.
 
 This packet contains two strictly-feasible candidate improvements for Packomania `csqv`: variable-radius circles in a unit square, maximizing sum of radii.
 
@@ -28,8 +28,8 @@ The candidate `.pck` files include a uniform ~1e-10 radius safety shrink. The un
 
 1. Discovery Loop's own independent `problems/circle_packing/verify.py` accepted both raw candidates as feasible.
 2. Independent verifier donor: `jasonzliang/circle-packing-sota@28e129593b1c696627db67911b0392c439c64610`, pure stdlib and no shared solver code.
-3. The pre-R2 packet was independently checked at zero tolerance; the R2 edit changes metadata only, not any numeric coordinate/radius payload.
-4. Prior 80-digit `Decimal` geometry readback found strictly positive wall and pair slacks. R2 builder-side sanity replay reproduced those exact slacks, but producer != verifier: a distinct carrier must verify the R2 exact bytes before human send.
+3. R2 exact attachment bytes were re-read from the durable branch and passed that pinned verifier at `--tol 0` against the current keeper values recorded here; see `R2_VERIFIER_RECEIPT.md`.
+4. Separate 80-digit `Decimal` geometry replay found strictly positive wall and pair slacks and reproduced the prior numeric invariants after the metadata-only R2 change.
 5. Discovery Loop breaker: N=120 survived 400 perturbation attempts; N=122 survived 395. Breaker survival is bounded evidence, not proof of optimality.
 
 Exact-coordinate slacks (unchanged numeric payload):
@@ -44,4 +44,4 @@ R2 file SHA-256:
 
 ## Claim ceiling
 
-These coordinates beat the current keeper values above, but `CROWN_WON=false`. A distinct verifier must ConsumerAck the R2 exact attachment hashes, then the keeper table must be re-fetched immediately before the human external-send boundary. Do not claim a world record or Packomania acceptance until the keeper independently accepts/lists the construction.
+These coordinates beat the current keeper values above and the R2 exact bytes pass the pinned independent verifier, but `CROWN_WON=false`. Re-fetch the keeper table immediately before the human external-send boundary. Do not claim a world record or Packomania acceptance until the keeper independently accepts/lists the construction. Reusable heritage admission from this cycle remains `NONE` pending verifier + downstream ConsumerAck.
