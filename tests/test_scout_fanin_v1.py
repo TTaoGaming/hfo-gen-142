@@ -1,6 +1,6 @@
 import json
 import unittest
-from tools.scout_fanin_v1 import sha256, validate_ready
+from tools.scout_fanin_v1 import collect_hatchery_entries, sha256, validate_ready
 
 
 class ScoutFaninTests(unittest.TestCase):
@@ -52,6 +52,20 @@ class ScoutFaninTests(unittest.TestCase):
         state["lastResultSha256"] = sha256(text)
         with self.assertRaisesRegex(ValueError, "RESULT_LANE_MISMATCH"):
             validate_ready(state)
+
+    def test_hatchery_collects_ready_and_failure_without_idle_noise(self):
+        ready, value = self.state()
+        failed = {"actorId": "SIGRUN-GEN142-SCOUT-R0", "phase": "FAILED", "epoch": 4,
+                  "lastAttemptLane": "DONOR", "lastError": "THROTTLED", "sameFailureCount": 2}
+        payload = {"ok": True, "slots": [
+            {"name": "larva-crown", "seedLane": "CROWN", "state": ready},
+            {"name": "larva-donor", "seedLane": "DONOR", "state": failed},
+            {"name": "larva-idle", "seedLane": "BENCHMARK", "state": {"phase": "IDLE", "epoch": 0}},
+        ]}
+        entries = collect_hatchery_entries(payload)
+        self.assertEqual(len(entries), 2)
+        self.assertEqual(entries[0]["result"], value)
+        self.assertEqual(entries[1]["same_failure_count"], 2)
 
 
 if __name__ == "__main__":

@@ -12,12 +12,14 @@ except ModuleNotFoundError:
     from scout_result_gate import verdict as scout_result_verdict
 
 STATE_URL = "https://hfo-gen142-native-scout-r0.tommytai3.workers.dev/state"
+HATCHERY_URL = "https://hfo-gen142-native-scout-r0.tommytai3.workers.dev/hatchery"
 REPO = os.environ.get("GITHUB_REPOSITORY", "TTaoGaming/hfo-gen-142")
 ISSUE = 13
 TOKEN = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN") or ""
 ACTOR = "SIGRUN-GEN142-SCOUT-R0"
 READY_MARK = "hfo-scout-fanin-v1"
 ANDON_MARK = "hfo-scout-andon-v1"
+HATCHERY_MARK = "hfo-hatchery-fanin-v1"
 
 
 def sha256(text: str) -> str:
@@ -131,7 +133,57 @@ def fanin_andon(state: dict[str, Any]) -> int:
     return 0
 
 
+
+def collect_hatchery_entries(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    slots = payload.get("slots")
+    if payload.get("ok") is not True or not isinstance(slots, list):
+        raise ValueError("HATCHERY_SHAPE_REFUSED")
+    entries: list[dict[str, Any]] = []
+    for slot in slots:
+        if not isinstance(slot, dict) or not isinstance(slot.get("state"), dict) or not slot.get("name"):
+            raise ValueError("HATCHERY_SLOT_REFUSED")
+        state = slot["state"]
+        phase = state.get("phase")
+        base = {"slot": slot["name"], "seed_lane": slot.get("seedLane"), "phase": phase, "epoch": state.get("epoch")}
+        if phase == "READY":
+            digest, value = validate_ready(state)
+            entries.append({**base, "result_sha256": digest, "lane": state.get("lastLane"), "result": value})
+        elif phase in {"FAILED", "RECOVERY_REQUIRED"}:
+            fingerprint = str(state.get("lastFailureFingerprint") or sha256(f"{phase}|{state.get('lastError')}"))
+            entries.append({**base, "attempted_lane": state.get("lastAttemptLane"), "failure_fingerprint": fingerprint,
+                            "same_failure_count": state.get("sameFailureCount"), "error": str(state.get("lastError") or "")[:700]})
+    return entries
+
+
+def fanin_hatchery(payload: dict[str, Any]) -> int:
+    entries = collect_hatchery_entries(payload)
+    if not entries:
+        print(json.dumps({"status": "NOOP_HATCHERY_IDLE", "slots": len(payload.get("slots", []))}))
+        return 0
+    digest = sha256(json.dumps(entries, sort_keys=True, separators=(",", ":"), ensure_ascii=False))
+    marker = f"<!-- {HATCHERY_MARK}:{digest} -->"
+    if has_marker(marker):
+        print(json.dumps({"status": "NOOP_HATCHERY_ALREADY_FANNED_IN", "digest": digest}))
+        return 0
+    body = "\n".join([
+        "## HATCHERY FAN-IN v1 ? MACHINE REDUCTION INPUT", "",
+        f"- hatchery_policy: `{payload.get('policy')}`",
+        f"- slots_observed: `{len(payload.get('slots', []))}`",
+        f"- material_entries: `{len(entries)}`",
+        "- authority: `PROPOSAL/FAILURE_EVIDENCE_ONLY`; public GitHub does not grant runtime authority",
+        "", "```json", json.dumps(entries, sort_keys=True, ensure_ascii=False), "```", "", marker,
+    ])
+    post_comment(body)
+    print(json.dumps({"status": "HATCHERY_FANNED_IN", "digest": digest, "entries": len(entries)}))
+    return 0
+
 def main() -> int:
+    try:
+        hatchery = request_json(HATCHERY_URL)
+        if hatchery.get("ok") is True and isinstance(hatchery.get("slots"), list):
+            return fanin_hatchery(hatchery)
+    except Exception as error:
+        print(json.dumps({"status": "HATCHERY_READ_FALLBACK", "error": type(error).__name__}))
     state = request_json(STATE_URL)
     phase = state.get("phase")
     if phase == "READY":
