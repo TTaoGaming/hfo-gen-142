@@ -10,6 +10,7 @@ const SEAT_ROLE = "THUNDER_DISRUPT";
 const ROACH_UUID = "0771446a-3b95-45ea-baa4-5140c3e1510b";
 const DEBATE_VERSION = "twinling-debate-v1";
 const MODEL = "@cf/moonshotai/kimi-k2.7-code";
+const REDUCER_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 const ISSUE_API = "https://api.github.com/repos/TTaoGaming/hfo-gen-142/issues/13";
 const LANES = ["CROWN", "DONOR", "BENCHMARK", "REDUCER"] as const;
 type Lane = typeof LANES[number];
@@ -242,16 +243,10 @@ export class Gen142Scout extends Agent<any, ScoutState> {
           ]);
           const debateSha = await sha256(JSON.stringify({ lane, proposer, falsifier }));
           const synthesis = await generateText({
-            model: workersai(MODEL),
+            model: workersai(REDUCER_MODEL),
             system: REDUCER_SYSTEM,
             prompt: JSON.stringify({ runId, lane, canonical, proposer, falsifier, debate_sha256: debateSha }).slice(0, 30000),
             maxOutputTokens: 1800,
-            providerOptions: {
-              "workers-ai": {
-                reasoning_effort: null,
-                chat_template_kwargs: { enable_thinking: false },
-              },
-            },
             output: Output.object({ schema: REDUCER_OUTPUT_SCHEMA }),
           });
           const text = JSON.stringify({

@@ -18,9 +18,10 @@ class NativeScoutStructuredSynthesisTests(unittest.TestCase):
         self.assertIn('output: Output.object({ schema: REDUCER_OUTPUT_SCHEMA })', self.reducer_block)
         self.assertIn('maxItems: 3', self.text)
 
-    def test_reducer_disables_reasoning_only_for_terminal_synthesis(self):
-        self.assertIn('reasoning_effort: null', self.reducer_block)
-        self.assertIn('enable_thinking: false', self.reducer_block)
+    def test_reducer_uses_dedicated_json_mode_model(self):
+        self.assertIn('const REDUCER_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"', self.text)
+        self.assertIn('model: workersai(REDUCER_MODEL)', self.reducer_block)
+        self.assertNotIn('model: workersai(MODEL)', self.reducer_block)
 
     def test_host_owns_authoritative_envelope_fields(self):
         self.assertIn('observed_utc: new Date().toISOString()', self.reducer_block)
