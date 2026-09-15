@@ -101,6 +101,43 @@ Credentials/account creation, OAuth/2FA/CAPTCHA, payment/new spend, protected pe
 - Whether any external crown is accepted by its third-party keeper. `CROWN_WON=false` until public independent readback exists.
 - Current state newer than the last authenticated Sigrun readback (`2026-09-15T19:20:57Z`) must be re-observed rather than inferred.
 
+## Frontier Fast evolution blocker trace — 2026-09-15T20:38Z
+
+Goal: run ShinkaEvolve / OpenEvolve / GEPA as COTS evolutionary search on VPS capacity, with Cloudflare/Sigrun owning mission state, and Frontier Fast trusted runners owning final external fitness.
+
+### PROVEN / easy
+- Oracle VPS is viable as the evolution-controller host: ARM64, Python 3.12, `uv`, ~11 GiB RAM / ~10 GiB available, ~24 GiB free disk, Node 22/npm present.
+- Isolated Oracle smoke environment successfully installed and imported `shinka-evolve`, `openevolve`, and `gepa` together under Python 3.11; install footprint ~545 MiB. Framework installation itself is **not a blocker**.
+- OVH is available as secondary x86_64 host (~7.6 GiB RAM, ~48 GiB free disk, Docker present), but currently lacks Python pip/uv bootstrap.
+- Both VPS hosts are CPU-only; no NVIDIA GPU is present.
+- Live Frontier Fast queue observed `depth=0`, `running=0`, `estimatedMinutesPerRun=22`; the platform allows max 3 submissions in flight/account and uses trusted paired runs plus independent confirmation for ranking.
+
+### CURRENT BEST CROWN TARGETS
+- Live API currently shows **no trusted-runner kernel record** on `maple-preview-gguf-gb10cuda-v1` and **no trusted-runner kernel record** on `deepseek-v4-flash-gguf-gb10cuda-v1`.
+- Maple GB10 is the clean first target: open, recommended VRAM ~8 GiB, exact pinned engine contract available, and an existing HFO Maple candidate patch already applies/builds at translation-unit level but lacks performance proof.
+- DeepSeek V4 Flash is open but requires ~110 GiB VRAM locally and its live speculative metadata is internally contradictory: pinned draft says `draft-dspark`, while generated `howToRun` examples use `draft-dflash`. Keep kernel-only work possible, but HOLD speculative automation until upstream contract resolves.
+
+### REAL BLOCKERS
+1. **No shared Frontier evaluator adapter.** None of Shinka/OpenEvolve/GEPA is currently wired to a frozen Frontier Fast evaluator. Need one thin semantic owner that: creates isolated worktree -> applies candidate only inside allowlisted paths -> builds pinned engine -> correctness gate -> local performance when GPU exists -> returns structured metric + diagnostics. Framework-specific wrappers should call this same evaluator; do not create three evaluator truths.
+2. **No dense local fitness signal.** VPS hosts have no GPU. Frontier's trusted runner is suitable as promotion/final verifier, not as the inner evolutionary loop: a rejected candidate burns ~20+ minutes and only 3 can be in flight. Serious multi-generation search therefore needs an admitted GPU fitness worker, ideally exact GB10 for Maple, or at least an NVIDIA GPU for directional local filtering. Without GPU, evolution is mostly mutation + compile/static filtering followed by sparse remote evaluations.
+3. **Mutation-model auth is not wired on Oracle service path.** Current shell has Kimi CLI, but no Codex/Claude CLI and no `OPENROUTER_API_KEY`, `OPENAI_API_KEY`, or `ANTHROPIC_API_KEY`. Shinka can use Headless subscription-backed Codex/Claude, but those agent CLIs/auth are not present. OpenEvolve/GEPA can use API/OpenAI-compatible providers, but provider credentials are not currently admitted to the evolution worker environment.
+4. **Frontier submit identity not wired.** Oracle currently has no `frontierfast` CLI, no Bun, and no `GAINZ_TOKEN`. Frontier writes require a bearer token scoped to the user's GitHub account. Account/login/token/fork are legitimate human authority boundaries; token must stay private and scoped to the submitter leaf, not Cloudflare prompts/public GitHub.
+5. **Cloudflare/VPS automatic mission path is not promoted.** `cdev-control#5` remains open/unmerged; therefore the default-branch `:07/:37` scheduler that should wake/reconcile this workload is not production. Branch canaries prove mechanics, not unattended useful work.
+6. **Useful worker route remains unproven.** Latest authenticated CPR ledger has `worker_routes=[]`; current private ForcePackage is disarmed. Need one bounded evolution-worker route before broad population fan-out.
+7. **Do not run three evolutionary controllers against one mutable tree.** Shinka, OpenEvolve, and GEPA each own selection/population semantics. Running all three as coequal controllers would recreate branch/state pollution. Use isolated experiment pools sharing one frozen evaluator; reducer promotes only hash-bound champions. Start with Shinka as primary because it has async evolution plus documented Headless subscription-backed mutation; use GEPA/OpenEvolve as independent emitter/challenger pools after the same evaluator passes.
+
+### SHORTEST PATH
+A. Human: create/auth Frontier Fast identity/token + fork; optionally authenticate one Headless-supported coding CLI on Oracle or admit one API provider secret.
+B. Machine: install Frontier CLI/Bun on Oracle; freeze Maple GB10 live contract/recipe/findings into an experiment capsule.
+C. Build one shared `frontier_eval` adapter and Shinka wrapper first; smoke 2 generations using compile/correctness-only fitness on CPU.
+D. Add an exact/near GB10 GPU worker for local score; successive-halving only then becomes meaningful.
+E. Submit only promoted champions to Frontier Fast; record every dead/promising/won finding.
+F. Separately promote `cdev-control#5`; once natural wake is proven, bind this experiment capsule as one useful ForcePackage and require two consecutive zero-Tao cycles.
+
+`FRONTIER_EVOLUTION_BLOCKER=EVALUATOR_PLUS_GPU_FITNESS_PLUS_AUTH_WIRING__NOT_FRAMEWORK_INSTALL`
+`BEST_FIRST_TARGET=maple-preview-gguf-gb10cuda-v1`
+`DEEPSEEK_SPECULATION=HOLD_CONTRACT_CONFLICT`
+
 ## Reducer decision — shortest path
 
 Do **not** build another scheduler, queue, actor store, registry, provider router or memory system.
