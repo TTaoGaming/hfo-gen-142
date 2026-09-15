@@ -1,0 +1,117 @@
+{
+  "schema_version": "battlefield.v1",
+  "battlefield_id": "tartanimu-iros2026",
+  "observed_at_utc": "2026-09-15T00:28:16Z",
+  "mission_class": "prestige_crown",
+  "stage": "scout",
+  "domain": "robotics-inertial-odometry",
+  "target": {
+    "board": "TartanIMU Challenge: Multi-Platform Inertial Odometry",
+    "track": "Kaggle public leaderboard / IROS 2026 official benchmark",
+    "metric": "TartanIMU score",
+    "direction": "minimize",
+    "incumbent_name": "ByeByeHelloHaHaHa",
+    "incumbent_score": 0.30543,
+    "incumbent_checked_at_utc": "2026-09-15T00:28:16Z",
+    "incumbent_url": "https://www.kaggle.com/competitions/tartan-imu-challenge-iros2026/leaderboard",
+    "rules_url": "https://superodometry.com/imuchallenge/about/",
+    "submission_url": "https://www.kaggle.com/competitions/tartan-imu-challenge-iros2026",
+    "open_to_user": true,
+    "public_proof_before_merge": true,
+    "proof_latency_hours": 0.5
+  },
+  "prestige": {
+    "tier": "B",
+    "institution_or_platform": "CMU AirLab / IROS 2026 workshop + Kaggle",
+    "independent_verifier": true,
+    "verifier_url": "https://superodometry.com/imuchallenge/",
+    "public_attribution": true,
+    "durable_public_evidence": true,
+    "real_incumbent_competition": true,
+    "competitor_count": 87,
+    "accepted_submission_protocol": true,
+    "buyer_legibility": 0.86
+  },
+  "commercial": {
+    "buyer_personas": [
+      "robotics and autonomous-systems teams",
+      "sensor-fusion and state-estimation clients",
+      "drone, mobile-robot and embedded-perception teams"
+    ],
+    "offer": "Robotics state-estimation sprint: build and benchmark IMU/sensor-fusion pipelines, improve cross-platform velocity or localization accuracy, and deliver reproducible ROS/Python/C++ evaluation artifacts.",
+    "demand_evidence_urls": [
+      "https://www.upwork.com/freelance-jobs/apply/ToF-Sensor-Pipeline-Point-Cloud-Processing-Expert-IMU-Depth-Fusion_~022090447657507390446/",
+      "https://www.upwork.com/freelance-jobs/apply/Robotics-Support-Engineer-Contractor_~022097513582200394245/"
+    ],
+    "p_paid_conversation_7d": 0.3,
+    "expected_cash_30d": 1500,
+    "expected_cash_90d": 7000,
+    "case_study_claim": "Current #1 on the public TartanIMU IROS 2026 leaderboard, if and only if Kaggle publicly shows Tao's team at rank 1 under the official challenge protocol."
+  },
+  "evolution": {
+    "donors": [
+      {
+        "url": "https://github.com/superxslam/TartanIMU",
+        "allowed": true,
+        "type": "Apache-2.0-official-reference-model",
+        "contribution": "Official CVPR 2025 TartanIMU implementation, challenge starter kit, metric and released unified baseline."
+      },
+      {
+        "url": "https://huggingface.co/Tartan-IMU/TartanIMU",
+        "allowed": true,
+        "type": "official-released-model-artifact",
+        "contribution": "Public unified model configuration and pretrained weights for legal adaptation and benchmarking."
+      }
+    ],
+    "mutable_axes": [
+      "shared-backbone architecture, temporal windowing and platform-conditioned internal routing",
+      "training mixture, augmentation, loss weighting, fine-tuning and ensembling within the one-shared-model rule"
+    ],
+    "weakness_hypothesis": "The official baseline is about 0.637 while the current public leader is 0.30543, proving large algorithmic headroom remains. The benchmark macro-averages four very different platforms, so MOME can preserve specialists for platform regimes while selecting a single legal shared-weight model that improves the weakest-platform frontier.",
+    "gap_evidence_urls": [
+      "https://www.kaggle.com/competitions/tartan-imu-challenge-iros2026/leaderboard",
+      "https://github.com/superxslam/TartanIMU",
+      "https://superodometry.com/imuchallenge/"
+    ],
+    "canary": {
+      "runtime_minutes": 180,
+      "cost_usd": 20,
+      "status": "NOT_RUN",
+      "promotion_rule": "PROMOTE only if the released baseline reproduces and a bounded adaptation improves held-out/public proxy score by >=5% relative without platform-specific separate models; otherwise kill before multi-day training."
+    },
+    "full_run": {
+      "runtime_minutes": 4320,
+      "cost_usd": 150
+    }
+  },
+  "execution": {
+    "frontier_required": false,
+    "provider_live": false,
+    "provider_class": "not_required",
+    "provider_route": "PyTorch-training-and-evaluation-MOME",
+    "no_weak_fallback": true,
+    "evaluator_frozen": true,
+    "local_reproduction_ready": false,
+    "external_auth_ready": false,
+    "carrier": "GPU worker + Kaggle/IROS evaluation"
+  },
+  "probability": {
+    "p_beat_incumbent": 0.12,
+    "p_public_proof_24h": 0.2,
+    "p_public_proof_7d": 0.42,
+    "confidence": 0.55,
+    "basis": "The current public #1 is 0.30543 versus 0.31908 for #2 and the official released baseline is about 0.637. The benchmark is highly buyer-legible and the public stack is reproducible, but beating a strong top result from an 87-team field within one week likely requires significant GPU training and careful generalization."
+  },
+  "budget": {
+    "max_spend_usd": 200,
+    "max_operator_minutes": 20,
+    "max_wallclock_hours": 168
+  },
+  "evidence": [
+    "https://www.kaggle.com/competitions/tartan-imu-challenge-iros2026/leaderboard",
+    "https://superodometry.com/imuchallenge/",
+    "https://github.com/superxslam/TartanIMU",
+    "https://www.upwork.com/freelance-jobs/apply/ToF-Sensor-Pipeline-Point-Cloud-Processing-Expert-IMU-Depth-Fusion_~022090447657507390446/"
+  ],
+  "notes": "Prestige/contract-conversion challenger. Official final submission, technical report and public model artifacts are due Sep 20, 2026. Lower immediate crown probability than MICRO/TrafficFlow because of the stronger incumbent and training cost."
+}
