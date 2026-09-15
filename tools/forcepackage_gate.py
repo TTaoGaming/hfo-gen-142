@@ -34,7 +34,7 @@ HUMAN_BOUNDARIES = {
 
 PACKAGE_KEYS = {
     "schema", "package_id", "mission_id", "root_actor_id", "domain", "domain_explicit",
-    "intent", "fitness", "deadline_utc", "max_runtime_minutes", "max_attempts",
+    "intent", "fitness", "verifier", "deadline_utc", "max_runtime_minutes", "max_attempts",
     "max_spend_usd", "effect_ceiling", "receipt_sink", "semantic_owner",
     "provider_policy", "human_boundaries", "control_plane", "tao_relay_required",
     "consumer_ack_required", "stop_conditions", "max_children", "max_concurrency",
@@ -129,6 +129,13 @@ def validate_package(package: Any, now: datetime | None = None) -> dict[str, Any
         refuse("FITNESS_REQUIRED")
     if fitness.get("external_verification_required") is not True:
         refuse("EXTERNAL_VERIFICATION_REQUIRED")
+    verifier = p.get("verifier")
+    if not isinstance(verifier, dict) or set(verifier) != {"id", "frozen"}:
+        refuse("VERIFIER_POLICY_FIELDS_REFUSED")
+    if not isinstance(verifier.get("id"), str) or not verifier["id"].strip():
+        refuse("VERIFIER_REQUIRED")
+    if verifier.get("frozen") is not True:
+        refuse("VERIFIER_NOT_FROZEN")
 
     now = now or datetime.now(timezone.utc)
     if parse_utc(p.get("deadline_utc")) <= now:
@@ -297,7 +304,19 @@ def compile_actor_intents(package: dict[str, Any]) -> dict[str, Any]:
                 "formation_id": f["formation_id"],
                 "ordinal": ordinal,
                 "archetype": f["archetype"],
+                "package_intent": normalized["intent"],
                 "intent": f["intent"],
+                "domain": normalized["domain"],
+                "domain_explicit": normalized["domain_explicit"],
+                "fitness": normalized["fitness"],
+                "verifier": normalized["verifier"],
+                "deadline_utc": normalized["deadline_utc"],
+                "max_runtime_minutes": normalized["max_runtime_minutes"],
+                "provider_policy": normalized["provider_policy"],
+                "human_boundaries": normalized["human_boundaries"],
+                "stop_conditions": normalized["stop_conditions"],
+                "consumer_ack_required": normalized["consumer_ack_required"],
+                "promotion": {"requested": False},
                 "required_skill": f["required_skill"],
                 "verifier_actor_ids": verifier_actor_ids,
                 "max_attempts": f["max_attempts_each"],
@@ -324,6 +343,15 @@ def compile_actor_intents(package: dict[str, Any]) -> dict[str, Any]:
         "actor_intents_sha256": sha256(intents),
         "child_count": len(intents),
         "max_concurrency": normalized["max_concurrency"],
+        "package_constraints": {
+            "deadline_utc": normalized["deadline_utc"],
+            "max_runtime_minutes": normalized["max_runtime_minutes"],
+            "max_attempts": normalized["max_attempts"],
+            "max_spend_usd": normalized["max_spend_usd"],
+            "effect_ceiling": normalized["effect_ceiling"],
+            "stop_conditions": normalized["stop_conditions"],
+            "human_boundaries": normalized["human_boundaries"],
+        },
         "semantic_owner": normalized["semantic_owner"],
         "receipt_sink": normalized["receipt_sink"],
         "verifier_independence_status": "REQUIRES_DOWNSTREAM_CAPABILITY_BINDING",
