@@ -1,5 +1,7 @@
 import contextlib
 import io
+import json
+import tempfile
 import sys
 import unittest
 from pathlib import Path
@@ -9,6 +11,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 import terminal_handoff_gate as gate
 import workcell_runtime_v1 as runtime
+import select_research_workitem as selector
 
 
 class WorkCellRuntimeTest(unittest.TestCase):
@@ -67,6 +70,38 @@ class WorkCellRuntimeTest(unittest.TestCase):
     def test_unknown_worker_schema_fails_closed(self):
         with self.assertRaises(RuntimeError):
             runtime.worker_for({"schema": "hfo.unknown.v9"})
+
+    def test_quarantined_high_priority_work_is_skipped_without_retirement(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            high = {"schema": selector.SCHEMA, "work_id": "HIGH", "priority": 99, "admitted": True}
+            low = {"schema": selector.SCHEMA, "work_id": "LOW", "priority": 1, "admitted": True}
+            (root / "high.json").write_text(json.dumps(high), encoding="utf-8")
+            (root / "low.json").write_text(json.dumps(low), encoding="utf-8")
+            first = selector.select_work(root, "")
+            self.assertEqual(first["selected_work"]["work_id"], "HIGH")
+            q = first["selected_work"]["quarantine_marker"]
+            second = selector.select_work(root, q)
+            self.assertEqual(second["selected_work"]["work_id"], "LOW")
+            self.assertEqual(second["retired"], 0)
+            self.assertEqual(second["quarantined"], 1)
+
+    def test_failure_budget_defaults_and_rejects_bad_values(self):
+        self.assertEqual(runtime.max_attempts_for({}), runtime.DEFAULT_MAX_ATTEMPTS)
+        self.assertEqual(runtime.max_attempts_for({"max_attempts": 2}), 2)
+        for value in (0, -1, 21, True, "3"):
+            with self.assertRaises(RuntimeError):
+                runtime.max_attempts_for({"max_attempts": value})
+
+    def test_failure_count_is_spec_scoped(self):
+        selected = {"work_id": "W", "spec_sha256": "a" * 64}
+        prefix = runtime.failure_prefix(selected)
+        rows = [
+            {"body": prefix + "f1 -->"},
+            {"body": prefix + "f2 -->"},
+            {"body": "<!-- hfo-workcell-failure-v1:W:" + "b" * 64 + ":other -->"},
+        ]
+        self.assertEqual(runtime.failure_count(rows, selected), 2)
 
 
 if __name__ == "__main__":
