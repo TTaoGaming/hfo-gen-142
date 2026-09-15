@@ -1,7 +1,8 @@
 import { Agent, getAgentByName, type FiberRecoveryContext } from "agents";
 import { createQuickActionTools } from "agents/browser/ai";
 import { createWorkersAI } from "workers-ai-provider";
-import { generateText, stepCountIs } from "ai";
+import { generateText, Output, stepCountIs } from "ai";
+import { z } from "zod";
 import { parseFalsifier, parseProposer, reduceDebate } from "./result-policy";
 import { carrierUuidFromDigest, isExplicitProviderThrottle, isRepeatedFailurePressure, selectHatchCandidate } from "./hatch-policy";
 
@@ -10,7 +11,7 @@ const PARENT_ACTOR = "SIGRUN/C2";
 const RADIX = [4, 4] as const;
 const SEAT_ROLE = "THUNDER_DISRUPT";
 const ROACH_UUID = "0771446a-3b95-45ea-baa4-5140c3e1510b";
-const DEBATE_VERSION = "twinling-deterministic-reducer-v2";
+const DEBATE_VERSION = "twinling-structured-output-v3";
 const MODEL = "@cf/moonshotai/kimi-k2.7-code";
 const ISSUE_API = "https://api.github.com/repos/TTaoGaming/hfo-gen-142/issues/13";
 const LANES = ["CROWN", "DONOR", "BENCHMARK", "REDUCER"] as const;
@@ -22,6 +23,27 @@ const HATCH_SLOTS = [
   { name: "SIGRUN-GEN142-LARVA-REDUCER", seedLane: "REDUCER" as Lane },
 ] as const;
 const HATCH_BACKPRESSURE_MINUTES = 30;
+
+const proposerSchema = z.object({
+  role: z.literal("PROPOSER"),
+  lane: z.enum(LANES),
+  claims: z.array(z.string().max(4000)).max(32),
+  evidence_urls: z.array(z.string().max(4000)).max(32),
+  candidate_survivors: z.array(z.string().max(4000)).max(3),
+  uncertainty: z.string().max(8000),
+}).strict();
+
+const falsifierSchema = z.object({
+  role: z.literal("FALSIFIER"),
+  lane: z.enum(LANES),
+  kills: z.array(z.string().max(4000)).max(3),
+  surviving_candidates: z.array(z.string().max(4000)).max(3),
+  strongest_falsifier: z.string().max(8000),
+  blocker: z.string().max(8000),
+  next_executable_assay: z.string().max(8000),
+  evidence_urls: z.array(z.string().max(4000)).max(32),
+  uncertainty: z.string().max(8000),
+}).strict();
 const HATCH_CADENCE_MINUTES = 5;
 type Phase = "IDLE" | "COGNITION_RUNNING" | "READY" | "RECOVERY_REQUIRED" | "FAILED";
 
@@ -197,7 +219,12 @@ export class Gen142Scout extends Agent<any, ScoutState> {
       async (ctx) => {
         ctx.stash({ runId, carrierUuid, actorId: ACTOR_ID, lane, debateVersion: DEBATE_VERSION });
         const workersai = createWorkersAI({ binding: this.env.AI });
-        const runDebater = async (role: "PROPOSER" | "FALSIFIER", system: string, extra: Record<string, unknown> = {}) => {
+        const runDebater = async <T>(
+          role: "PROPOSER" | "FALSIFIER",
+          system: string,
+          schema: z.ZodType<T>,
+          extra: Record<string, unknown> = {},
+        ) => {
           const browserTools = createQuickActionTools({
             browser: this.env.BROWSER,
             actions: ["markdown", "links", "scrape", "extract"],
@@ -215,13 +242,16 @@ export class Gen142Scout extends Agent<any, ScoutState> {
                   : lane === "BENCHMARK"
                     ? "Verify incumbent/rules/submission/publication surfaces and design the smallest frozen canary."
                     : "Reduce newest swarm evidence; identify the highest-value next machine-owned edge and any architecture leak.",
-            }).slice(0, 24000),            tools: browserTools,
+            }).slice(0, 24000),
+            tools: browserTools,
             stopWhen: stepCountIs(6),
             maxOutputTokens: 1600,
+            output: Output.object({ schema }),
           });
+          if (!r.output) throw new Error(`${role}_STRUCTURED_OUTPUT_MISSING`);
           return {
             role,
-            text: r.text.trim().slice(0, 7000),
+            output: r.output,
             steps: r.steps.map((step, index) => ({
               index,
               text: step.text?.slice(0, 1800) ?? "",
@@ -232,14 +262,14 @@ export class Gen142Scout extends Agent<any, ScoutState> {
 
         try {
           // Two model calls only: proposal, then adversarial falsification. Control reduction is deterministic.
-          const proposer = await runDebater("PROPOSER", PROPOSER_SYSTEM);
-          const proposerTrace = parseProposer(proposer.text, lane);
-          const falsifier = await runDebater("FALSIFIER", FALSIFIER_SYSTEM, {
+          const proposer = await runDebater("PROPOSER", PROPOSER_SYSTEM, proposerSchema);
+          const proposerTrace = parseProposer(JSON.stringify(proposer.output), lane);
+          const falsifier = await runDebater("FALSIFIER", FALSIFIER_SYSTEM, falsifierSchema, {
             proposer_candidate_survivors: proposerTrace.candidate_survivors,
             proposer_claims: proposerTrace.claims,
             proposer_evidence_urls: proposerTrace.evidence_urls,
           });
-          const falsifierTrace = parseFalsifier(falsifier.text, lane, proposerTrace.candidate_survivors);
+          const falsifierTrace = parseFalsifier(JSON.stringify(falsifier.output), lane, proposerTrace.candidate_survivors);
           const debateSha = await sha256(JSON.stringify({ lane, proposer, falsifier }));
           const text = JSON.stringify(reduceDebate(proposerTrace, falsifierTrace, new Date().toISOString()));
           parseStrictResult(text, lane);
