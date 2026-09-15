@@ -3,6 +3,7 @@
   "batch_id": "BATCH-B91706CC-20260915",
   "parent_uuid": "b91706cc-6b96-4b63-aaff-a8a548b83080",
   "created_utc": "2026-09-15T22:52:00Z",
+  "updated_utc": "2026-09-15T23:06:00Z",
   "authority": "PUBLIC_RECOVERY_ONLY",
   "success_semantics": "VERIFIED_RECEIPT_NOT_NARRATIVE",
   "tao_hot_loop_actions_target": 0,
@@ -67,11 +68,34 @@
     },
     {
       "work_id": "B917-PACKOMANIA-READBACK",
-      "state": "READY_READ_ONLY",
+      "state": "PARTIAL_SEND_READY",
       "owner_class": "OTHER_VIRTUAL_ACTOR",
-      "objective": "Re-read live keeper/incumbent state and re-hash existing N120/N122/N124 packet; report SEND_READY or STALE without sending externally.",
-      "release_now": true,
-      "effect_ceiling": "READ_ONLY_EXTERNAL"
+      "objective": "Fresh live csqv keeper readback at Packomania, then compare existing independently verified N120/N122/N124 candidates without external send.",
+      "release_now": false,
+      "effect_ceiling": "READ_ONLY_EXTERNAL",
+      "evidence": {
+        "keeper_url": "https://www.packomania.com/csqv/csqv.html",
+        "keeper_last_update": "15-Sep-2026",
+        "N120": {
+          "candidate": 5.774284831303826,
+          "live_incumbent": 5.774582323763,
+          "delta": -0.00029749245917454203,
+          "verdict": "STALE_LOST"
+        },
+        "N122": {
+          "candidate": 5.824271021819502,
+          "live_incumbent": 5.822533741922,
+          "delta": 0.001737279897501054,
+          "verdict": "SEND_READY_IF_REHASH_PASS"
+        },
+        "N124": {
+          "candidate": 5.874676173594687,
+          "live_incumbent": 5.874500201027,
+          "delta": 0.0001759725676873103,
+          "verdict": "SEND_READY_IF_REHASH_PASS"
+        }
+      },
+      "next": "Drop N120 from any outbound packet. Rehash N122/N124 attachments immediately before authorized keeper send; re-read keeper again at send time because the table is moving."
     }
   ],
   "tao_batch": [
@@ -92,7 +116,7 @@
     },
     {
       "boundary": "FIRST_IRREVERSIBLE_SUBMIT",
-      "action": "Approve first Frontier/keeper external submission after independent verifier packet is green.",
+      "action": "Approve first Frontier/keeper external submission after independent verifier packet is green. For Packomania, current fresh packet should contain N122/N124 only after rehash; N120 is stale.",
       "when": "champion only"
     }
   ]
