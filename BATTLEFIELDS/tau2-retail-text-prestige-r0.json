@@ -1,0 +1,82 @@
+{
+  "schema_version": "battlefield.v1",
+  "battlefield_id": "tau2-retail-text-prestige-r0",
+  "observed_at_utc": "2026-09-14T20:12:00Z",
+  "mission_class": "prestige_crown",
+  "stage": "canary",
+  "domain": "production AI agent reliability and tool use",
+  "target": {
+    "board": "tau2-bench",
+    "track": "retail / text / accepted standard-or-custom submissions",
+    "metric": "Pass^1",
+    "direction": "maximize",
+    "incumbent_name": "Claude-Sonnet-4.5",
+    "incumbent_score": 86.2,
+    "incumbent_checked_at_utc": "2026-09-14T20:10:00Z",
+    "incumbent_url": "https://github.com/sierra-research/tau2-bench/blob/main/web/leaderboard/public/submissions/claude-sonnet-4-5_anthropic_2025-10-02/submission.json",
+    "rules_url": "https://github.com/sierra-research/tau2-bench/blob/main/docs/leaderboard-submission.md",
+    "submission_url": "https://github.com/sierra-research/tau2-bench/pulls",
+    "open_to_user": true,
+    "public_proof_before_merge": true,
+    "proof_latency_hours": 1
+  },
+  "prestige": {
+    "tier": "A",
+    "institution_or_platform": "Sierra Research tau2-bench",
+    "independent_verifier": true,
+    "verifier_url": "https://github.com/sierra-research/tau2-bench/blob/main/docs/leaderboard-submission.md",
+    "public_attribution": true,
+    "durable_public_evidence": true,
+    "real_incumbent_competition": true,
+    "competitor_count": 27,
+    "accepted_submission_protocol": true,
+    "buyer_legibility": 0.9
+  },
+  "commercial": {
+    "buyer_personas": ["CTO or engineering lead operating production AI agents", "AI automation consultancy buyer with reliability failures"],
+    "offer": "Production agent reliability hardening: durable state, tool-call recovery, retries, verification, and benchmark-backed regression gates.",
+    "demand_evidence_urls": ["https://www.upwork.com/freelance-jobs/apply/Fix-Critical-Production-Issues-Multi-Agent-Platform-LangGraph-LangChain-FastAPI_~022095604663000131339/"],
+    "p_paid_conversation_7d": 0.25,
+    "expected_cash_30d": 500,
+    "expected_cash_90d": 2500,
+    "case_study_claim": "Built and evolved an agent harness under the official tau2-bench protocol, with public trajectories and independent scoring against a competitive retail leaderboard."
+  },
+  "evolution": {
+    "donors": [
+      {"url": "https://github.com/NVlabs/ToolOrchestra", "allowed": true, "type": "public orchestration framework", "contribution": "expert/tool routing and efficiency-oriented orchestration genes"},
+      {"url": "https://github.com/neosigmaai/auto-harness", "allowed": true, "type": "public self-improving harness", "contribution": "failure mining, harness optimization, regression gating and iterative mutation loop"}
+    ],
+    "mutable_axes": ["agent system prompt/policy", "tool-use policy", "routing/orchestration", "memory/context strategy", "retry/verification policy", "provider/model selection"],
+    "weakness_hypothesis": "The public retail lead is only 0.9 points above Gemini 3.0 Pro, while a fresh Gemini 3.1 Pro official-harness sample scored 14/14; public orchestration donors expose underexplored harness and routing axes that may close the remaining gap without benchmark leakage.",
+    "gap_evidence_urls": ["https://github.com/sierra-research/tau2-bench/tree/main/web/leaderboard/public/submissions", "https://github.com/NVlabs/ToolOrchestra", "https://github.com/neosigmaai/auto-harness"],
+    "canary": {"runtime_minutes": 15, "cost_usd": 1.65, "status": "PASS", "promotion_rule": "Promote to ATTACK only after the official GPT-4.1 NL evaluator route is legitimately available and a mixed NL/non-NL sample closes with zero infrastructure errors and >=0.90 Pass^1."},
+    "full_run": {"runtime_minutes": 240, "cost_usd": 85}
+  },
+  "execution": {
+    "frontier_required": true,
+    "provider_live": true,
+    "provider_class": "frontier_cloud_binding",
+    "provider_route": "Vertex ADC -> Gemini 3.1 Pro Preview",
+    "no_weak_fallback": true,
+    "evaluator_frozen": true,
+    "local_reproduction_ready": true,
+    "external_auth_ready": false,
+    "carrier": "Lenovo isolated tau2 checkout; Cloudflare/VPS carriers are separate autonomy lanes"
+  },
+  "probability": {
+    "p_beat_incumbent": 0.25,
+    "p_public_proof_24h": 0.08,
+    "p_public_proof_7d": 0.35,
+    "confidence": 0.35,
+    "basis": "Fresh official-harness evidence is 14/14 on a bounded retail sample and the public gap to the 86.2 incumbent is small, but 40 of 114 tasks require the official GPT-4.1 NL evaluator route that is not yet admitted here; full-domain variance and publication review remain unresolved."
+  },
+  "budget": {"max_spend_usd": 150, "max_operator_minutes": 30, "max_wallclock_hours": 8},
+  "evidence": [
+    "https://github.com/sierra-research/tau2-bench/blob/main/docs/leaderboard-submission.md",
+    "https://github.com/sierra-research/tau2-bench/tree/main/web/leaderboard/public/submissions",
+    "https://github.com/NVlabs/ToolOrchestra",
+    "https://github.com/neosigmaai/auto-harness",
+    "https://www.upwork.com/freelance-jobs/apply/Fix-Critical-Production-Issues-Multi-Agent-Platform-LangGraph-LangChain-FastAPI_~022095604663000131339/"
+  ],
+  "notes": "Canary evidence is bounded and not leaderboard evidence. No crown claim. Full ATTACK is blocked on legitimate official NL-evaluator access; evaluator substitution is forbidden."
+}
