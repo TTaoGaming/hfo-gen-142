@@ -1,0 +1,69 @@
+{
+  "schema": "hfo.crown-evo.v1",
+  "carrier_uuid": "a962ab56-2fb0-492e-a63c-462c9a1cfae3",
+  "batch_uuid": "comma-evo-20260915T070000Z-a962ab56",
+  "battlefield": "comma-video-compression-20260915",
+  "producer": {
+    "host": "OVH VPS - x86_64",
+    "role": "producer",
+    "tao_hot_loop_actions": 0,
+    "manual_gather_actions": 0
+  },
+  "authority": {
+    "external_submission_performed": false,
+    "account_or_terms_action_performed": false,
+    "incremental_spend_usd": 0,
+    "new_control_plane": false
+  },
+  "lineage": {
+    "incumbent_pr": "commaai/comma_video_compression_challenge#135",
+    "incumbent_archive_bytes": 186724,
+    "incumbent_archive_sha256": "12cf5d71a94065184f097c3e40dfe9f1db8402a1a76a80efc76a6956fe1e4004",
+    "incumbent_exact_score": "0.16226842169958583",
+    "incumbent_head": "codexblack/comma_video_compression_challenge@6dcf77164ccbdcc1e0e41c99312e65ace4bc1fb4",
+    "experiment_donor": "codexblack/CommaVideoCompressionChallenge_ExperimentBook@f229b26735dffc53fdf1ac9987ac7c303298d028",
+    "frozen_metric": "100*SegNet + sqrt(10*PoseNet) + 25*archive_bytes/37545489; lower is better",
+    "frozen_semantic_state_sha256": "4e8d63a98dc7e42ccf17ee7d3fe15a44c8020a3c511838994c6039a673557bde",
+    "unchanged_residual_plus_rc64_sha256": "fd3e5617a130d194f65ce1540ed778bedc963ceebc0d5ca1ae64830b425bddb2"
+  },
+  "mutation_axes": [
+    "exact CAP1 metadata representation: Q8 factor int16 -> validated uint8",
+    "exact CAP1 metadata representation: signed bias int8 -> signed 6-bit",
+    "exact basis-length representation: uint16 -> unsigned 12-bit",
+    "exact Rice-k representation: byte -> 4-bit",
+    "raw-LZMA2 encoder parameters under the same decoded-state contract"
+  ],
+  "successive_halving": {
+    "segmented_rice_probe": {
+      "segments_tested": [1, 2, 4, 8],
+      "result": "KILL",
+      "reason": "segment-specific k savings did not repay charged k metadata; best non-parent was +3 raw carrier bytes"
+    },
+    "metadata_population": {
+      "evaluations": 15,
+      "result_before_lzma_refinement": "all 15 failed the published 186724-byte threshold under the local baseline compressor",
+      "best_pre_refinement_bytes": 186728,
+      "best_pre_refinement_raw_model_delta_bytes": -28,
+      "search_report_sha256": "e5b402a9bae500202dbcfc5daa8615426d3c11d0930aa6cd8ebba817bf0aab7d"
+    },
+    "lzma_population": {
+      "evaluations": 1080,
+      "winner": "normal/bt2/dict=1048576/lc=0/lp=1/pb=0/nice_len=32/depth=8",
+      "compressed_model_bytes": 71807,
+      "search_report_sha256": "95d81f275aa69fbf2b379e02ea3b209a7672b05e658e9ce142e131c508afb591"
+    }
+  },
+  "candidate": {
+    "archive_bytes": 186709,
+    "archive_delta_bytes_vs_published_incumbent": -15,
+    "archive_sha256": "8e5d806cb3da2e2e4bee2087844cbde1382d2e34ccd13e7c181dbc570c231e0f",
+    "candidate_model_sha256": "e480ca7cac3830087b2eea62289de12ebb7b87cc4484ede956d1d6ec5fc0082b",
+    "reconstructed_incumbent_model_sha256": "4e8d63a98dc7e42ccf17ee7d3fe15a44c8020a3c511838994c6039a673557bde",
+    "score_delta_from_rate_only": "-0.0000099878842968325702190215181376383192132615452151922",
+    "derived_exact_score_if_frozen_distortions_are_preserved": "0.16225843381528899742978097848186236168078673845478",
+    "public_crown_threshold_met_locally": true,
+    "status": "SUBMISSION_READY_INTERNAL"
+  },
+  "strongest_falsifier": "OVH/liblzma cannot byte-reproduce the published incumbent compressor stream (local rebuild is 186745 bytes), so absolute attribution to the incumbent compressor is invalid. The promoted candidate does not rely on that attribution: its own charged archive is 186709 bytes, and an independent ARM64 verifier rebuilt the identical candidate SHA and reconstructed the exact published F24S semantic/model state byte-for-byte.",
+  "next_machine_action": "Re-run the public reproducibility script from this packet in a clean environment and prepare the decoder integration patch against the frozen challenge submission tree. Do not submit externally; Tao retains the submission/PR authority boundary."
+}
