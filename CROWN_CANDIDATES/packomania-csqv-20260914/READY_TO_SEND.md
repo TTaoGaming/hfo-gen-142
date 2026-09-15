@@ -1,6 +1,12 @@
 # READY TO SEND — Packomania csqv candidates
 
-**External effect has not been performed.** Human review/send required.
+**Status: `HOLD_FOR_POSTEDIT_VERIFIER`. External effect has not been performed.** Human review/send required after a distinct verifier ConsumerAcks the R2 attachment hashes below.
+
+R2 packaging-only change: each `.pck` author line was normalized to the keeper-requested single author name `Tommy Tai`; coordinates/radii were not intentionally changed.
+
+Exact R2 attachment hashes:
+- `csqv120.pck`: `5921e2ca32b2da8c8f908caaeaa9decc6498fd51b5e98006c96b1fe0571fa63a`
+- `csqv122.pck`: `87af14334f54bb1c517e8e5d5cd36c38302f5b34bc0eca9a851641e59e73247f`
 
 Before sending, re-fetch `https://www.packomania.com/csqv/txt/sumradii.txt` and confirm:
 - N=120 incumbent remains below `5.7742848313038259`.
@@ -11,7 +17,7 @@ Attach:
 - `csqv122.pck`
 - optionally this repository URL / `README.md` verification packet
 
-Public keeper contact currently shown by Packomania: `eckard.specht@ovgu.de`.
+Public keeper contact shown by the current Packomania hints footer: `eckard.specht@physik.uni-magdeburg.de`.
 
 Suggested subject: `Candidate improvements for Packomania csqv N=120 and N=122`
 
@@ -19,15 +25,15 @@ Draft body:
 
 Dear Dr. Specht,
 
-I have two candidate improvements for the Packomania csqv table, generated in an HFO Gen142 research run using the open-source Discovery Loop solver by Wes Sander. N=120 has Σr=5.7742848313038259 and N=122 has Σr=5.8242710218195016. Both attached `.pck` files were independently re-verified from their written coordinates with zero tolerance and an additional high-precision geometry check. The repository packet preserves solver/version provenance, live-record snapshot, hashes, and verification results.
+I have two candidate improvements for the Packomania csqv table, generated in an HFO Gen142 research run using the open-source Discovery Loop solver by Wes Sander. N=120 has Σr=5.7742848313038259 and N=122 has Σr=5.8242710218195016. The repository packet preserves solver/version provenance, live-record snapshot, exact attachment hashes, and verification results.
 
 The final submission coordinates include a tiny safety shrink (~1e-10 per radius), leaving positive wall/pairwise slack while remaining clearly above the current published values. A bounded neighborhood breaker also found no local improvement in 400 attempts for N=120 and 395 attempts for N=122.
 
-If they check out independently, I would be grateful if you would consider them for the table. For attribution, please credit Tommy Tai / HFO Gen142, with the solver provenance noted as Discovery Loop by Wes Sander.
+If they check out independently, I would be grateful if you would consider them for the table. For attribution, please credit Tommy Tai; the repository documents HFO Gen142 and the Discovery Loop solver provenance by Wes Sander.
 
 Best regards,
 Tommy Tai
 
 ## Human action boundary
 
-Sending this email/attachment is the only action required to cross from `CANDIDATE_RECORD` to third-party review. Do not claim `WORLD_RECORD` or `PACKOMANIA_ACCEPTED` until the keeper independently accepts/lists the construction.
+Do **not** send until a distinct post-edit verifier has re-fetched the exact R2 bytes, recomputed the hashes/geometry, refreshed the live keeper values, and ConsumerAcked those hashes. Sending the email/attachments is the explicit human authority boundary. Do not claim `WORLD_RECORD` or `PACKOMANIA_ACCEPTED` until the keeper independently accepts/lists the construction.
