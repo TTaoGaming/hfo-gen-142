@@ -33,15 +33,14 @@ def ensure_ortools():
 
 def verify(instance: dict, schedule: list[dict], target: int) -> tuple[bool, str]:
     by_op = {row["operation"]: row for row in schedule}
-    if len(by_op) != len({r["operation"] for r in instance["operations"]}):
+    op_ids = {r["operation"] for r in instance["operations"]}
+    if set(by_op) != op_ids:
         return False, "OPERATION_COVERAGE"
-    choices = defaultdict(set)
-    durations = {}
+    allowed = defaultdict(set)
     for r in instance["operations"]:
-        choices[r["operation"]].add(r["machine"])
-        durations[r["operation"]] = r["duration"]
+        allowed[r["operation"]].add((r["machine"], r["duration"]))
     for op, r in by_op.items():
-        if r["machine"] not in choices[op] or r["duration"] != durations[op]:
+        if (r["machine"], r["duration"]) not in allowed[op]:
             return False, f"MACHINE_OR_DURATION:{op}"
         if r["end"] - r["start"] != r["duration"] or r["start"] < 0 or r["end"] > target:
             return False, f"TIME_DOMAIN:{op}"
@@ -81,18 +80,15 @@ def main() -> int:
     model = cp_model.CpModel()
     start, end, choice, by_machine = {}, {}, {}, defaultdict(list)
     for op in sorted(ops):
-        dur = ops[op][0][1]
         s = model.new_int_var(0, target, f"s{op}")
         e = model.new_int_var(0, target, f"e{op}")
-        model.add(e == s + dur)
         start[op], end[op] = s, e
         lits = []
-        for idx, (machine, p) in enumerate(ops[op]):
-            if p != dur:
-                raise RuntimeError(f"DURATION_VARIANT_UNSUPPORTED:{op}")
+        for idx, (machine, duration) in enumerate(ops[op]):
             lit = model.new_bool_var(f"x{op}_{idx}_m{machine}")
-            by_machine[machine].append(model.new_optional_interval_var(s, dur, e, lit, f"i{op}_{idx}"))
-            choice[op, idx] = (lit, machine)
+            interval = model.new_optional_interval_var(s, duration, e, lit, f"i{op}_{idx}_m{machine}_d{duration}")
+            by_machine[machine].append(interval)
+            choice[op, idx] = (lit, machine, duration)
             lits.append(lit)
         model.add_exactly_one(lits)
     for intervals in by_machine.values():
@@ -106,6 +102,7 @@ def main() -> int:
     solver.parameters.max_time_in_seconds = limit
     solver.parameters.num_search_workers = max(2, int(task.get("workers", 2)))
     solver.parameters.random_seed = seed
+    solver.parameters.randomize_search = True
     solver.parameters.use_lns = True
     t0 = time.time()
     status = solver.solve(model)
@@ -116,8 +113,11 @@ def main() -> int:
     verify_reason = "NO_SOLUTION"
     if status in (cp_model.FEASIBLE, cp_model.OPTIMAL):
         for op in sorted(ops):
-            machine = next(m for idx in range(len(ops[op])) for lit, m in [choice[op, idx]] if solver.value(lit))
-            schedule.append({"operation": op, "machine": machine, "start": solver.value(start[op]), "end": solver.value(end[op]), "duration": ops[op][0][1]})
+            selected = [(machine, duration) for idx in range(len(ops[op])) for lit, machine, duration in [choice[op, idx]] if solver.value(lit)]
+            if len(selected) != 1:
+                raise RuntimeError(f"CHOICE_CARDINALITY:{op}:{selected}")
+            machine, duration = selected[0]
+            schedule.append({"operation": op, "machine": machine, "start": solver.value(start[op]), "end": solver.value(end[op]), "duration": duration})
         verified, verify_reason = verify(instance, schedule, target)
         (outdir / "schedule.json").write_text(json.dumps(schedule, sort_keys=True, indent=2), encoding="utf-8")
     evidence = {
