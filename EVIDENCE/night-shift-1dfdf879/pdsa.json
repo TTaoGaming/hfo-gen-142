@@ -1,0 +1,164 @@
+{
+  "canary": {
+    "cost_usd": 0,
+    "delta_vs_incumbent": 170,
+    "fingerprint": "jsplib-ta32js|ortools-9.15.6755|seed-1701|60s|8workers|oracle-arm64|scheduleopt-validator",
+    "hashes": {
+      "adapted_instance": "3be66ae97491c5ee828e6477e2f6e508ecba36dba03024f26f1f9977b751bd80",
+      "canary_log": "4244e5de78de6f30005b737d2cb4fc6d3f63f6e84f52883c1af019dac35d4757",
+      "results_json": "f65be0f7621c8ffcd54490010529e4472b054ce59ff2b25e49182ee9f834e871",
+      "solutions_json": "66a09ea658d7aed5ebdce5c81692661021db2e98ed823b3ee9a600fe359031c1"
+    },
+    "incumbent_upper_bound": 1783,
+    "input_adapter": "current ScheduleOpt ta32js JSON operations -> {data: operations}; required because current reference CP-SAT script expects legacy data key",
+    "lower_bound": 1774,
+    "max_time_seconds": 60,
+    "one_solver_execution": true,
+    "promotion_rule": "PASS iff frozen ScheduleOpt validator accepts makespan <=1782",
+    "relative_worse_fraction": 0.095344924,
+    "result": "FAIL",
+    "seed": 1701,
+    "solver": "OR-Tools CP-SAT 9.15.6755",
+    "successive_halving": "KILL_NO_EXPANSION",
+    "validated_upper_bound": 1953,
+    "wall_seconds": 61,
+    "workers": 8
+  },
+  "canonical": {
+    "issue": "https://github.com/TTaoGaming/hfo-gen-142/issues/13",
+    "main_branch_api_protected": false,
+    "main_sha": "a4e59326eb3435853b935b6af4521d956ee4a4e5",
+    "note": "Prompt assumed protected main; fresh GitHub API readback reports protected=false and no repository rulesets. This carrier did not mutate main.",
+    "repo_rulesets_count": 0
+  },
+  "carrier_uuid": "1dfdf879-47fa-45a4-bbac-e4c6abb15603",
+  "deterministic_reduce": {
+    "gate": "tools/battlefield_gate.py",
+    "pre_canary_gate_verdict": "ADMIT_CANARY",
+    "pre_canary_routing_score": 0.027398,
+    "pre_filter": "hard no-external-effect/local-reproduction/repeat-fingerprint filter above",
+    "primary": "jsplib-ta32js-20260915",
+    "reducer": "tools/battlefield_reduce.py",
+    "survivor_count": 1
+  },
+  "donor_genes": [
+    "ScheduleOpt CP-SAT reference harness + independent schedule validator",
+    "ScheduleOpt OptalCP reference benchmark/harness patterns",
+    "Coupvent des Graviers et al. JSSP bound-improvement solver-portfolio methodology (arXiv:2504.16106)"
+  ],
+  "gather_and_falsify": [
+    {
+      "battlefield_id": "micro2026-moa-npu-stage1",
+      "disposition": "HOLD_THIS_CARRIER",
+      "reason": [
+        "local_reproduction_ready=false",
+        "external_auth_ready=false",
+        "predeclared canary requires Furiosa Arena authentication; external login/registration/terms effects forbidden this run"
+      ]
+    },
+    {
+      "battlefield_id": "ieee-bigdata-traffic-flow-bench-2026",
+      "disposition": "HOLD_THIS_CARRIER",
+      "reason": [
+        "local_reproduction_ready=false",
+        "external_auth_ready=false",
+        "canary declares cost_usd=5; no spend/external Kaggle effect authorized"
+      ]
+    },
+    {
+      "battlefield_id": "tartanimu-iros2026",
+      "disposition": "HOLD_THIS_CARRIER",
+      "reason": [
+        "local_reproduction_ready=false",
+        "external_auth_ready=false",
+        "canary=180 minutes/$20 exceeds this carrier effect/time preference"
+      ]
+    },
+    {
+      "battlefield_id": "packomania-csqv-n70-20260915",
+      "disposition": "REJECT_REPEAT",
+      "reason": [
+        "previous NIGHT-SHIFT fingerprint already produced FAIL_NO_CANDIDATE",
+        "no strategy change supplied; repeated same fingerprint invalid"
+      ]
+    },
+    {
+      "battlefield_id": "jsplib-ta32js-20260915",
+      "disposition": "SURVIVE_CANARY_ENTRY",
+      "reason": [
+        "live BKS archive exposes open LB=1774/UB=1783 with certified incumbent UB",
+        "smallest absolute gap among 91 current open JSPLib entries in fresh replay",
+        "no external auth/spend required for a local official-shaped solver+validator canary",
+        "public benchmark + current OR/scheduling buyer demand"
+      ]
+    }
+  ],
+  "human_only_authority_boundary": "None now. If a future verified champion exists, any external login/registration/TOS/payment/public submission or upstream PR publication remains explicit human-authority/effect-gated work.",
+  "mutation_axes": [
+    "CP-SAT seed/restart/LNS/portfolio parameter policy",
+    "incumbent warm-start/neighborhood decomposition/schedule repair policy"
+  ],
+  "next_machine_owned_action": "Existing WorkCell SCHEDULED_RECONCILE consumes GEN142-PRESTIGE-SWEEP-008. This jsplib fingerprint is scarred FAIL and must not be retried unless strategy changes materially.",
+  "observed_at_utc": "2026-09-15T04:44:00Z",
+  "post_canary": {
+    "attack_successor": "NONE",
+    "battlefield_card_status": "FAIL",
+    "crown_ready": false,
+    "crown_won": false,
+    "post_gate_routing_score": 0.000996
+  },
+  "primary": {
+    "board": "ScheduleOpt JSPLib best-known-solutions archive",
+    "direction": "minimize",
+    "incumbent": 1783,
+    "incumbent_certificate": "yes",
+    "incumbent_date": "2026-06-22",
+    "incumbent_solver": "QXL2026",
+    "lower_bound": 1774,
+    "metric": "makespan",
+    "source": "https://scheduleopt.github.io/benchmarks/jsplib/",
+    "track": "Taillard ta32js"
+  },
+  "public_proof_path": "Only after a distinct strategy yields a frozen validated schedule <=1782: preserve certificate + exact solver/config, prepare an upstream ScheduleOpt evidence patch/public PR, and wait for independent review/archive update. No PR/submission performed in this carrier.",
+  "runtime_recovery": {
+    "native_scout": {
+      "actor": "SIGRUN-GEN142-SCOUT-R0",
+      "admitted_result": false,
+      "attempted_lane": "DONOR",
+      "epoch": 12,
+      "error": "EMPTY_SYNTHESIS",
+      "failure_fingerprint": "2223bdfdea23bc5358b6198ab0578a60ba4945d298176b8e9706171eb0c3a280",
+      "phase": "FAILED",
+      "same_failure_count": 1
+    },
+    "providers": [
+      {
+        "auth": "valid",
+        "name": "Oracle VPS - ARM64",
+        "status": "online",
+        "used_for_canary": true
+      },
+      {
+        "auth": "valid",
+        "name": "OVH VPS - x86_64",
+        "scar": "python venv/pip absent; sudo blocked by no-new-privileges",
+        "status": "online",
+        "used_for_canary": false
+      },
+      {
+        "name": "LenovoSlim7",
+        "status": "online",
+        "used_for_canary": false
+      }
+    ],
+    "workcell": {
+      "continuation": "SCHEDULED_RECONCILE",
+      "last_retired": "GEN142-QD-LEARN2DESIGN-018",
+      "next_workitem": "GEN142-PRESTIGE-SWEEP-008",
+      "result_sha256": "bc74261a490a878db11acd28eebfc388799c91ca90f5d59f52178a19e79b6879"
+    }
+  },
+  "schema_version": "night_shift_crown_pdsa.v1",
+  "strongest_falsifier": "The narrow 9-unit BKS gap did not translate into cheap attackability: a frozen 60s current CP-SAT canary validated at 1953, 170 makespan units / 9.53% worse than the 1783 incumbent. JSPLib itself also warns that isolated one-instance BKS wins have limited scientific value, so do not inflate this into general solver superiority.",
+  "tao_hot_loop_actions": 0
+}
