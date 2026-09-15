@@ -1,0 +1,116 @@
+{
+  "schema_version": "battlefield.v1",
+  "battlefield_id": "micro2026-moa-npu-stage1",
+  "observed_at_utc": "2026-09-15T00:28:16Z",
+  "mission_class": "prestige_crown",
+  "stage": "scout",
+  "domain": "accelerator-kernel-optimization",
+  "target": {
+    "board": "MICRO 2026 MOA NPU Model Optimization Competition",
+    "track": "Round 1 — Kernel Optimization",
+    "metric": "geometric mean of per-kernel speedup over baseline",
+    "direction": "maximize",
+    "incumbent_name": "vinxst",
+    "incumbent_score": 8.030379456800663,
+    "incumbent_checked_at_utc": "2026-09-15T00:28:16Z",
+    "incumbent_url": "https://micro2026-moa.github.io/leaderboard.html",
+    "rules_url": "https://github.com/micro2026-moa/furiosa-opt-gemma4-12B/blob/main/README.md",
+    "submission_url": "https://micro2026-moa.github.io/index.html",
+    "open_to_user": true,
+    "public_proof_before_merge": true,
+    "proof_latency_hours": 0.5
+  },
+  "prestige": {
+    "tier": "B",
+    "institution_or_platform": "MOA Workshop at MICRO 2026 (IEEE/ACM) + FuriosaAI",
+    "independent_verifier": true,
+    "verifier_url": "https://micro2026-moa.github.io/leaderboard.html",
+    "public_attribution": true,
+    "durable_public_evidence": true,
+    "real_incumbent_competition": true,
+    "competitor_count": 34,
+    "accepted_submission_protocol": true,
+    "buyer_legibility": 0.98
+  },
+  "commercial": {
+    "buyer_personas": [
+      "LLM inference infrastructure teams",
+      "GPU/accelerator optimization clients",
+      "AI platform engineering teams"
+    ],
+    "offer": "Inference performance sprint: profile accelerator/model-serving bottlenecks, optimize kernels or runtime paths, and deliver reproducible before/after latency, throughput and resource benchmarks.",
+    "demand_evidence_urls": [
+      "https://www.upwork.com/hire/ai-inference-optimization-engineers/",
+      "https://www.upwork.com/freelance-jobs/apply/Consultant_~022096993336990067629/"
+    ],
+    "p_paid_conversation_7d": 0.35,
+    "expected_cash_30d": 2000,
+    "expected_cash_90d": 8000,
+    "case_study_claim": "Current #1 on the official MICRO 2026 MOA public kernel-optimization leaderboard for Gemma 4 12B on Furiosa RNGD, if and only if the accepted-protocol public leaderboard actually shows Tao's team at rank 1."
+  },
+  "evolution": {
+    "donors": [
+      {
+        "url": "https://github.com/micro2026-moa/furiosa-opt-gemma4-12B",
+        "allowed": true,
+        "type": "official_competition_baseline",
+        "contribution": "Reference implementation, fixed interfaces, correctness tests, and legal mutation surface."
+      },
+      {
+        "url": "https://github.com/micro2026-moa/furiosa-opt-gemma4-12B/blob/main/OPTIMIZATION.md",
+        "allowed": true,
+        "type": "official_optimization_guide",
+        "contribution": "Schedule-dump, bottleneck-analysis, tuning and makespan workflow for legal kernel optimization."
+      }
+    ],
+    "mutable_axes": [
+      "per-kernel scheduling, mapping and tiling",
+      "fusion, memory movement and tensor-layout choices"
+    ],
+    "weakness_hypothesis": "The current #1 is not Pareto-best across the three independently scored kernels: live public results place the best observed QKV, attention and FFN cycle counts on different teams, so a MOME portfolio can evolve each legal kernel independently and combine Tao-owned champions into a stronger geometric-mean submission.",
+    "gap_evidence_urls": [
+      "https://micro2026-moa.github.io/leaderboard.html",
+      "https://micro2026-api.duckdns.org:7777/api/leaderboard"
+    ],
+    "canary": {
+      "runtime_minutes": 90,
+      "cost_usd": 0,
+      "status": "NOT_RUN",
+      "promotion_rule": "PROMOTE only after the official baseline builds and passes correctness, Arena authentication works, and at least one legal mutation improves its target kernel cycle count by >=1% without failing tolerance checks."
+    },
+    "full_run": {
+      "runtime_minutes": 2880,
+      "cost_usd": 50
+    }
+  },
+  "execution": {
+    "frontier_required": false,
+    "provider_live": false,
+    "provider_class": "not_required",
+    "provider_route": "versioned-code-mutations-plus-official-Furiosa-Arena-evaluator",
+    "no_weak_fallback": true,
+    "evaluator_frozen": true,
+    "local_reproduction_ready": false,
+    "external_auth_ready": false,
+    "carrier": "Lenovo WSL2 Ubuntu 24.04 + FuriosaAI Arena"
+  },
+  "probability": {
+    "p_beat_incumbent": 0.32,
+    "p_public_proof_24h": 0.2,
+    "p_public_proof_7d": 0.58,
+    "confidence": 0.65,
+    "basis": "The live official API shows rank 1 at 8.03038x and rank 2 at 7.88485x, only about a 1.85% score gap. The observed per-kernel frontier is split across multiple teams, which supports legal multi-objective headroom, but setup/auth and unfamiliar RNGD tooling remain real uncertainty."
+  },
+  "budget": {
+    "max_spend_usd": 100,
+    "max_operator_minutes": 20,
+    "max_wallclock_hours": 168
+  },
+  "evidence": [
+    "https://micro2026-moa.github.io/index.html",
+    "https://micro2026-moa.github.io/leaderboard.html",
+    "https://github.com/micro2026-moa/furiosa-opt-gemma4-12B",
+    "https://www.upwork.com/hire/ai-inference-optimization-engineers/"
+  ],
+  "notes": "Primary crown candidate. Registration closes Sep 15, 2026. Public leaderboard is explicitly reference-only until organizers re-run submissions for final ranking, so portfolio language must say 'current official public leaderboard #1' unless/until final official ranking is confirmed."
+}
