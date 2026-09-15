@@ -67,6 +67,16 @@ class ScoutFaninTests(unittest.TestCase):
         self.assertEqual(entries[0]["result"], value)
         self.assertEqual(entries[1]["same_failure_count"], 2)
 
+    def test_degraded_ready_becomes_typed_entry_not_batch_failure(self):
+        ready, _ = self.state()
+        ready["lastError"] = "EMPTY_SYNTHESIS_DEGRADED_TO_NO_CLAIM"
+        payload = {"ok": True, "slots": [{"name": "larva-donor", "seedLane": "DONOR", "state": ready}]}
+        entries = collect_hatchery_entries(payload)
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0]["phase"], "READY")
+        self.assertIn("SCOUT_ADMISSION_REFUSED:SCOUT_ERROR_PRESENT", entries[0]["error"])
+        self.assertTrue(entries[0]["failure_fingerprint"])
+
 
 if __name__ == "__main__":
     unittest.main()

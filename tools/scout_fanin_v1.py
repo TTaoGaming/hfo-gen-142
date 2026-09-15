@@ -146,8 +146,15 @@ def collect_hatchery_entries(payload: dict[str, Any]) -> list[dict[str, Any]]:
         phase = state.get("phase")
         base = {"slot": slot["name"], "seed_lane": slot.get("seedLane"), "phase": phase, "epoch": state.get("epoch")}
         if phase == "READY":
-            digest, value = validate_ready(state)
-            entries.append({**base, "result_sha256": digest, "lane": state.get("lastLane"), "result": value})
+            try:
+                digest, value = validate_ready(state)
+                entries.append({**base, "result_sha256": digest, "lane": state.get("lastLane"), "result": value})
+            except (ValueError, json.JSONDecodeError) as error:
+                # One degraded/invalid READY slot is typed as evidence; it must not jam the whole hatchery fan-in.
+                fingerprint = sha256(f"INVALID_READY|{slot['name']}|{error}")
+                entries.append({**base, "attempted_lane": state.get("lastAttemptLane"),
+                                "failure_fingerprint": fingerprint, "same_failure_count": state.get("sameFailureCount"),
+                                "error": f"SCOUT_ADMISSION_REFUSED:{error}"})
         elif phase in {"FAILED", "RECOVERY_REQUIRED"}:
             fingerprint = str(state.get("lastFailureFingerprint") or sha256(f"{phase}|{state.get('lastError')}"))
             entries.append({**base, "attempted_lane": state.get("lastAttemptLane"), "failure_fingerprint": fingerprint,
