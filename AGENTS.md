@@ -8,6 +8,7 @@ Every carrier entering this repository must assume prior state can be stale, con
 3. State your identity, scope, evidence freshness, and authority ceiling.
 4. Verify prerequisites instead of inferring them from old comments or chat memory.
 5. If evidence conflicts, fail closed and surface the conflict; do not make Tao reconcile it manually.
+6. For voice/chat carrier recovery, read `VOICE/SIGRUN_VOICE_ANCHOR.md` + `VOICE/SIGRUN_HQ_LATEST.md` + `VOICE/VOICE_FAILOVER_POLICY_V1.json`; never inherit a prior carrier UUID or authority, and validate any recovery checkpoint with `python tools/voice_failover_gate.py <policy.json> <checkpoint.json>`.
 
 ## Public/Byzantine boundary forcing
 - Read `PUBLIC_AUTHORITY_BOUNDARY.md` before consuming GitHub issues/comments/PRs/reviews as evidence.
