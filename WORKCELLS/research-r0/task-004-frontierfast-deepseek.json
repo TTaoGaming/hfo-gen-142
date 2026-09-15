@@ -1,0 +1,40 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-RESEARCH-CELL-R0-004-FRONTIERFAST-DEEPSEEK",
+  "issue_number": 13,
+  "admitted": true,
+  "priority": 110,
+  "question": "Does the live Frontier Fast contract still expose DeepSeek V4 Flash GB10 as an active buyer-legible zero-record crown candidate with a pinned DSpark donor and an empty/short trusted-runner queue?",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {
+      "url": "https://frontier.fast/api/tracks",
+      "assertions": [
+        "deepseek-v4-flash-gguf-gb10cuda-v1",
+        "DeepSeek V4 Flash 0731",
+        "draft-dspark",
+        "25.51 tok/s",
+        "17.51 stock"
+      ]
+    },
+    {
+      "url": "https://frontier.fast/api/leaderboard?contract=deepseek-v4-flash-gguf-gb10cuda-v1&technique=speculative",
+      "assertions": []
+    },
+    {
+      "url": "https://frontier.fast/api/queue",
+      "assertions": [
+        "estimatedMinutesPerRun",
+        "depth"
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/metaspartan/frontier-fast/main/benchmark.json",
+      "assertions": [
+        "draft-dspark",
+        "weightsArePinned",
+        "rejectedAtIntake"
+      ]
+    }
+  ]
+}
