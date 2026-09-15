@@ -14,16 +14,32 @@ Use only after recovering `TTaoGaming/hfo-gen-142#13` newest-first and `GATEWAY.
 - source/evidence scope
 - claim/effect ceiling
 - target cycle: 30 minutes
+- `mission_mode`: `EXPLORE_QD_MOME | PACKAGE_SUBMIT`
+- when `mission_mode=EXPLORE_QD_MOME`: current behavior descriptor / niche, or an explicit request to find an underfilled niche
+
+## Quality-diversity law
+
+`EXPLORE_QD_MOME` is not a global ranking tournament. A Twinling pair may attack one bounded question, but the population must preserve materially different niches and objective tradeoffs.
+
+- Describe the niche before work: domain, verifier/proof surface, proof-latency regime, compute regime, and materially distinct mutation/donor family.
+- Prefer underfilled niches. If another trusted carrier already owns materially identical work, morph to a different mutation axis, independent falsifier, legal donor family, or underfilled niche instead of duplicating it.
+- Never emit a global `primary` or kill a candidate merely because another niche has a higher scalar routing score while in exploration mode.
+- Within a niche, candidates may be `ADOPT | ADAPT | HOLD | KILL` against the frozen evaluator; across niches they coexist unless an explicit later `PACKAGE_SUBMIT` transition is admitted.
+- Novelty without external fitness is not enough. Preserve diversity **and** require verifier-grounded measurable fitness.
+- Archive state is evidence/projection, not a scheduler, queue, authority owner, or permission grant.
+- Reusable genes/skills enter heritage only after independent verifier + ConsumerAck; same-pair agreement is not independent admission.
 
 ## Procedure
 ### PLAN
-Declare one question, expected delta, strongest plausible falsifier, evidence needed, and kill/pass criterion. Claim one under-covered edge on #13 and read back the claim.
+Declare one question, expected delta, strongest plausible falsifier, evidence needed, and kill/pass criterion. Claim one under-covered edge on #13 and read back the claim. In `EXPLORE_QD_MOME`, also declare the intended niche/behavior descriptor and why this work adds diversity rather than duplicating a populated cell.
 
 ### DO
 Gather or attack evidence. Prefer immutable GitHub refs, sanitized Drive evidence pointers, current authoritative standards, and fresh runtime evidence where authorized. Maximum useful scope beats maximum document count.
 
 ### STUDY
 Separate observation from inference; stale from current; same-lineage repetition from independent corroboration; discovery from admission; admission from authority. Test the ablation: `what measurable failure returns if this rule/mechanism is removed?`
+
+In `EXPLORE_QD_MOME`, additionally study whether the candidate is dominated **inside its niche**, whether it expands an underfilled niche, and whether its mutation/donor path is materially independent of existing champions. Do not convert this into cross-niche scalar collapse.
 
 ### ACT
 Choose `ADOPT | ADAPT | HOLD | KILL`. Emit compact Strife/Splendor candidates and world-state delta. Materialize the next handoff before terminal; a prose `next_consumer` is not sufficient. Release/yield rather than becoming an immortal thread.
@@ -36,7 +52,10 @@ Before posting terminal, serialize the handoff as `hfo.terminal-handoff.v1` JSON
 carrier_episode_uuid:
 model_harness:
 role:
+mission_mode:
 lane_or_edge:
+qd_niche:
+archive_disposition: ADOPT | ADAPT | HOLD | KILL | NOT_APPLICABLE
 utc_start:
 utc_terminal:
 pdsa_plan:
