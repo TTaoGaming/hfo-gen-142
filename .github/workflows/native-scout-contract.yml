@@ -30,3 +30,4 @@ jobs:
           cache-dependency-path: cloudflare/gen142-native-scout-r0/package-lock.json
       - run: npm ci
       - run: npm run check
+      - run: npm run test:policy
