@@ -1,0 +1,28 @@
+diff --git a/common/arg.cpp b/common/arg.cpp
+index da408747..8a670bae 100644
+--- a/common/arg.cpp
++++ b/common/arg.cpp
+@@ -830,8 +830,23 @@ static bool common_params_parse_ex(int argc, char ** argv, common_params_context
+     // parse all CLI args now, so that -hf is available below for remote preset resolution
+     parse_cli_args();
+ 
++    // GB10's aarch64 CPU is hybrid and the default 20-thread generation
++    // pool pays a barrier after every CPU fallback matvec.  Keep the batch
++    // pool at the full math-core count for prefill, but cap only the default
++    // generation pool.  Explicit -t/-tb settings preserve upstream semantics.
++#if defined(__aarch64__) && defined(__linux__)
++    if (params.cpuparams.n_threads < 0 && params.cpuparams_batch.n_threads < 0) {
++        postprocess_cpu_params(params.cpuparams_batch, nullptr);
++        postprocess_cpu_params(params.cpuparams,       nullptr);
++        params.cpuparams.n_threads = std::min<int32_t>(params.cpuparams.n_threads, 7);
++    } else {
++        postprocess_cpu_params(params.cpuparams,       nullptr);
++        postprocess_cpu_params(params.cpuparams_batch, &params.cpuparams);
++    }
++#else
+     postprocess_cpu_params(params.cpuparams,       nullptr);
+     postprocess_cpu_params(params.cpuparams_batch, &params.cpuparams);
++#endif
+ 
+     postprocess_cpu_params(params.speculative.draft.cpuparams,       &params.cpuparams);
+     postprocess_cpu_params(params.speculative.draft.cpuparams_batch, &params.cpuparams_batch);
