@@ -31,7 +31,7 @@ class BattlefieldReduceTests(unittest.TestCase):
                 card["battlefield_id"] = f"bf-{idx}"
                 card["probability"]["p_beat_incumbent"] = pbeat
                 paths.append(write_card(td, f"bf-{idx}", card))
-            out = reducer.reduce(paths)
+            out = reducer.reduce(paths, phase="SEND")
             self.assertEqual(out["decision"], "SELECT")
             self.assertEqual(len(out["survivors"]), 3)
             self.assertEqual(out["primary"]["battlefield_id"], "bf-1")
@@ -40,17 +40,25 @@ class BattlefieldReduceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             good = helpers.base_card(); good["battlefield_id"] = "good"
             bad = helpers.base_card(); bad["battlefield_id"] = "bad"; bad["commercial"]["demand_evidence_urls"] = []
-            out = reducer.reduce([write_card(td, "good", good), write_card(td, "bad", bad)])
+            out = reducer.reduce([write_card(td, "good", good), write_card(td, "bad", bad)], phase="SEND")
             self.assertEqual([x["battlefield_id"] for x in out["survivors"]], ["good"])
             self.assertEqual(out["rejected"][0]["battlefield_id"], "bad")
 
     def test_all_killed_returns_none(self):
         with tempfile.TemporaryDirectory() as td:
             bad = helpers.base_card(); bad["battlefield_id"] = "bad"; bad["prestige"]["tier"] = "C"
-            out = reducer.reduce([write_card(td, "bad", bad)])
+            out = reducer.reduce([write_card(td, "bad", bad)], phase="SEND")
             self.assertEqual(out["decision"], "NONE")
             self.assertIsNone(out["primary"])
             self.assertEqual(out["survivors"], [])
+
+    def test_explore_phase_fails_closed_against_global_convergence(self):
+        with tempfile.TemporaryDirectory() as td:
+            card = helpers.base_card(); card["battlefield_id"] = "explore"
+            out = reducer.reduce([write_card(td, "explore", card)])
+            self.assertEqual(out["decision"], "HOLD")
+            self.assertEqual(out["verdict"], "GLOBAL_CONVERGENCE_FORBIDDEN_DURING_EXPLORE")
+            self.assertIsNone(out["primary"])
 
 
 if __name__ == "__main__":
