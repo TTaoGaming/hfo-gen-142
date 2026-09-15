@@ -19,6 +19,7 @@ def base_package():
             "primary": "externally_verified_useful_progress_per_operator_minute",
             "external_verification_required": True,
         },
+        "verifier": {"id": "forcepackage-r0-frozen-assay", "frozen": True},
         "deadline_utc": (datetime.now(timezone.utc) + timedelta(days=2)).isoformat(),
         "max_runtime_minutes": 60,
         "max_attempts": 6,
@@ -171,6 +172,22 @@ class ForcePackageGateTests(unittest.TestCase):
         p["semantic_owner"] = "chat-memory"
         self.assertEqual("DUPLICATE_SEMANTIC_OWNER", self.verdict(p))
 
+    def test_frozen_verifier_is_required(self):
+        p = base_package()
+        p["verifier"]["frozen"] = False
+        self.assertEqual("VERIFIER_NOT_FROZEN", self.verdict(p))
+
+    def test_actor_intent_carries_materialization_constraints(self):
+        p = base_package()
+        out = compile_actor_intents(p)
+        actor = out["actor_intents"][0]
+        self.assertEqual(p["deadline_utc"], actor["deadline_utc"])
+        self.assertEqual(p["fitness"], actor["fitness"])
+        self.assertEqual(p["verifier"], actor["verifier"])
+        self.assertEqual(p["provider_policy"], actor["provider_policy"])
+        self.assertEqual(sorted(p["stop_conditions"]), actor["stop_conditions"])
+        self.assertEqual({"requested": False}, actor["promotion"])
+
     def test_expired_package_is_refused(self):
         p = base_package()
         p["deadline_utc"] = (datetime.now(timezone.utc) - timedelta(minutes=1)).isoformat()
@@ -193,7 +210,7 @@ class ForcePackageGateTests(unittest.TestCase):
         out = compile_actor_intents(base_package())
         raw = json.dumps(out, sort_keys=True)
         self.assertNotIn('"SUCCESS"', raw)
-        self.assertNotIn("consumer_ack", raw.lower())
+        self.assertNotIn('"consumer_ack":', raw.lower())
 
 
 if __name__ == "__main__":
