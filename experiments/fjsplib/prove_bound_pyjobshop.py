@@ -18,6 +18,10 @@ def fetch(url: str):
     return json.loads(raw), hashlib.sha256(raw).hexdigest()
 
 
+def status_is_infeasible(status: str) -> bool:
+    return "INFEASIBLE" in status.upper()
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Independent PyJobShop formulation for FJSPLib bound falsification")
     ap.add_argument("--instance", required=True)
@@ -74,7 +78,7 @@ def main() -> None:
         "ortools_version": getattr(ortools, "__version__", "unknown"),
         "python": platform.python_version(),
     }
-    payload["proves_no_schedule_at_or_below_target"] = "Infeasible" in status
+    payload["proves_no_schedule_at_or_below_target"] = status_is_infeasible(status)
     Path(a.out).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(payload, sort_keys=True))
 
