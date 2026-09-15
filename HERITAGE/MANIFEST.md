@@ -13,6 +13,7 @@ Initial donor classes to recover and falsify:
 - Gen140 Cloudflare runtime assays — native runtime/model-path evidence — ADAPT candidate pending fresh probe.
 - Gen140 durable-actor/hatchery work — actor/carrier separation and survival scars — REFERENCE/ADAPT.
 - Gen140 evolution chamber work — COTS evolution and frozen evaluator separation — ADAPT candidate.
+- Public QD donor set — ShinkaEvolve `9912af12d423504b8d580f4179fd15f5f88b8c50` (Apache-2.0), GEPA `15ee314f9c7d34ec153b809d401f42f55c4dcd76` (MIT), pyribs `7bd723cf9863d480c8f2fec5ba9aa36f3b68c083` (MIT), MOME-PGX `58c34b7c145f942c31466ce06691a01cb0fb0032` (MIT) — ADAPT candidate; assimilate island separation/crowding, Pareto proposal selection, archive-emitter separation, novelty/local competition, and per-cell Pareto fronts without copying control authority.
 - Gen140 external-fitness campaign — competition selection and public-proof objective — REFERENCE/ADAPT pending refresh.
 - WorldWeaver projection — human/LLM entrypoint concept — REFERENCE pending runtime revalidation.
 - Sigrun lineage lifeboat — recovery ancestry — UNREVIEWED.
