@@ -11,7 +11,7 @@ const PARENT_ACTOR = "SIGRUN/C2";
 const RADIX = [4, 4] as const;
 const SEAT_ROLE = "THUNDER_DISRUPT";
 const ROACH_UUID = "0771446a-3b95-45ea-baa4-5140c3e1510b";
-const DEBATE_VERSION = "twinling-submit-tool-v4";
+const DEBATE_VERSION = "twinling-forced-submit-v5";
 const MODEL = "@cf/moonshotai/kimi-k2.7-code";
 const ISSUE_API = "https://api.github.com/repos/TTaoGaming/hfo-gen-142/issues/13";
 const LANES = ["CROWN", "DONOR", "BENCHMARK", "REDUCER"] as const;
@@ -252,7 +252,11 @@ You MUST finish by calling ${submitName} exactly once. Do not return the final p
                     : "Reduce newest swarm evidence; identify the highest-value next machine-owned edge and any architecture leak.",
             }).slice(0, 24000),
             tools,
-            stopWhen: [hasToolCall(submitName), stepCountIs(7)],
+            prepareStep: ({ stepNumber }) =>
+              stepNumber >= 4
+                ? { toolChoice: { type: "tool", toolName: submitName } }
+                : undefined,
+            stopWhen: [hasToolCall(submitName), stepCountIs(6)],
             maxOutputTokens: 1600,
           });
           const submissions = r.steps
