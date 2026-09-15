@@ -1,0 +1,67 @@
+{
+  "schema": "hfo.packomania-crown-packet.v1",
+  "status": "SUBMISSION_READY_INTERNAL",
+  "crown_won": false,
+  "claim_ceiling": "CANDIDATE_RECORD_PENDING_THIRD_PARTY_ACCEPTANCE",
+  "battlefield": "Packomania csqv — variable-radius circles in a unit square, maximize sum of radii",
+  "carrier_uuid": "5f8f7e1b-9e2c-4f8c-b2aa-7d34a9e6c11d",
+  "batch_id": "packomania-evo-r3-5f8f7e1b",
+  "github_actions_run_id": 34921650663,
+  "github_actions_conclusion": "success",
+  "verified_artifact_id": 10378492138,
+  "verified_artifact_digest": "sha256:f56c11d61f9c13ad21e51faf46832bb33e28fd80f2d88588debeea25ec3a9300",
+  "target_n": 124,
+  "frozen_parent": {
+    "repo": "ucsandman/discovery-loop",
+    "commit": "ce97256043f7813e0beaeeb7ca5cafacbf77fbdb",
+    "path": "best/solver.py",
+    "solver_sha256": "c018bec37d2dbfdbbb26d88f2a1c1611ede62594c1233596efe27f93f7d8e486"
+  },
+  "mutation": {
+    "stage": "s2",
+    "seed": 415124,
+    "time_budget_seconds": 30,
+    "axes": ["target_n", "rng_seed", "successive_halving_time_budget", "donor_internal_island_basin_hopping_population"],
+    "source_candidate_sha256": "f1a3d57a61f791f6311414099f589380019c5e93ca142a19e480376739fade74"
+  },
+  "official_keeper": {
+    "html_url": "https://www.packomania.com/csqv/csqv.html",
+    "page_last_update": "14-Sep-2026",
+    "fresh_html_incumbent_n124": "5.874500201027",
+    "note": "The live HTML table was independently re-read after the batch. It matches the N=124 value used by the verifier. The linked plain-text table has shown tiny/stale drift at some other N, so HTML must be re-read immediately before external send."
+  },
+  "canonical_packet": {
+    "path": "csqv124.pck",
+    "author_line": "Tommy Tai",
+    "pck_sha256": "16458abe5c837e3be874ce00efd549070499baa78859e038521c7277c3bb6d4f",
+    "n": 124,
+    "sum_radii_exact_written_decimals": "5.8746761735946872",
+    "margin_vs_fresh_html": "0.0001759725676872",
+    "min_wall_slack_decimal80": "1.000101E-10",
+    "min_pair_slack_decimal80": "2.00020101686429177507200407972676314175804479360448617547559228963944665E-10",
+    "largest_radius_header_matches": true
+  },
+  "independent_verifier_job": {
+    "producer_receipt_sha256": "f3763383ba90e5bf508218c093bd8c489cf5406d7a08fbde1e1eb4dcb34e8959",
+    "verifier_source_sha256": "2400a5b28727799b1d5ef56c25096b50ad2dd5cbb882ff5fb91a221c365d8817",
+    "verifier_receipt_file_sha256": "d23c538b99610b8f9e8e62a320bc9a0498e5c18be17f46b45ad95ef639b1aff1",
+    "replay_sha256": "0849d89db1ccf2f70f1f8c8d7c508fce9725a61860450050c12d6875f9218e83",
+    "method": "separate downstream GitHub Actions job; no donor/producer imports; 80-digit Decimal geometry after deterministic safety shrink"
+  },
+  "successive_halving": {
+    "stage1_targets": [116,117,118,119,121,123,124,125],
+    "stage2_survivors": [125,124,121],
+    "negative_kills_after_verification": {
+      "116": "-0.011974282850377628",
+      "117": "-0.008644893630206987",
+      "118": "-0.006827758340320224",
+      "119": "-0.003335249604111643",
+      "121": "-0.000742571873807544",
+      "123": "-0.009223167220642918",
+      "125": "-0.000044290964241803"
+    }
+  },
+  "external_submission_performed": false,
+  "tao_hot_loop_actions": 0,
+  "next_human_boundary": "Immediately before send, refresh Packomania HTML N=124; if incumbent remains below 5.8746761735946872, send csqv124.pck to the keeper. Do not claim CROWN_WON until keeper acceptance/public listing."
+}
