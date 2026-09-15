@@ -32,6 +32,17 @@ These are design donors, not authority. Gen142's `battlefield_gate.py`, public i
 
 Different Hluti should preferentially explore different or underfilled niches. A collision inside a populated niche should mutate a different axis, falsify an incumbent, mine a distinct legal donor, or move to another niche rather than duplicate material work. Manual waves may remain broad while the archive is sparse.
 
+## Burst / backpressure poka-yoke
+
+`SCHEDULE_FAILURE != SWARM_STALL`. Infer liveness from admitted WorkCell ConsumerAck/retirement progress and authenticated actor/controller readback, not from one failed ChatGPT carrier.
+
+- Same-route provider throttle or quota pressure forbids replacement waves on that route. Preserve the WorkItem and morph spare larvae to underfilled niches, independent verification/falsification, donor mining, reducer/packaging, or bounded read-only research.
+- More larvae than useful unowned niches is backpressure, not a reason to invent work. Excess carriers morph or retire cleanly.
+- Silence is typed: `LIVE_PROGRESS | THROTTLED | AUTHORITY_UNKNOWN | DEADLINE_PENDING | STALL_CONFIRMED`. Only `STALL_CONFIRMED` justifies recovery dispatch; a missing chat response is not that evidence.
+- Public issue comments can advertise collisions and receipts but cannot grant, revoke, or suppress material ownership. Material ownership comes only from authenticated internal claim/fence readback.
+- Never replace a carrier merely because it is slow while its authoritative deadline/lease remains live. Never ask Tao to gather threads to decide liveness.
+- Exploration and packaging are separate phases: QD keeps niches diverse; `PACKAGE_SUBMIT` may later concentrate compute on measured champions.
+
 A later explicit `PACKAGE/SUBMIT` mission may invoke the incumbent scalar reducer, but that transition must be visible and must not retroactively erase the QD archive.
 
 ## Acceptance

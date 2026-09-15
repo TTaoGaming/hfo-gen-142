@@ -31,7 +31,7 @@ Use only after recovering `TTaoGaming/hfo-gen-142#13` newest-first and `GATEWAY.
 
 ## Procedure
 ### PLAN
-Declare one question, expected delta, strongest plausible falsifier, evidence needed, and kill/pass criterion. Claim one under-covered edge on #13 and read back the claim. In `EXPLORE_QD_MOME`, also declare the intended niche/behavior descriptor and why this work adds diversity rather than duplicating a populated cell.
+Declare one question, expected delta, strongest plausible falsifier, evidence needed, and kill/pass criterion. Treat public #13 as `OBSERVE_ONLY` collision/recovery evidence, never ownership. In `EXPLORE_QD_MOME`, select an underfilled niche from the deterministic QD archive; read-only/no-effect research may proceed without manufacturing a public claim. Before any material repo/external/spend/submission effect, require an authenticated internal controller claim/fence readback; if unavailable, throttled, stale, or already owned, morph to another niche, independent falsifier, donor miner, verifier/reducer, or bounded read-only work instead of asking Tao to relaunch.
 
 ### DO
 Gather or attack evidence. Prefer immutable GitHub refs, sanitized Drive evidence pointers, current authoritative standards, and fresh runtime evidence where authorized. Maximum useful scope beats maximum document count.

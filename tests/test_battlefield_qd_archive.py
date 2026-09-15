@@ -58,6 +58,20 @@ class QDArchiveTests(unittest.TestCase):
         self.assertEqual(result["niche_count"], 3)
         self.assertEqual(result["champion_count"], 3)
 
+    def test_public_coordination_is_not_material_authority(self):
+        skill = (ROOT / ".agents/skills/twinling-pdsa/SKILL.md").read_text(encoding="utf-8")
+        self.assertIn("public #13 as `OBSERVE_ONLY`", skill)
+        self.assertIn("authenticated internal controller claim/fence readback", skill)
+        self.assertNotIn("Claim one under-covered edge on #13", skill)
+
+    def test_backpressure_morphs_instead_of_relaunching(self):
+        standard = (ROOT / "QD_EXPLORATION_STANDARD.md").read_text(encoding="utf-8")
+        self.assertIn("SCHEDULE_FAILURE != SWARM_STALL", standard)
+        self.assertIn("forbids replacement waves on that route", standard)
+        self.assertIn("More larvae than useful unowned niches is backpressure", standard)
+        self.assertIn("STALL_CONFIRMED", standard)
+        self.assertIn("Never ask Tao to gather threads", standard)
+
 
 if __name__ == "__main__":
     unittest.main()
