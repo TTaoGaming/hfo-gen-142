@@ -1,0 +1,48 @@
+name: fjsplib-reified-seeded-r7
+
+on:
+  push:
+    branches: [roach/fjsplib-evo-r2-a25dbdca]
+    paths:
+      - 'experiments/fjsplib/prove_optimal_reified_seeded_r7.py'
+      - '.github/workflows/fjsplib-reified-seeded-r7.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  prove-optimum:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: '${{ github.token }}'
+          repository: TTaoGaming/hfo-gen-142
+          run-id: 34921926574
+          name: fjsplib-r3-behnke48-seed206-34921926574
+          path: producer
+      - run: python -m pip install --disable-pip-version-check 'ortools==9.15.6755'
+      - name: Seeded reified independent formulation
+        run: >-
+          python experiments/fjsplib/prove_optimal_reified_seeded_r7.py
+          --instance behnke48
+          --certificate producer/behnke48-seed206-r3.json
+          --seconds 900
+          --workers 4
+          --out behnke48-opt125-reified-seeded.json
+          | tee reified-seeded.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: behnke48-reified-seeded-${{ github.run_id }}
+          path: |
+            behnke48-opt125-reified-seeded.json
+            reified-seeded.log
+          retention-days: 30
