@@ -1,13 +1,14 @@
 {
   "schema": "hfo.public-crown-proof.v1",
   "claim_id": "fjsplib-behnke48-optimum-125",
-  "status": "DUAL_UNPROVEN",
-  "claim_ceiling": "candidate proof only; external ScheduleOpt acceptance pending",
+  "status": "INTERNAL_TECHNICAL_CROWN_VERIFIED",
+  "claim_ceiling": "internal optimum proof verified; external ScheduleOpt acceptance pending",
   "battlefield": {
     "repository": "ScheduleOpt/benchmarks",
     "track": "FJSPLib / flexible job shop scheduling",
     "instance": "behnke48",
     "source_commit": "7b3f6fb1384309bd4abca866fe3bef2993139b91",
+    "fresh_main_commit_before_external_report": "7b3f6fb1384309bd4abca866fe3bef2993139b91",
     "frozen_public_status": "open",
     "published_lower_bound": 124,
     "published_upper_bound": 125,
@@ -44,11 +45,18 @@
     {
       "name": "PyJobShop independent formulation",
       "implementation_commit": "b66b575c8b42a10bc60fd2397e764cc5e1535e7f",
+      "normalization_fix_commit": "1f540d4624b11ac7d33a9b3b4688256cc787ea49",
       "target": 124,
       "local_600s_status": "TIME_LIMIT",
       "public_run_id": 34923588992,
       "public_job_id": 104236765464,
-      "verdict": "PENDING"
+      "public_artifact_id": 10379885027,
+      "public_artifact_zip_sha256": "86381a0d50836fc5cd0bbb1554d215e5faeb6f448f17a8c5d00aad0ce4eb85d6",
+      "raw_status": "SolveStatus.INFEASIBLE",
+      "runtime_s": 807.937058072,
+      "verdict": "INFEASIBLE",
+      "proves_no_schedule_at_or_below_target": true,
+      "note": "The original artifact's derived boolean was false due only to a case-sensitive status-string comparison; raw solver status is INFEASIBLE. The wrapper normalization was fixed without rerunning the expensive proof."
     },
     {
       "name": "reified alternative CP-SAT decision formulation",
@@ -57,7 +65,11 @@
       "target": 124,
       "public_run_id": 34923871072,
       "public_job_id": 104237615485,
-      "verdict": "PENDING"
+      "public_artifact_id": 10379606479,
+      "public_artifact_zip_sha256": "85cd7e4d91359ce59561db9aa415765238b95dd2e39de843dc982d5313232e9e",
+      "raw_status": "UNKNOWN",
+      "verdict": "INCONCLUSIVE",
+      "note": "Preserved as negative evidence; it neither proves nor falsifies the optimum claim."
     }
   ],
   "external_acceptance": {
@@ -66,6 +78,8 @@
     "submitted": false,
     "accepted": false
   },
-  "proposed_narrow_claim_after_all_gates": "The evolutionary swarm closed the previously open ScheduleOpt/FJSPLib behnke48 gap by establishing optimum makespan 125.",
+  "internal_claim": "behnke48 has optimum makespan 125 under the frozen ScheduleOpt/FJSPLib instance; the frozen public 124..125 gap is technically closed by this independently verified proof packet.",
+  "proposed_public_claim_after_external_acceptance": "The evolutionary swarm closed the previously open ScheduleOpt/FJSPLib behnke48 gap by establishing optimum makespan 125.",
+  "internal_technical_crown_verified": true,
   "crown_won": false
 }
