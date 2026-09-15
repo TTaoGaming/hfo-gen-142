@@ -2,6 +2,15 @@
   "schema": "hfo.hive-batch.v1",
   "parent_uuid": "882fa988-91c4-4132-a685-91d64f9e2fa8",
   "mission": "Frontier Fast Maple evolution: strong proposers -> shared evaluator -> GB10 fitness -> trusted runner",
+  "observed_receipts": {
+    "provider_adapter_sha256": "7b5f01939861de5cf3ed18dd129dc14f19a8f830ce48cdc5869968ced0773289",
+    "session_contract_sha256": "67b4e1a4919fd6ca03f60acdc74750ea2866b6086e89124eaaddd142e6c15716",
+    "kimi_subscription_checksum": "PASS_GEN142_KIMI_PASS",
+    "codex_subscription": "AUTHENTICATED_VERSION_BLOCKED",
+    "claude_subscription": "OAUTH_EXPIRED",
+    "cloudflare_wrangler": "OAUTH_LOGGED_IN_NATIVE_CONTROL_PRESENT",
+    "browser_profiles": "CHROME_DEFAULT_PLUS_PROFILE_1_EDGE_DEFAULT_UNMAPPED"
+  },
   "laws": [
     "no new control plane",
     "no secret values in GitHub or model prompts",
@@ -11,92 +20,82 @@
   ],
   "human_work": [
     {
-      "id": "H1_RENT_GB10",
-      "priority": 0,
+      "id": "H1_RENT_GB10", "priority": 0, "status": "READY_FOR_TAO",
       "action": "Rent exact DGX Spark / GB10 if practical: Linux ARM64, NVIDIA GB10 sm_121, SSH, CUDA toolchain, approximately 128GB unified-memory class, >=100GB free persistent disk.",
       "acceptance": "Return host access through an approved remote-control/SSH surface; never post credentials publicly. No additional generic VPS is required."
     },
     {
-      "id": "H2_FRONTIER_IDENTITY",
-      "priority": 0,
+      "id": "H2_FRONTIER_IDENTITY", "priority": 0, "status": "READY_FOR_TAO",
       "action": "Complete Frontier Fast account/TOS/fork/token boundary if not already complete.",
       "acceptance": "Fork exists and submit-only credential is stored privately in submitter leaf; no token in chat/GitHub."
     },
     {
-      "id": "H3_CLAUDE_REAUTH",
-      "priority": 1,
-      "action": "Re-authenticate Claude Code on Lenovo only when convenient; current OAuth token is expired.",
+      "id": "H3_CLAUDE_REAUTH", "priority": 1, "status": "HUMAN_LOGIN_REQUIRED",
+      "action": "Re-authenticate Claude Code on Lenovo only when convenient; live no-tool assay returned OAuth token expired.",
       "acceptance": "claude no-tool checksum returns GEN142_CLAUDE_PASS."
     },
     {
-      "id": "H4_LABEL_CHATGPT_PROFILES",
-      "priority": 2,
+      "id": "H4_LABEL_CHATGPT_PROFILES", "priority": 2, "status": "PROFILE_LABELS_UNKNOWN",
       "action": "Identify which existing browser profile is ChatGPT account A and which is B; provide profile labels only, never cookies/passwords/2FA seeds.",
       "acceptance": "Two explicit non-secret profile labels are available to a browser-control actor."
     }
   ],
   "hive_work": [
     {
-      "id": "V1_CODEX_REPAIR",
-      "owner_class": "tooling_roach",
-      "priority": 0,
+      "id": "V1_CODEX_REPAIR", "owner_class": "tooling_roach", "priority": 0,
+      "status": "BLOCKED_INSTALL_METHOD_DETECTION",
       "authority": "reversible local tool repair; no repo writes required",
-      "action": "Detect actual Codex installation method on Lenovo and upgrade from 0.132.0 to a release that supports current gpt-6-astra catalog/reasoning=max; do not change account identity.",
+      "observed": "Codex 0.132.0 is logged in with ChatGPT but cannot parse the current reasoning=max catalog and gpt-6-astra requires a newer CLI. Built-in codex update could not detect installation method.",
+      "action": "Detect actual Codex installation provenance/path and upgrade using the corresponding official method; preserve account identity.",
       "acceptance": "codex exec --sandbox read-only --ephemeral returns exact GEN142_CODEX_PASS; workspace unchanged; version receipt logged."
     },
     {
-      "id": "V2_CLOUDFLARE_KIMI_GATEWAY_ASSAY",
-      "owner_class": "cloudflare_control_verifier",
-      "priority": 0,
+      "id": "V2_CLOUDFLARE_KIMI_GATEWAY_ASSAY", "owner_class": "cloudflare_control_verifier", "priority": 0,
+      "status": "BLOCKED_NATIVE_CONTROL_ACTOR",
       "authority": "read existing config + one zero-effect request only; no config mutation",
+      "observed": "Wrangler 4.127.0 is OAuth-authenticated on Lenovo with AI/browser capabilities. This carrier was prevented from exporting/reusing the OAuth token for arbitrary REST, so no bypass was attempted.",
       "action": "Using native Cloudflare control/browser rather than exported OAuth token, verify existing AI Gateway/custom Kimi route. If and only if existing BYOK/custom route and zero-marginal authority are confirmed, issue one exact-marker request with retries=0 and retrieve corresponding Gateway log.",
       "acceptance": "Receipt binds route/provider/model/request hash/response hash/log id hash; exact GEN142_CF_KIMI_PASS; no secret output. HOLD if route requires mutation or ambiguous billing."
     },
     {
-      "id": "V3_OPENROUTER_FREE_ASSAY",
-      "owner_class": "provider_verifier",
-      "priority": 0,
+      "id": "V3_OPENROUTER_FREE_ASSAY", "owner_class": "provider_verifier", "priority": 0,
+      "status": "READY_ON_ADMITTED_CREDENTIAL_SURFACE",
       "authority": "free/included route only",
       "action": "Verify one current OpenRouter frontier/free model through an existing admitted credential path. Force model suffix :free, allow_fallbacks=false, max_price prompt/completion/request=0, retries=0.",
       "acceptance": "Exact marker response plus hash receipt; any billing ambiguity or missing free model => HOLD, never paid fallback."
     },
     {
-      "id": "V4_KIMI_SUBSCRIPTION_MUTATOR",
-      "owner_class": "mutation_roach",
-      "priority": 0,
+      "id": "V4_KIMI_SUBSCRIPTION_MUTATOR", "owner_class": "mutation_roach", "priority": 0,
+      "status": "HOLD_MULTILINE_PROMPT_TRANSPORT",
       "authority": "subscription-backed Kimi CLI already authenticated; effect ceiling NONE",
-      "action": "Use Kimi CLI noninteractive output as a proposal emitter for exactly one Maple mutation artifact. Work in empty scratch; instruct no tools/writes; bind artifact through session_worker_contract.py then shared_eval.py.",
+      "observed": "Short no-effect prompt returned GEN142_KIMI_PASS. First full-diff mutation attempt through inline -p was rejected by CLI parsing before inference and emitted an empty artifact; do not count as mutation failure.",
+      "action": "Use Kimi ACP or a compact/escaped prompt transport that does not pass raw multiline diff as one inline CLI argument; then emit exactly one Maple artifact and bind it through session_worker_contract.py -> shared_eval.py.",
       "acceptance": "Hash-bound proposal receipt + shared evaluator PASS/HOLD or typed rejection. No Frontier submit."
     },
     {
-      "id": "V5_CHATGPT_AB_BROWSER_ADAPTER",
-      "owner_class": "browser_adapter_builder_verifier",
-      "priority": 1,
+      "id": "V5_CHATGPT_AB_BROWSER_ADAPTER", "owner_class": "browser_adapter_builder_verifier", "priority": 1,
+      "status": "BLOCKED_BROWSER_CONTROL_AND_PROFILE_LABELS",
       "authority": "attach to user-labeled authenticated browser profiles; never export session material",
-      "action": "Build/prove one bounded session adapter for ChatGPT A/B: job prompt in, text artifact out, session stays on host. No cookie/Login Data reads, no account settings, no sending external messages.",
-      "acceptance": "Each profile returns an exact no-effect marker and a receipt accepted by session_worker_contract.py; browser session secret exported=false."
+      "observed": "Lenovo contains Chrome Default + Profile 1 and Edge Default profile directories; no account identity was inferred and no cookie/Login Data files were read.",
+      "action": "With a browser-control actor and Tao-provided profile labels, prove bounded ChatGPT A/B session adapter: job prompt in, text artifact out, session stays on host.",
+      "acceptance": "Each profile returns exact no-effect marker and receipt accepted by session_worker_contract.py; session_secret_exported=false."
     },
     {
-      "id": "V6_GB10_BOOTSTRAP",
-      "owner_class": "gpu_builder_verifier_twinling",
-      "priority": 0,
-      "depends_on": ["H1_RENT_GB10"],
+      "id": "V6_GB10_BOOTSTRAP", "owner_class": "gpu_builder_verifier_twinling", "priority": 0,
+      "status": "WAIT_H1", "depends_on": ["H1_RENT_GB10"],
       "authority": "machine setup and benchmark only; no external submit",
       "action": "Probe hardware identity; install/verify git, cmake, ninja, CUDA, Python/uv; recover exact Maple source pin; replay stock and current A/B/A+B candidates under frozen evaluator and paired benchmark discipline.",
       "acceptance": "Hardware receipt + reproducible paired fitness JSON + perplexity/correctness gate; independent verifier replay."
     },
     {
-      "id": "V7_SCHEDULER_PROMOTION_REVIEW",
-      "owner_class": "independent_reviewer",
-      "priority": 1,
+      "id": "V7_SCHEDULER_PROMOTION_REVIEW", "owner_class": "independent_reviewer", "priority": 1,
+      "status": "OPEN",
       "action": "Re-review exact cdev-control#5 head without pushing gratuitous changes; admit or HOLD under existing governance. After merge, observe natural :07/:37 wake.",
       "acceptance": "Independent approval/merge under existing protection and one natural default-branch wake receipt; do not weaken governance."
     },
     {
-      "id": "V8_REDUCER",
-      "owner_class": "sigrun_reducer",
-      "priority": 0,
-      "depends_on": ["V2_CLOUDFLARE_KIMI_GATEWAY_ASSAY", "V3_OPENROUTER_FREE_ASSAY", "V4_KIMI_SUBSCRIPTION_MUTATOR"],
+      "id": "V8_REDUCER", "owner_class": "sigrun_reducer", "priority": 0,
+      "status": "WAIT_PROVIDER_RECEIPTS", "depends_on": ["V2_CLOUDFLARE_KIMI_GATEWAY_ASSAY", "V3_OPENROUTER_FREE_ASSAY", "V4_KIMI_SUBSCRIPTION_MUTATOR"],
       "action": "Consume receipts newest-first, dedupe by artifact SHA/phenotype, keep <=4 static survivors, route only survivors to GB10 fitness, update canonical PARTIAL_WORLD_STATE.md in place.",
       "acceptance": "One sparse champion set; no duplicate runner spend; CROWN_WON remains false until trusted public readback."
     }
