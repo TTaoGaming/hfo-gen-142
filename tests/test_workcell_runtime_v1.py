@@ -68,6 +68,31 @@ class WorkCellRuntimeTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             runtime.worker_for({"schema": "hfo.unknown.v9"})
 
+    def test_unknown_public_marker_cannot_retire_work(self):
+        marker = "<!-- hfo-workcell-v1:W:deadbeef -->"
+        rows = [{"user": {"login": "socksninja"}, "performed_via_github_app": {"slug": "chatgpt-codex-connector"}, "body": marker}]
+        self.assertNotIn(marker, runtime.retirement_ledger(rows))
+
+    def test_owner_public_marker_cannot_retire_work(self):
+        marker = "<!-- hfo-workcell-v1:W:deadbeef -->"
+        rows = [{"user": {"login": "TTaoGaming"}, "performed_via_github_app": {"slug": "chatgpt-codex-connector"}, "body": "## WORKCELL RETIREMENT v1\n" + marker}]
+        self.assertNotIn(marker, runtime.retirement_ledger(rows))
+
+    def test_actions_retirement_shape_is_admitted(self):
+        marker = "<!-- hfo-workcell-v1:W:deadbeef -->"
+        rows = [{"user": {"login": "github-actions[bot]"}, "performed_via_github_app": {"slug": "github-actions"}, "body": "## WORKCELL RETIREMENT v1\n\n- WorkItem: `W`\n\n" + marker}]
+        self.assertIn(marker, runtime.retirement_ledger(rows))
+
+    def test_external_ack_marker_cannot_be_reused(self):
+        marker = "<!-- hfo-workcell-ack-v1:W:deadbeef -->"
+        rows = [{"user": {"login": "socksninja"}, "performed_via_github_app": {"slug": "chatgpt-codex-connector"}, "body": "## RESEARCH CELL R0 — PASS\n" + marker, "html_url": "https://example.invalid/fake"}]
+        self.assertIsNone(runtime.find_comment(rows, marker, "## RESEARCH CELL R0"))
+
+    def test_external_retirement_marker_cannot_block_bot_retirement(self):
+        marker = "<!-- hfo-workcell-v1:W:deadbeef -->"
+        rows = [{"user": {"login": "TTaoGaming"}, "performed_via_github_app": {"slug": "chatgpt-codex-connector"}, "body": "## WORKCELL RETIREMENT v1\n" + marker, "html_url": "https://example.invalid/fake"}]
+        self.assertIsNone(runtime.find_comment(rows, marker, "## WORKCELL RETIREMENT v1"))
+
 
 if __name__ == "__main__":
     unittest.main()

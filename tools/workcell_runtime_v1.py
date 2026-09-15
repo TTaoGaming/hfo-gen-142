@@ -24,6 +24,7 @@ from select_research_workitem import select_work
 ROOT = Path(__file__).resolve().parents[1]
 WORKERS = {"hfo.research-workitem.v1": ROOT / "tools" / "research_cell_r0.py"}
 ACK_PREFIX = "hfo-workcell-ack-v1"
+RETIREMENT_MARKER_PREFIX = "hfo-workcell-v1"
 
 
 def canon(value) -> bytes:
@@ -77,11 +78,36 @@ def issue_comments(token: str, repo: str, issue: int) -> list[dict]:
 
 
 def comment_ledger(rows: list[dict]) -> str:
+    """All public prose for OBSERVE_ONLY/reporting uses, never retirement authority."""
     return "\n".join(str(row.get("body", "")) for row in rows)
 
 
-def find_comment(rows: list[dict], marker: str) -> dict | None:
+def is_workcell_actions_comment(row: dict, required_heading: str | None = None) -> bool:
+    user = (row.get("user") or {}).get("login")
+    app = (row.get("performed_via_github_app") or {}).get("slug")
+    body = str(row.get("body", ""))
+    if user != "github-actions[bot]" or app != "github-actions":
+        return False
+    return required_heading is None or required_heading in body
+
+
+def retirement_ledger(rows: list[dict]) -> str:
+    """Return only machine-produced WorkCell retirement facts."""
+    admitted = []
     for row in rows:
+        body = str(row.get("body", ""))
+        if not is_workcell_actions_comment(row, "## WORKCELL RETIREMENT v1"):
+            continue
+        if f"<!-- {RETIREMENT_MARKER_PREFIX}:" not in body:
+            continue
+        admitted.append(body)
+    return "\n".join(admitted)
+
+
+def find_comment(rows: list[dict], marker: str, required_heading: str | None = None) -> dict | None:
+    for row in rows:
+        if not is_workcell_actions_comment(row, required_heading):
+            continue
         if marker in str(row.get("body", "")) and row.get("html_url"):
             return row
     return None
@@ -108,7 +134,7 @@ def ack_marker(selected: dict) -> str:
 
 def get_or_create_consumer_ack(token: str, repo: str, issue: int, rows: list[dict], selected: dict, report: str, selection_sha: str) -> dict:
     marker = ack_marker(selected)
-    prior = find_comment(rows, marker)
+    prior = find_comment(rows, marker, "## RESEARCH CELL R0")
     if prior is not None:
         return prior
     body = f"{report}\nSelection SHA256: {selection_sha}\n\n{marker}"
@@ -207,7 +233,7 @@ def main() -> int:
     outdir.mkdir(parents=True, exist_ok=True)
 
     comments = issue_comments(token, args.repo, args.issue)
-    selection = select_work(args.task_dir, comment_ledger(comments))
+    selection = select_work(args.task_dir, retirement_ledger(comments))
     (outdir / "selection.json").write_text(json.dumps(selection, indent=2), encoding="utf-8")
     if not selection["selected"]:
         summary = {
@@ -243,7 +269,7 @@ def main() -> int:
     (outdir / "consumer-ack.json").write_text(json.dumps(ack, indent=2), encoding="utf-8")
 
     comments_after_ack = issue_comments(token, args.repo, args.issue)
-    planning_ledger = comment_ledger(comments_after_ack) + "\n" + selected["marker"]
+    planning_ledger = retirement_ledger(comments_after_ack) + "\n" + selected["marker"]
     next_selection = select_work(args.task_dir, planning_ledger)
     (outdir / "next-selection.json").write_text(json.dumps(next_selection, indent=2), encoding="utf-8")
 
@@ -258,7 +284,7 @@ def main() -> int:
 
     # Retirement is a separate durable fact and is published only after terminal admission.
     comments_before_retire = issue_comments(token, args.repo, args.issue)
-    retirement = find_comment(comments_before_retire, selected["marker"])
+    retirement = find_comment(comments_before_retire, selected["marker"], "## WORKCELL RETIREMENT v1")
     if retirement is None:
         next_id = next_selection["selected_work"]["work_id"] if next_selection["selected"] else "NONE"
         retirement_body = (
