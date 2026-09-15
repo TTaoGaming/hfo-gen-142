@@ -1,0 +1,53 @@
+name: FJSPLib Evo R3
+
+on:
+  push:
+    branches: [roach/fjsplib-evo-r3-redqueen-99ae527f]
+    paths:
+      - 'experiments/fjsplib/**'
+      - '.github/workflows/fjsplib-evo-r3.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evolve:
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        instance: [abz8_vdata, behnke7, behnke11, behnke12, behnke14]
+        seed: [1, 7, 37]
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned solver
+        run: python -m pip install --disable-pip-version-check 'ortools==9.15.6755'
+      - name: Construct population then exact improve
+        run: >-
+          python experiments/fjsplib/solve_cp_sat_r3.py
+          --instance '${{ matrix.instance }}'
+          --seed '${{ matrix.seed }}'
+          --seconds 300
+          --workers 8
+          --constructs 512
+          --outdir out
+      - name: Independent certificate verification
+        shell: bash
+        run: |
+          set -euo pipefail
+          f="out/${{ matrix.instance }}-seed${{ matrix.seed }}-r3.json"
+          python experiments/fjsplib/verify_schedule.py "$f"
+      - name: Publish evolution evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fjsp-evo-${{ matrix.instance }}-seed${{ matrix.seed }}-${{ github.run_id }}
+          path: out/
+          if-no-files-found: warn
+          retention-days: 14
