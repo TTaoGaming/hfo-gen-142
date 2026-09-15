@@ -155,9 +155,12 @@ export class Gen142Scout extends Agent<any, ScoutState> {
     if (current.phase === "COGNITION_RUNNING") {
       return { accepted: false, reason: "BUSY", lastRunId: current.lastRunId };
     }
-    const scarSkip = current.sameFailureCount >= 2 && current.lastAttemptLane === LANES[current.epoch % LANES.length];
-    const runEpoch = current.epoch + (scarSkip ? 1 : 0);
-    const lane = LANES[runEpoch % LANES.length];
+    const laneAfter = (value: Lane): Lane => LANES[(LANES.indexOf(value) + 1) % LANES.length];
+    const lane = (current.phase === "FAILED" || current.phase === "RECOVERY_REQUIRED") && current.lastAttemptLane
+      ? (current.sameFailureCount >= 2 ? laneAfter(current.lastAttemptLane) : current.lastAttemptLane)
+      : current.phase === "READY" && current.lastLane
+        ? laneAfter(current.lastLane)
+        : LANES[current.epoch % LANES.length];
     const canonical = await canonicalIssueSnapshot();
     const started = new Date().toISOString();
     this.setState({
@@ -229,7 +232,7 @@ export class Gen142Scout extends Agent<any, ScoutState> {
           this.setState({
             ...this.state,
             phase: "READY",
-            epoch: runEpoch + 1,
+            epoch: current.epoch + 1,
             lastLane: lane,
             lastAttemptLane: lane,
             lastCompletedUtc: completed,
