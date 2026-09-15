@@ -25,7 +25,7 @@ Hard rules:
 1. `actor_id != carrier_id`. Carrier death/replacement must not create a new actor.
 2. Every loop is bounded in time, attempts, spend, disk/effects. No liveness-as-fitness and no infinite retry.
 3. `semantic_owner` must remain the admitted Sigrun DO unless an explicit retirement/migration assay proves a replacement end-to-end.
-4. `provider_role=leaf`. Crown/frontier work marked `FRONTIER_REQUIRED` fails closed when no admitted frontier route is live; no silent Ollama/small-model fallback.
+4. `provider_role=leaf`. Every provider route must declare a billing class and prove its cost boundary. Under the current `$0/day` incremental-spend envelope, only verified `ZERO_MARGINAL` routes are admissible, paid fallback is forbidden, and quota exhaustion must rotate to another already-admitted zero-marginal route or HOLD. Crown/frontier work marked `FRONTIER_REQUIRED` also fails closed when no admitted frontier route is live; no silent Ollama/small-model fallback.
 5. Rehydrate/probe/repair before build. A new primitive requires evidence that the current admitted donor/owner cannot satisfy the frozen contract.
 6. Tao relay defaults FALSE. Human intervention is admissible only for declared secret/OAuth/2FA/payment/permission/protected-merge/irreversible external-submit boundaries. The human action may only unlock that authority boundary; before escalation, the system must record the failed machine attempt and arm an automatic resume watcher. Tao must never be required to launch, retry, route, gather, monitor, check back, or restart continuation work.
 7. A worker cannot promote its own output. Promotion requires an independent verifier receipt and ConsumerAck.
