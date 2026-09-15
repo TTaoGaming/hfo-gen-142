@@ -9,7 +9,7 @@ class NativeScoutStructuredSynthesisTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.text = SOURCE.read_text(encoding="utf-8")
-        marker = 'const synthesis = await generateText({' 
+        marker = 'const synthesis = await generateText({'
         start = cls.text.rfind(marker)
         cls.reducer_block = cls.text[start:start + 2200]
 
