@@ -1,0 +1,39 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-B917-RELEASE-PACKET-VERIFY-20260915",
+  "issue_number": 13,
+  "admitted": true,
+  "priority": 210,
+  "question": "Does the newly published B917 release packet consistently encode collision-aware ownership, zero-Tao target, no silent paid fallback, deferred human authority boundaries, and crown/operator-relief false until external receipts exist?",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/TTaoGaming/hfo-gen-142/main/TRUNK/PDSA_B91706CC_RELEASE_GATE.md",
+      "assertions": [
+        "b91706cc-6b96-4b63-aaff-a8a548b83080",
+        "ac995e3fdc26b4475dbde26e6355099852ac93d09dc0ea90be4e036aa0c5417b",
+        "OPERATOR_RELIEF=false",
+        "CROWN_WON=false",
+        "No new control plane"
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/TTaoGaming/hfo-gen-142/main/HIVE/BATCH_B91706CC_RELEASE_GATE.json",
+      "assertions": [
+        "B917-GB10-FITNESS-PREP",
+        "B917-CDEV-PROMOTION-WATCHER",
+        "no_silent_paid_fallback",
+        "CDEV_PROTECTED_PROMOTION",
+        "FIRST_IRREVERSIBLE_SUBMIT"
+      ]
+    },
+    {
+      "url": "https://raw.githubusercontent.com/TTaoGaming/hfo-gen-142/main/HIVE/hive_meta_loop_v1.json",
+      "assertions": [
+        "PRODUCER_NE_VERIFIER",
+        "EMIT_NE_ACCEPT_NE_CLAIM_NE_ASSIGN_NE_EXECUTE_NE_VERIFY_NE_SUCCESS",
+        "TAO_HOT_LOOP_ACTIONS_TARGET_0"
+      ]
+    }
+  ]
+}
