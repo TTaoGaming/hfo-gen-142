@@ -6,7 +6,10 @@ import os
 import sys
 import urllib.request
 from typing import Any
-from tools.scout_result_gate import verdict as scout_result_verdict
+try:
+    from tools.scout_result_gate import verdict as scout_result_verdict
+except ModuleNotFoundError:
+    from scout_result_gate import verdict as scout_result_verdict
 
 STATE_URL = "https://hfo-gen142-native-scout-r0.tommytai3.workers.dev/state"
 REPO = os.environ.get("GITHUB_REPOSITORY", "TTaoGaming/hfo-gen-142")
