@@ -47,6 +47,7 @@ R0 therefore emits `hfo.actor-intent.v1` records with:
 
 - deterministic actor identity and lineage;
 - requested archetype/skill/intent;
+- inherited domain, fitness, frozen verifier, deadline/runtime, provider policy, human boundaries, stop conditions and ConsumerAck requirement;
 - per-child budget and effect ceiling;
 - independent verifier actor relation;
 - `carrier_id=null`;
@@ -63,6 +64,7 @@ The package binds:
 
 - `package_id`, `mission_id`, `root_actor_id`;
 - domain + intent + externally verified fitness;
+- frozen final verifier policy (`id`, `frozen=true`);
 - deadline, runtime, attempts, spend;
 - package effect ceiling;
 - canonical receipt sink + Sigrun semantic owner;
@@ -113,15 +115,16 @@ Actor IDs include a prefix of the normalized package hash. Editing package seman
 ADMIT requires at least:
 
 1. future deadline and finite package bounds;
-2. exact Sigrun semantic owner and #13 receipt sink;
-3. provider role remains leaf;
-4. no new control plane and recover/probe/repair already completed;
-5. at least two materialized children;
-6. at least one versioned VERIFIER formation;
-7. each non-verifier formation points to a VERIFIER formation;
-8. aggregate attempts/spend remain inside package bounds;
-9. no child effect widening;
-10. deterministic replay.
+2. frozen final verifier policy plus externally verified fitness;
+3. exact Sigrun semantic owner and #13 receipt sink;
+4. provider role remains leaf;
+5. no new control plane and recover/probe/repair already completed;
+6. at least two materialized children;
+7. at least one versioned VERIFIER formation;
+8. each non-verifier formation points to a VERIFIER formation;
+9. aggregate attempts/spend remain inside package bounds;
+10. no child effect widening;
+11. deterministic replay.
 
 The R0 gate must also prove its negative statement: an admitted receipt contains `execution_status=NOT_DISPATCHED` and no success/ConsumerAck claim.
 
