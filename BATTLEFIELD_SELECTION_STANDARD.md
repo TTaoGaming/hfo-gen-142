@@ -10,7 +10,7 @@ The swarm is domain-agnostic. Agents are leverage, not the business domain.
 
 Choose fights in this order:
 
-`MISSION INTENT -> MAP -> HARD GATES -> GAP ANALYSIS -> DONOR HARVEST -> CHEAP CANARY -> SUCCESSIVE HALVING -> FULL ATTACK -> PUBLIC PROOF -> CASE STUDY -> INCOME CONVERSION`
+`MISSION INTENT -> MAP -> HARD GATES -> QD ILLUMINATION -> DONOR HARVEST -> CHEAP CANARIES -> PER-NICHE PARETO ELITES -> DEVELOP -> SEND -> PUBLIC PROOF -> CASE STUDY -> INCOME CONVERSION`
 
 No battlefield is selected because it is familiar, AI-adjacent, easy to demo, or has a zero incumbent.
 
@@ -179,7 +179,7 @@ The executable gate emits a routing score using:
 
 `prestige × buyer_legibility × P(beat incumbent) × P(public proof <=7d) × donor_factor × publication_speed / burden`
 
-The score is a routing heuristic, never evidence.
+The score is a routing heuristic, never evidence. During `EXPLORE`, it is an objective inside a niche, **not a global winner-selection pressure**. A globally highest routing score may not erase a different occupied behavior-space cell.
 
 ## Anti-Goodhart forcing
 
@@ -192,25 +192,38 @@ The score is a routing heuristic, never evidence.
 - Do not report probability without the evidence basis field.
 - Do not create new infrastructure merely to make a battlefield easier to run.
 
+## Quality-diversity exploration law
+
+`EXPLORE != SEND`. The scout population is an illumination process, not a tournament bracket.
+
+During `EXPLORE`:
+- use `python tools/qd_battlefield_archive.py BATTLEFIELDS/*.json`;
+- preserve separate behavior-space niches across domain family, search regime, proof clock, and compute regime;
+- keep a bounded Pareto set inside each occupied niche (default 2 elites per niche);
+- a champion means **elite within a niche**, not global winner;
+- routing score may rank/trim within a niche but may not collapse the archive to one primary;
+- when an exact niche is crowded, new capacity MUST morph to a different QD cell unless it is the distinct paired verifier/falsifier for that niche;
+- independent falsification remains mandatory; diversity is not permission to preserve false candidates;
+- platform throttling/backpressure is a transport observation, not evidence that exploration demand vanished.
+
+The behavior archive is intentionally multi-modal. It should preserve heterogeneous mechanisms and arenas long enough for canaries to produce measured fitness. Cross-niche convergence is allowed only after an explicit phase transition to `SEND`.
+
+Patterns assimilated from public QD/evolution donors are architectural, not copied authority: island separation / migration / crowding archives (ShinkaEvolve), archive-emitter-scheduler separation and novelty/local competition (pyribs), Pareto-efficient proposal selection (GEPA), and per-cell Pareto fronts (MOME-PGX). Pinned donor commits and licenses are recorded in `HERITAGE/MANIFEST.md`; HFO retains its own frozen verifier and authority boundaries.
+
 ## Required scout output
 
-One scout cycle returns **at most 3 survivors** and exactly one primary.
+An `EXPLORE` cycle returns a **QD archive**, not a single primary. For every occupied niche report:
+- deterministic `cell_id`;
+- behavior descriptor;
+- admitted candidate count;
+- bounded nondominated elites;
+- gate verdict/objective vector;
+- crowding signal;
+- exact next canary or falsifier edge.
 
-For each survivor:
-- battlefield ID;
-- gate verdict;
-- routing score;
-- incumbent + metric + timestamp;
-- prestige tier;
-- buyer/offer/demand evidence;
-- donor set;
-- weakness hypothesis;
-- canary;
-- P24 / P7d with basis;
-- strongest falsifier;
-- exact next action.
+The archive must also report coverage (`occupied_niches`, domain/search/proof/compute diversity) and `primary=null`. If no candidate passes hard gates, output `NONE`. Never fill an empty niche with a proxy trophy.
 
-If no candidate passes: output `NONE`. Never fill the slot with a worse proxy.
+Only after the operator/mission state explicitly enters `SEND` may the final reducer compress the portfolio to at most three survivors and exactly one primary for irreversible packaging/submission budget.
 
 ## Case-study consolidation
 
@@ -230,12 +243,20 @@ The case study is the bridge from prestige to income. The crown alone is not the
 
 ## Executable reducer forcing
 
-Materialize cards under `BATTLEFIELDS/`. After individual gate admission, run:
+Materialize cards under `BATTLEFIELDS/`. During exploration, illuminate the archive:
 
 ```bash
-python tools/battlefield_reduce.py BATTLEFIELDS/*.json
+python tools/qd_battlefield_archive.py BATTLEFIELDS/*.json --pretty
 ```
 
-The reducer is deterministic: killed/blocked cards cannot survive, survivors are sorted by gate routing score, output is capped at three, and the first survivor is the only primary. If every card fails, the only valid decision is `NONE`.
+The QD archive is deterministic: killed/blocked cards cannot enter; admitted cards are assigned to deterministic behavior cells; each cell retains a bounded Pareto set with crowding-distance truncation; and `primary` is always `null`.
+
+Global convergence is a separate `SEND` operation and fails closed unless the phase is explicit:
+
+```bash
+python tools/battlefield_reduce.py --phase SEND BATTLEFIELDS/*.json
+```
+
+Calling `battlefield_reduce.py` without `--phase SEND` returns `GLOBAL_CONVERGENCE_FORBIDDEN_DURING_EXPLORE`. This is a poka-yoke against accidental swarm collapse. If every card fails, the only valid decision is `NONE`.
 
 Repository CI in `.github/workflows/battlefield-contract.yml` validates the schema, battlefield forcing tests, reducer tests, and every materialized non-template battlefield card on relevant pushes/PRs. CI feedback does not replace external-verifier truth or branch-protection policy.
