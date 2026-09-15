@@ -2,6 +2,7 @@ import { Agent, getAgentByName, type FiberRecoveryContext } from "agents";
 import { createQuickActionTools } from "agents/browser/ai";
 import { createWorkersAI } from "workers-ai-provider";
 import { generateText, stepCountIs } from "ai";
+import { emptySynthesisNoClaim } from "./result-policy";
 
 const ACTOR_ID = "SIGRUN-GEN142-SCOUT-R0";
 const PARENT_ACTOR = "SIGRUN/C2";
@@ -240,16 +241,7 @@ export class Gen142Scout extends Agent<any, ScoutState> {
             degradedSameFailureCount = prior.lastFailureFingerprint === degradedFingerprint
               ? prior.sameFailureCount + 1
               : 1;
-            text = JSON.stringify({
-              observed_utc: new Date().toISOString(),
-              lane,
-              canonical_recovery: "github:TTaoGaming/hfo-gen-142#13",
-              survivors: [],
-              finding: "No reducer synthesis was produced; no research claim was admitted.",
-              strongest_falsifier: "EMPTY_SYNTHESIS at the neural reducer boundary.",
-              blocker: "EMPTY_SYNTHESIS",
-              next_executable_assay: "Change reducer strategy or provider path before treating repeated empty synthesis as useful work.",
-            });
+            text = JSON.stringify(emptySynthesisNoClaim(lane, new Date().toISOString()));
           }
           parseStrictResult(text, lane);
           const completed = new Date().toISOString();
