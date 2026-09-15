@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hfo-gen142-native-scout-r0",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-14",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "observability": { "enabled": true },
+  "ai": { "binding": "AI", "remote": true },
+  "browser": { "binding": "BROWSER", "remote": true },
+  "durable_objects": {
+    "bindings": [
+      { "name": "GEN142_SCOUT", "class_name": "Gen142Scout" }
+    ]
+  },
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["Gen142Scout"] }
+  ],
+  "triggers": { "crons": ["*/15 * * * *"] }
+}
