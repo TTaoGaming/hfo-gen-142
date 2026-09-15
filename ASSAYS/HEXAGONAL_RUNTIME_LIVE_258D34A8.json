@@ -1,0 +1,63 @@
+{
+  "job": {
+    "capability_contract_sha256": "dda6b9e338d6a44c4fe71a1982915cd56e6bbb0329443ef0cd8e8d463b14a1ec",
+    "job_sha256": "021adae741e1ad68d5fe4136e27169e5edbda7d63efa1bf8c563670cc786419c",
+    "semantic_output_sha256": "4a68dd7d759e7ab027364f10bffcaf0018f84a64340cc79bcf10f5619bf864c2",
+    "semantic_owner": "hfo-sigrun-va-r0",
+    "task_sha256": "50281c6f1b20fad4ac0e31cc36a7425bc08587b333893c6f880aaedc75fee7f9",
+    "verifier_id": "hfo-sigrun-hrist-v0"
+  },
+  "receipts": [
+    {
+      "adapter_id": "cdev-text-worker-port:kimi-v2",
+      "billing_class": "ZERO_MARGINAL",
+      "capability_contract_sha256": "dda6b9e338d6a44c4fe71a1982915cd56e6bbb0329443ef0cd8e8d463b14a1ec",
+      "completion_schema": "hfo.sigrun.worker_completion.v1",
+      "consumer_ack_sha256": "c9973797e57880ad58637630e43110fde935c923f88d5be700158aab56561a2f",
+      "controller_observed": true,
+      "effect_ceiling": "NONE",
+      "harness_id": "kimi-cli",
+      "host_id": "LenovoSlim7",
+      "independent_verifier": true,
+      "job_sha256": "021adae741e1ad68d5fe4136e27169e5edbda7d63efa1bf8c563670cc786419c",
+      "provider_id": "moonshot-kimi",
+      "schema": "hfo.hexagonal-adapter-receipt.v1",
+      "semantic_output_sha256": "4a68dd7d759e7ab027364f10bffcaf0018f84a64340cc79bcf10f5619bf864c2",
+      "tao_hot_loop_actions": 0,
+      "task_sha256": "50281c6f1b20fad4ac0e31cc36a7425bc08587b333893c6f880aaedc75fee7f9",
+      "terminal": true,
+      "verifier_id": "hfo-sigrun-hrist-v0",
+      "verifier_receipt_sha256": "08594dec912f76abbdffc828082918e95537bdb0249bfb338c8ed9b777bcf57d"
+    },
+    {
+      "adapter_id": "cdev-text-worker-port:codex-v1",
+      "billing_class": "ZERO_MARGINAL",
+      "capability_contract_sha256": "dda6b9e338d6a44c4fe71a1982915cd56e6bbb0329443ef0cd8e8d463b14a1ec",
+      "completion_schema": "hfo.sigrun.worker_completion.v1",
+      "consumer_ack_sha256": "50eed5679d2815362ad2a096021839ae5dde88c445a04657632e15d384297e5e",
+      "controller_observed": true,
+      "effect_ceiling": "NONE",
+      "harness_id": "codex-cli",
+      "host_id": "LenovoSlim7",
+      "independent_verifier": true,
+      "job_sha256": "021adae741e1ad68d5fe4136e27169e5edbda7d63efa1bf8c563670cc786419c",
+      "provider_id": "openai-codex",
+      "schema": "hfo.hexagonal-adapter-receipt.v1",
+      "semantic_output_sha256": "4a68dd7d759e7ab027364f10bffcaf0018f84a64340cc79bcf10f5619bf864c2",
+      "tao_hot_loop_actions": 0,
+      "task_sha256": "50281c6f1b20fad4ac0e31cc36a7425bc08587b333893c6f880aaedc75fee7f9",
+      "terminal": true,
+      "verifier_id": "hfo-sigrun-hrist-v0",
+      "verifier_receipt_sha256": "e182c5f7fa0989e8ef07bd6393e918c611ead4debecac0f02d0c94ab74540ca5"
+    }
+  ],
+  "require_distinct_hosts": false,
+  "schema": "hfo.hexagonal-runtime-assay.v1",
+  "source": {
+    "capability_contract_id": "hfo.bounded-text.no-effect-empty-workspace.v1",
+    "cdev_leaf_head": "d17f3692e1d70e5b880f8013843f60bd927fd557",
+    "semantic_output": "SIGRUN_V2_HEXAGONAL_258d34a8",
+    "sigrun_head": "85f15bd807d61c1d7b29d80136e558db5411a86c",
+    "task": "Return exactly this one line and nothing else: SIGRUN_V2_HEXAGONAL_258d34a8"
+  }
+}
