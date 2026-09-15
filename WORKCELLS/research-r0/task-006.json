@@ -1,0 +1,14 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-PRESTIGE-SWEEP-006",
+  "priority": 330,
+  "admitted": true,
+  "question": "Is AgentBeats SWE-bench still a live weak-incumbent public software-engineering crown surface for a full 100-task run?",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {
+      "url": "https://agentbeats.dev/agentbeater/swe-bench",
+      "assertions": ["SWE-bench", "100", "56.0", "Submit Agent"]
+    }
+  ]
+}
