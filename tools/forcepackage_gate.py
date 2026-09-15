@@ -10,7 +10,6 @@ import argparse
 import hashlib
 import json
 import re
-import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -31,7 +30,6 @@ HUMAN_BOUNDARIES = {
     "secret", "oauth", "2fa", "payment", "permission",
     "protected_merge", "irreversible_external_submit",
 }
-
 PACKAGE_KEYS = {
     "schema", "package_id", "mission_id", "root_actor_id", "domain", "domain_explicit",
     "intent", "fitness", "verifier", "deadline_utc", "max_runtime_minutes", "max_attempts",
@@ -48,6 +46,17 @@ FORMATION_KEYS = {
 ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{1,127}$")
 
 
+class Refused(ValueError):
+    def __init__(self, verdict: str, **detail: Any):
+        super().__init__(verdict)
+        self.verdict = verdict
+        self.detail = detail
+
+
+def refuse(verdict: str, **detail: Any) -> None:
+    raise Refused(verdict, **detail)
+
+
 def canon(value: Any) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 
@@ -61,15 +70,14 @@ def strict_int(value: Any) -> bool:
     return isinstance(value, int) and not isinstance(value, bool)
 
 
-class Refused(ValueError):
-    def __init__(self, verdict: str, **detail: Any):
-        super().__init__(verdict)
-        self.verdict = verdict
-        self.detail = detail
-
-
-def refuse(verdict: str, **detail: Any) -> None:
-    raise Refused(verdict, **detail)
+def exact_object(value: Any, expected: set[str], verdict: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        refuse(f"{verdict}_TYPE")
+    missing = sorted(expected - set(value))
+    extra = sorted(set(value) - expected)
+    if missing or extra:
+        refuse(verdict, missing=missing, extra=extra)
+    return value
 
 
 def parse_utc(value: Any) -> datetime:
@@ -81,35 +89,24 @@ def parse_utc(value: Any) -> datetime:
         refuse("DEADLINE_INVALID")
 
 
-def require_exact_keys(value: Any, expected: set[str], verdict: str) -> dict[str, Any]:
-    if not isinstance(value, dict):
-        refuse(f"{verdict}_TYPE")
-    keys = set(value)
-    missing = sorted(expected - keys)
-    extra = sorted(keys - expected)
-    if missing or extra:
-        refuse(verdict, missing=missing, extra=extra)
-    return value
-
-
 def normalized_package(package: dict[str, Any]) -> dict[str, Any]:
     out = dict(package)
     out["human_boundaries"] = sorted(package["human_boundaries"])
     out["stop_conditions"] = sorted(package["stop_conditions"])
     out["formations"] = sorted(
-        [dict(row) for row in package["formations"]],
-        key=lambda row: row["formation_id"],
+        [dict(row) for row in package["formations"]], key=lambda row: row["formation_id"]
     )
     return out
 
 
 def validate_package(package: Any, now: datetime | None = None) -> dict[str, Any]:
-    p = require_exact_keys(package, PACKAGE_KEYS, "PACKAGE_FIELDS_REFUSED")
+    p = exact_object(package, PACKAGE_KEYS, "PACKAGE_FIELDS_REFUSED")
     if p.get("schema") != SCHEMA:
         refuse("PACKAGE_SCHEMA_REFUSED", declared=p.get("schema"))
 
     for key in ("package_id", "mission_id"):
-        if not isinstance(p.get(key), str) or not ID_RE.fullmatch(p[key]):
+        value = p.get(key)
+        if not isinstance(value, str) or not ID_RE.fullmatch(value):
             refuse("PACKAGE_ID_REFUSED", field=key)
     if not isinstance(p.get("root_actor_id"), str) or not p["root_actor_id"].strip():
         refuse("ROOT_ACTOR_ID_REQUIRED")
@@ -122,16 +119,13 @@ def validate_package(package: Any, now: datetime | None = None) -> dict[str, Any
     if not isinstance(p.get("intent"), str) or not p["intent"].strip():
         refuse("INTENT_REQUIRED")
 
-    fitness = p.get("fitness")
-    if not isinstance(fitness, dict) or set(fitness) != {"primary", "external_verification_required"}:
-        refuse("FITNESS_FIELDS_REFUSED")
+    fitness = exact_object(p.get("fitness"), {"primary", "external_verification_required"}, "FITNESS_FIELDS_REFUSED")
     if not isinstance(fitness.get("primary"), str) or not fitness["primary"].strip():
         refuse("FITNESS_REQUIRED")
     if fitness.get("external_verification_required") is not True:
         refuse("EXTERNAL_VERIFICATION_REQUIRED")
-    verifier = p.get("verifier")
-    if not isinstance(verifier, dict) or set(verifier) != {"id", "frozen"}:
-        refuse("VERIFIER_POLICY_FIELDS_REFUSED")
+
+    verifier = exact_object(p.get("verifier"), {"id", "frozen"}, "VERIFIER_POLICY_FIELDS_REFUSED")
     if not isinstance(verifier.get("id"), str) or not verifier["id"].strip():
         refuse("VERIFIER_REQUIRED")
     if verifier.get("frozen") is not True:
@@ -142,26 +136,27 @@ def validate_package(package: Any, now: datetime | None = None) -> dict[str, Any
         refuse("DEADLINE_EXPIRED", deadline_utc=p.get("deadline_utc"))
 
     runtime = p.get("max_runtime_minutes")
+    attempts = p.get("max_attempts")
+    spend = p.get("max_spend_usd")
     if not strict_int(runtime) or not 1 <= runtime <= 1440:
         refuse("RUNTIME_BOUND_INVALID", max_runtime_minutes=runtime)
-    attempts = p.get("max_attempts")
     if not strict_int(attempts) or not 1 <= attempts <= 2048:
         refuse("ATTEMPT_BOUND_INVALID", max_attempts=attempts)
-    spend = p.get("max_spend_usd")
     if not isinstance(spend, (int, float)) or isinstance(spend, bool) or spend < 0:
         refuse("SPEND_BOUND_INVALID", max_spend_usd=spend)
+
     effect = p.get("effect_ceiling")
     if not isinstance(effect, str) or not effect.strip():
         refuse("EFFECT_CEILING_REQUIRED")
-
     if p.get("receipt_sink") != RECEIPT_SINK:
         refuse("RENDEZVOUS_MISMATCH", required=RECEIPT_SINK)
     if p.get("semantic_owner") != SEMANTIC_OWNER:
         refuse("DUPLICATE_SEMANTIC_OWNER", required=SEMANTIC_OWNER)
 
-    provider = p.get("provider_policy")
-    if not isinstance(provider, dict) or set(provider) != {"role", "frontier_required", "allow_local_fallback"}:
-        refuse("PROVIDER_POLICY_FIELDS_REFUSED")
+    provider = exact_object(
+        p.get("provider_policy"), {"role", "frontier_required", "allow_local_fallback"},
+        "PROVIDER_POLICY_FIELDS_REFUSED",
+    )
     if provider.get("role") != "leaf":
         refuse("PROVIDER_NOT_LEAF")
     if not isinstance(provider.get("frontier_required"), bool) or not isinstance(provider.get("allow_local_fallback"), bool):
@@ -170,18 +165,17 @@ def validate_package(package: Any, now: datetime | None = None) -> dict[str, Any
         refuse("BLOCKED_PROVIDER_FALLBACK")
 
     boundaries = p.get("human_boundaries")
-    if not isinstance(boundaries, list) or len(boundaries) != len(set(boundaries)):
+    if not isinstance(boundaries, list) or not all(isinstance(x, str) for x in boundaries):
         refuse("HUMAN_BOUNDARY_INVALID")
-    if any(x not in HUMAN_BOUNDARIES for x in boundaries):
+    if len(boundaries) != len(set(boundaries)) or any(x not in HUMAN_BOUNDARIES for x in boundaries):
         refuse("HUMAN_BOUNDARY_INVALID")
     if p.get("tao_relay_required") is not False:
-        # ForcePackage admission is not a human-resume mechanism. A later executable
-        # mission may HOLD at a declared human authority boundary and arm a watcher.
         refuse("TAO_RELAY_NOT_RUNTIME_CONTINUATION")
 
-    control = p.get("control_plane")
-    if not isinstance(control, dict) or set(control) != {"new_control_plane", "recover_probe_repair_completed"}:
-        refuse("CONTROL_PLANE_FIELDS_REFUSED")
+    control = exact_object(
+        p.get("control_plane"), {"new_control_plane", "recover_probe_repair_completed"},
+        "CONTROL_PLANE_FIELDS_REFUSED",
+    )
     if control.get("new_control_plane") is not False:
         refuse("BLOCKED_NEW_CONTROL_PLANE")
     if control.get("recover_probe_repair_completed") is not True:
@@ -203,19 +197,21 @@ def validate_package(package: Any, now: datetime | None = None) -> dict[str, Any
     formations = p.get("formations")
     if not isinstance(formations, list) or not formations:
         refuse("FORMATIONS_REQUIRED")
+
     ids: set[str] = set()
     rows: list[dict[str, Any]] = []
     total_children = 0
     total_attempts = 0
     total_spend = 0.0
     for raw in formations:
-        f = require_exact_keys(raw, FORMATION_KEYS, "FORMATION_FIELDS_REFUSED")
+        f = exact_object(raw, FORMATION_KEYS, "FORMATION_FIELDS_REFUSED")
         fid = f.get("formation_id")
         if not isinstance(fid, str) or not ID_RE.fullmatch(fid) or fid in ids:
             refuse("FORMATION_ID_REFUSED", formation_id=fid)
         ids.add(fid)
+
         archetype = f.get("archetype")
-        if archetype not in WORKER_ARCHETYPES:
+        if not isinstance(archetype, str) or archetype not in WORKER_ARCHETYPES:
             refuse("ARCHETYPE_UNVERSIONED", formation_id=fid, archetype=archetype)
         count = f.get("count")
         if not strict_int(count) or not 1 <= count <= 128:
@@ -226,9 +222,9 @@ def validate_package(package: Any, now: datetime | None = None) -> dict[str, Any
         if skill is not None and (not isinstance(skill, str) or not skill.strip()):
             refuse("FORMATION_SKILL_INVALID", formation_id=fid)
         each_attempts = f.get("max_attempts_each")
+        each_spend = f.get("max_spend_usd_each")
         if not strict_int(each_attempts) or not 1 <= each_attempts <= 20:
             refuse("FORMATION_ATTEMPT_BOUND_INVALID", formation_id=fid)
-        each_spend = f.get("max_spend_usd_each")
         if not isinstance(each_spend, (int, float)) or isinstance(each_spend, bool) or each_spend < 0:
             refuse("FORMATION_SPEND_BOUND_INVALID", formation_id=fid)
         if f.get("effect_ceiling") != effect:
@@ -276,7 +272,6 @@ def compile_actor_intents(package: dict[str, Any]) -> dict[str, Any]:
     package_sha = sha256(normalized)
     root = normalized["root_actor_id"]
     actors_by_formation: dict[str, list[str]] = {}
-
     for f in normalized["formations"]:
         actors_by_formation[f["formation_id"]] = [
             f"{root}/fp/{normalized['package_id']}@{package_sha[:12]}/{f['formation_id']}/{i:03d}"
@@ -286,13 +281,8 @@ def compile_actor_intents(package: dict[str, Any]) -> dict[str, Any]:
     intents: list[dict[str, Any]] = []
     for f in normalized["formations"]:
         verifier_actor_ids = [] if f["archetype"] == "VERIFIER" else actors_by_formation[f["verifier_formation_id"]]
-        for ordinal, actor_id in enumerate(actors_by_formation[f["formation_id"]], start=1):
-            seed = {
-                "package_sha256": package_sha,
-                "formation_id": f["formation_id"],
-                "ordinal": ordinal,
-                "actor_id": actor_id,
-            }
+        for ordinal, actor_id in enumerate(actors_by_formation[f["formation_id"]], 1):
+            seed = {"package_sha256": package_sha, "formation_id": f["formation_id"], "ordinal": ordinal, "actor_id": actor_id}
             intents.append({
                 "schema": ACTOR_INTENT_SCHEMA,
                 "intent_id": sha256(seed),
