@@ -10,6 +10,8 @@ on:
       - 'CONTRIBUTING.md'
       - 'tools/public_boundary_gate.py'
       - 'tests/test_public_boundary_gate.py'
+      - 'tools/scout_result_gate.py'
+      - 'tests/test_scout_result_gate.py'
       - '.github/CODEOWNERS'
       - 'DETERMINISTIC_JANITOR_CONTRACT.md'
       - 'tools/janitor_gate.py'
@@ -28,6 +30,8 @@ on:
       - 'CONTRIBUTING.md'
       - 'tools/public_boundary_gate.py'
       - 'tests/test_public_boundary_gate.py'
+      - 'tools/scout_result_gate.py'
+      - 'tests/test_scout_result_gate.py'
       - '.github/CODEOWNERS'
       - 'DETERMINISTIC_JANITOR_CONTRACT.md'
       - 'tools/janitor_gate.py'
@@ -55,6 +59,7 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_reconcile_kernel.py' -v
           python -m unittest discover -s tests -p 'test_public_boundary_gate.py' -v
+          python -m unittest discover -s tests -p 'test_scout_result_gate.py' -v
           python -m unittest discover -s tests -p 'test_janitor_gate.py' -v
       - name: Assert controller remains a pure policy surface
         shell: bash
