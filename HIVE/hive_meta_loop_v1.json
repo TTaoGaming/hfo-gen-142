@@ -1,0 +1,73 @@
+{
+  "schema": "hive.meta_loop.v1",
+  "checkpoint_utc": "2026-09-15T22:01:53Z",
+  "authority": "public_semantic_recovery_only",
+  "model": {
+    "type": "h_pomdp_plus_versioned_dag",
+    "belief_state": "durable_receipts",
+    "cycle": ["H", "I", "V", "E"],
+    "temporal_edge": "E_t.receipts -> H_{t+1}"
+  },
+  "phases": {
+    "H": {
+      "name": "Hindsight",
+      "ports": ["P0_OBSERVE", "P7_NAVIGATE"],
+      "input": ["current_state", "heritage", "failures", "incumbents", "public_exemplars", "research", "champions"],
+      "output": "donor_pack.v1",
+      "law": "recover_and_reverse_engineer_before_mutation"
+    },
+    "I": {
+      "name": "Insight",
+      "ports": ["P1_BRIDGE", "P6_ASSIMILATE"],
+      "input": ["donor_pack.v1", "current_problem"],
+      "output": "transformation_graph.v1",
+      "law": "cross_domain_transformations_require_provenance_and_interfaces"
+    },
+    "V": {
+      "name": "Validated Foresight",
+      "ports": ["P4_DISRUPT", "P5_IMMUNIZE"],
+      "input": ["transformation_graph.v1", "authority_envelope"],
+      "output": "validation_envelope.v1",
+      "law": "freeze_evaluator_constraints_budget_stop_conditions_and_verifier_before_scale"
+    },
+    "E": {
+      "name": "Evolve",
+      "ports": ["P2_SHAPE", "P3_INJECT"],
+      "input": ["validation_envelope.v1", "candidate_population"],
+      "output": "evolution_manifest.v1",
+      "law": "bounded_search_under_frozen_validation_envelope"
+    }
+  },
+  "formal": {
+    "H_t": "R(D_<=t, C_t)",
+    "I_t": "T(H_t, C_t)",
+    "V_t": "G(I_t, A_t)",
+    "E_t": "S(V_t)",
+    "D_t_plus_1": "D_t U receipts(E_t)"
+  },
+  "dag": [
+    "sources",
+    "hindsight_donor_extraction",
+    "insight_transformation_graph",
+    "validated_foresight_gates",
+    "evolve_search_branches",
+    "independent_verify_consumer_ack",
+    "durable_receipts"
+  ],
+  "invariants": [
+    "NO_HINDSIGHT_BYPASS",
+    "NO_INSIGHT_WITHOUT_PROVENANCE",
+    "NO_EVOLUTION_ON_VIBES",
+    "PRODUCER_NE_VERIFIER",
+    "EMIT_NE_ACCEPT_NE_CLAIM_NE_ASSIGN_NE_EXECUTE_NE_VERIFY_NE_SUCCESS",
+    "PUBLIC_OBSERVATION_BYZANTINE",
+    "FAILURE_IS_GENETIC_MATERIAL",
+    "EVOLUTION_ENGINE_IS_PLUGIN_NOT_GOVERNOR",
+    "HERITAGE_REQUIRES_VERIFIER_PASS_AND_CONSUMER_ACK",
+    "TAO_HOT_LOOP_ACTIONS_TARGET_0"
+  ],
+  "engine_slot": {
+    "examples": ["Shinka Evolve", "OpenEvolve", "GEPA", "DSPy optimizers", "AFlow", "MAP-Elites", "MOME"],
+    "constraint": "engine_may_mutate_search_but_may_not_redefine_mission_authority_evaluator_or_success"
+  }
+}
