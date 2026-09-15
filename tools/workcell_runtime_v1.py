@@ -138,7 +138,22 @@ def terminal_state_for(result: dict) -> str:
         value = str(result.get(key, "")).upper()
         if value in {"PASS", "FAIL", "HOLD", "KILL"}:
             return value
-    return "FAIL"
+    raise RuntimeError("WORKER_TERMINAL_STATE_UNDECLARED")
+
+
+def validate_worker_result(result: dict, selected: dict) -> None:
+    if result.get("schema") != "hfo.research-cell-result.v1":
+        raise RuntimeError(f"WORKER_RESULT_SCHEMA_REFUSED:{result.get('schema')}")
+    if result.get("work_id") != selected.get("work_id"):
+        raise RuntimeError("WORKER_RESULT_WORK_ID_MISMATCH")
+    if result.get("spec_sha256") != selected.get("spec_sha256"):
+        raise RuntimeError("WORKER_RESULT_SPEC_HASH_MISMATCH")
+    declared = str(result.get("result_sha256", ""))
+    body = dict(result)
+    body.pop("result_sha256", None)
+    if len(declared) != 64 or declared != sha256(body):
+        raise RuntimeError("WORKER_RESULT_HASH_MISMATCH")
+    terminal_state_for(result)
 
 
 def build_handoff(result: dict, ack_url: str, watch_receipt: dict | None) -> dict:
@@ -220,6 +235,7 @@ def main() -> int:
         raise RuntimeError(f"WORKER_NONZERO_WITHOUT_TERMINAL_RECEIPT:{worker_proc.returncode}")
     result = json.loads(result_path.read_text(encoding="utf-8"))
     report = report_path.read_text(encoding="utf-8")
+    validate_worker_result(result, selected)
 
     ack = get_or_create_consumer_ack(
         token, args.repo, args.issue, comments, selected, report, selection["selection_sha256"]
