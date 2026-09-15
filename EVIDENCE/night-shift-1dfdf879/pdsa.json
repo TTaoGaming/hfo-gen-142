@@ -1,16 +1,21 @@
 {
   "canary": {
+    "branch_artifacts": {
+      "note": "Branch copies preserve parsed result/schedule semantics; local_exact_hashes refer to exact runtime bytes before normalization.",
+      "results_semantic_copy": "EVIDENCE/night-shift-1dfdf879/canary-results.json",
+      "validated_solution_semantic_copy": "EVIDENCE/night-shift-1dfdf879/canary-solution.json"
+    },
     "cost_usd": 0,
     "delta_vs_incumbent": 170,
     "fingerprint": "jsplib-ta32js|ortools-9.15.6755|seed-1701|60s|8workers|oracle-arm64|scheduleopt-validator",
-    "hashes": {
+    "incumbent_upper_bound": 1783,
+    "input_adapter": "current ScheduleOpt ta32js JSON operations -> {data: operations}; required because current reference CP-SAT script expects legacy data key",
+    "local_exact_hashes": {
       "adapted_instance": "3be66ae97491c5ee828e6477e2f6e508ecba36dba03024f26f1f9977b751bd80",
       "canary_log": "4244e5de78de6f30005b737d2cb4fc6d3f63f6e84f52883c1af019dac35d4757",
       "results_json": "f65be0f7621c8ffcd54490010529e4472b054ce59ff2b25e49182ee9f834e871",
       "solutions_json": "66a09ea658d7aed5ebdce5c81692661021db2e98ed823b3ee9a600fe359031c1"
     },
-    "incumbent_upper_bound": 1783,
-    "input_adapter": "current ScheduleOpt ta32js JSON operations -> {data: operations}; required because current reference CP-SAT script expects legacy data key",
     "lower_bound": 1774,
     "max_time_seconds": 60,
     "one_solver_execution": true,
