@@ -1,0 +1,18 @@
+{
+  "schema": "hfo.research-workitem.v1",
+  "work_id": "GEN142-PRESTIGE-SWEEP-008",
+  "priority": 310,
+  "admitted": true,
+  "question": "Is ARC Prize 2026 ARC-AGI-3 still a live public prestige crown surface with a beatable current Kaggle public leader?",
+  "cloudflare_health_url": "https://hfo-sigrun-va-r0.tommytai3.workers.dev/health",
+  "sources": [
+    {
+      "url": "https://www.kaggle.com/competitions/arc-prize-2026-arc-agi-3/leaderboard",
+      "assertions": ["mostik.ai", "7.51", "Public", "Leaderboard"]
+    },
+    {
+      "url": "https://arcprize.org/competitions/2026/arc-agi-3",
+      "assertions": ["September 30, 2026", "$850K", "Kaggle"]
+    }
+  ]
+}
