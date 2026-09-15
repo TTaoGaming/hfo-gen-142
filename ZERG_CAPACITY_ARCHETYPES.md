@@ -50,6 +50,30 @@ Examples:
 - resource/currentness uncertainty -> EXTRACTOR;
 - multiple eligible carriers for admitted demand -> QUEEN policy may become relevant.
 
+## QD ecology law
+
+The Hive is not one hill-climber. During an admitted `EXPLORE_QD_MOME` mission, different Hluti/carriers should occupy and improve materially different behavioral niches rather than converge on whichever target currently has the highest scalar score.
+
+`DIVERSITY_WITHOUT_FITNESS = NOISE`
+
+`FITNESS_WITHOUT_DIVERSITY = PREMATURE_CONVERGENCE`
+
+Use both:
+
+- A **behavioral niche** is defined by task/domain plus materially relevant execution characteristics such as verifier/proof surface, proof-latency regime, compute regime, and mutation/donor family.
+- The **EVOLUTION_CHAMBER** may maintain multiple Pareto champions per niche against a frozen evaluator. An archive is a state/evidence projection; it is not a new scheduler, queue, authority owner, or permission system.
+- A **LING/TWINLING** explores an underfilled niche or a distinct mutation/falsification axis. On collision with materially identical work, morph rather than duplicate.
+- A **RED_QUEEN/VERIFIER** applies pressure inside and across niches without granting itself authority to collapse the archive.
+- A **REDUCER** deduplicates evidence and may mark dominance inside a niche. It must not select one global primary during exploration merely because scalar routing scores differ across incomparable niches.
+- A global package/submission choice is a separate explicit phase transition. Only then may the submission reducer concentrate resources; that choice must not erase the QD archive or rewrite losing niches as useless.
+- Reusable archetype/skill genes promote only through independent verifier + ConsumerAck and must survive a later consumption assay. Prose agreement is not evolution.
+
+Ablation for QD search:
+
+> If this niche or archetype disappears, which independently measurable capability, search region, verifier surface, or recovery behavior becomes unreachable or systematically underexplored?
+
+If the answer is “none,” merge/fold the redundant phenotype. If the answer is measurable, retain the niche even when it is not the current global best score.
+
 ## A2A projection law
 
 A2A describes a **served agent**, not every internal phenotype.
