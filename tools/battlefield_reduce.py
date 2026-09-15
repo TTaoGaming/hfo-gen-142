@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""Deterministic reducer for admitted battlefield cards.
+"""Deterministic FINAL/SEND reducer for admitted battlefield cards.
 
-Outputs at most three survivors and exactly one primary, or NONE.
+This is intentionally a convergence operator: it outputs at most three
+survivors and exactly one primary, or NONE. It MUST NOT be used during QD
+exploration; use qd_battlefield_archive.py for EXPLORE.
 Uses battlefield_gate as the sole admission/scoring authority.
 """
 import argparse
@@ -38,7 +40,16 @@ def evaluate_path(path):
         "routing_score": float(receipt.get("routing_score", 0.0)),
     }
 
-def reduce(paths, max_survivors=3):
+def reduce(paths, max_survivors=3, phase="EXPLORE"):
+    if phase != "SEND":
+        return {
+            "decision": "HOLD",
+            "verdict": "GLOBAL_CONVERGENCE_FORBIDDEN_DURING_EXPLORE",
+            "primary": None,
+            "survivors": [],
+            "rejected": [],
+            "next": "Use tools/qd_battlefield_archive.py until an explicit SEND phase is admitted",
+        }
     receipts = [evaluate_path(p) for p in paths]
     admitted = [r for r in receipts if r["admitted"]]
     admitted.sort(key=lambda r: (-r["routing_score"], r.get("battlefield_id") or "", r["path"]))
@@ -58,6 +69,8 @@ def main():
     parser = argparse.ArgumentParser(description="Reduce gated battlefields to <=3 survivors and one primary")
     parser.add_argument("cards", nargs="+")
     parser.add_argument("--max-survivors", type=int, default=3)
+    parser.add_argument("--phase", choices=("EXPLORE", "SEND"), default="EXPLORE",
+                        help="Poka-yoke: global convergence is legal only in explicit SEND phase")
     args = parser.parse_args()
     if not 1 <= args.max_survivors <= 3:
         print(json.dumps({"decision": "HOLD", "verdict": "SURVIVOR_LIMIT_INVALID"}, sort_keys=True))
@@ -66,8 +79,10 @@ def main():
     if not paths:
         print(json.dumps({"decision": "NONE", "primary": None, "survivors": [], "rejected": []}, sort_keys=True))
         return 1
-    result = reduce(paths, args.max_survivors)
+    result = reduce(paths, args.max_survivors, phase=args.phase)
     print(json.dumps(result, sort_keys=True))
+    if result["decision"] == "HOLD":
+        return 2
     return 0 if result["decision"] == "SELECT" else 1
 
 
