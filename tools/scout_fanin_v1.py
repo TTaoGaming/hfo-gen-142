@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 import sys
+from pathlib import Path
 import urllib.request
 from typing import Any
 try:
@@ -20,6 +21,7 @@ ACTOR = "SIGRUN-GEN142-SCOUT-R0"
 READY_MARK = "hfo-scout-fanin-v1"
 ANDON_MARK = "hfo-scout-andon-v1"
 HATCHERY_MARK = "hfo-hatchery-fanin-v1"
+EVENT_OUT = os.environ.get("HFO_HATCHERY_EVENT_OUT", "")
 
 
 def sha256(text: str) -> str:
@@ -168,6 +170,14 @@ def fanin_hatchery(payload: dict[str, Any]) -> int:
         print(json.dumps({"status": "NOOP_HATCHERY_IDLE", "slots": len(payload.get("slots", []))}))
         return 0
     digest = sha256(json.dumps(entries, sort_keys=True, separators=(",", ":"), ensure_ascii=False))
+    event = {
+        "schema": "hfo.hatchery-event.v1", "policy": payload.get("policy"),
+        "schedule": payload.get("schedule"), "backpressure_minutes": payload.get("backpressure_minutes"),
+        "entries": entries, "entries_sha256": digest,
+    }
+    if EVENT_OUT:
+        out = Path(EVENT_OUT); out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(event, indent=2, ensure_ascii=False), encoding="utf-8")
     marker = f"<!-- {HATCHERY_MARK}:{digest} -->"
     if has_marker(marker):
         print(json.dumps({"status": "NOOP_HATCHERY_ALREADY_FANNED_IN", "digest": digest}))

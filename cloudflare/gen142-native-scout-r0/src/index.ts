@@ -3,6 +3,7 @@ import { createQuickActionTools } from "agents/browser/ai";
 import { createWorkersAI } from "workers-ai-provider";
 import { generateText, stepCountIs } from "ai";
 import { emptySynthesisNoClaim } from "./result-policy";
+import { carrierUuidFromDigest, selectHatchCandidate } from "./hatch-policy";
 
 const ACTOR_ID = "SIGRUN-GEN142-SCOUT-R0";
 const PARENT_ACTOR = "SIGRUN/C2";
@@ -21,6 +22,7 @@ const HATCH_SLOTS = [
   { name: "SIGRUN-GEN142-LARVA-REDUCER", seedLane: "REDUCER" as Lane },
 ] as const;
 const HATCH_BACKPRESSURE_MINUTES = 30;
+const HATCH_CADENCE_MINUTES = 5;
 type Phase = "IDLE" | "COGNITION_RUNNING" | "READY" | "RECOVERY_REQUIRED" | "FAILED";
 
 type ScoutState = {
@@ -34,6 +36,7 @@ type ScoutState = {
   lastLane?: Lane;
   lastAttemptLane?: Lane;
   lastRunId?: string;
+  lastCarrierUuid?: string;
   lastStartedUtc?: string;
   lastCompletedUtc?: string;
   lastResult?: string;
@@ -175,12 +178,14 @@ export class Gen142Scout extends Agent<any, ScoutState> {
           ? laneAfter(current.lastLane)
           : LANES[current.epoch % LANES.length];
     const canonical = await canonicalIssueSnapshot();
+    const carrierUuid = carrierUuidFromDigest(await sha256(`carrier|${runId}`));
     const started = new Date().toISOString();
     this.setState({
       ...current,
       phase: "COGNITION_RUNNING",
       lastAttemptLane: lane,
       lastRunId: runId,
+      lastCarrierUuid: carrierUuid,
       lastStartedUtc: started,
       lastResult: undefined,
       lastResultSha256: undefined,
@@ -192,7 +197,7 @@ export class Gen142Scout extends Agent<any, ScoutState> {
     return this.startFiber(
       "gen142-scout",
       async (ctx) => {
-        ctx.stash({ runId, actorId: ACTOR_ID, lane, debateVersion: DEBATE_VERSION });
+        ctx.stash({ runId, carrierUuid, actorId: ACTOR_ID, lane, debateVersion: DEBATE_VERSION });
         const workersai = createWorkersAI({ binding: this.env.AI });
         const runDebater = async (role: "PROPOSER" | "FALSIFIER", system: string) => {
           const browserTools = createQuickActionTools({
@@ -228,10 +233,9 @@ export class Gen142Scout extends Agent<any, ScoutState> {
         };
 
         try {
-          const [proposer, falsifier] = await Promise.all([
-            runDebater("PROPOSER", PROPOSER_SYSTEM),
-            runDebater("FALSIFIER", FALSIFIER_SYSTEM),
-          ]);
+          // Preserve independent role prompts but serialize provider calls to avoid RPM burst amplification.
+          const proposer = await runDebater("PROPOSER", PROPOSER_SYSTEM);
+          const falsifier = await runDebater("FALSIFIER", FALSIFIER_SYSTEM);
           const debateSha = await sha256(JSON.stringify({ lane, proposer, falsifier }));
           const synthesis = await generateText({
             model: workersai(MODEL),
@@ -295,7 +299,7 @@ export class Gen142Scout extends Agent<any, ScoutState> {
           throw error;
         }
       },
-      { idempotencyKey: runId, metadata: { actorId: ACTOR_ID, runId, lane, debateVersion: DEBATE_VERSION } },
+      { idempotencyKey: runId, metadata: { actorId: ACTOR_ID, runId, carrierUuid, lane, debateVersion: DEBATE_VERSION } },
     );
   }
 
@@ -350,15 +354,23 @@ async function runScheduled(env: any, scheduledTime: number) {
     return { slot, scout, publicState };
   }));
   const nowMs = Date.now();
-  const pressured = slots.filter(({ publicState }) => recentRepeatedFailure(publicState, nowMs));
-  if (pressured.length >= 2) {
-    return { mode: "BACKPRESSURE_HOLD", pressured: pressured.map((x) => x.slot.name) };
-  }
-  const results = await Promise.all(slots.map(async ({ slot, scout, publicState }) => {
-    if (publicState.phase === "COGNITION_RUNNING") return { actor: slot.name, accepted: false, reason: "BUSY" };
-    return { actor: slot.name, ...(await scout.runScout(`cron-${stamp}-${slot.seedLane}`, slot.seedLane)) };
-  }));
-  return { mode: "HATCH", results };
+  const decision = selectHatchCandidate(
+    slots.map(({ slot, publicState }) => ({
+      name: slot.name,
+      phase: publicState.phase,
+      pressured: recentRepeatedFailure(publicState, nowMs),
+    })),
+    scheduledTime,
+    HATCH_CADENCE_MINUTES,
+  );
+  if (decision.mode === "BACKPRESSURE_HOLD") return decision;
+  const chosen = slots.find(({ slot }) => slot.name === decision.name);
+  if (!chosen) throw new Error("HATCH_SLOT_SELECTION_DRIFT");
+  const result = await chosen.scout.runScout(
+    `cron-${stamp}-${chosen.slot.seedLane}`,
+    chosen.slot.seedLane,
+  );
+  return { mode: "HATCH_ONE", actor: chosen.slot.name, rotation: decision.rotation, ...result };
 }
 
 export default {
@@ -371,7 +383,7 @@ export default {
         parent_actor: PARENT_ACTOR,
         radix: RADIX,
         model: MODEL,
-        cadence: "*/15 * * * *",
+        cadence: "*/5 * * * *",
         lanes: LANES,
         debate: { version: DEBATE_VERSION, roles: ["PROPOSER", "FALSIFIER", "REDUCER"] },
         effect_ceiling: "RESEARCH_ONLY",
@@ -389,7 +401,7 @@ export default {
       return Response.json({
         ok: true,
         policy: "bounded-four-slot-hatchery-v1",
-        schedule: "*/15 * * * *",
+        schedule: "*/5 * * * *",
         backpressure_minutes: HATCH_BACKPRESSURE_MINUTES,
         slots,
       });
