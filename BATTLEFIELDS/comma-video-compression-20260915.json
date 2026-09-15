@@ -1,0 +1,102 @@
+{
+  "schema_version": "battlefield.v1",
+  "battlefield_id": "comma-video-compression-20260915",
+  "observed_at_utc": "2026-09-15T05:19:03Z",
+  "mission_class": "prestige_crown",
+  "stage": "canary",
+  "domain": "systems/performance",
+  "target": {
+    "board": "comma.ai leaderboard",
+    "track": "video compression challenge",
+    "metric": "100*SegNet + sqrt(10*PoseNet) + 25*rate",
+    "direction": "minimize",
+    "incumbent_name": "semantic-pose-HPAC_CPR1_polished",
+    "incumbent_score": 0.16226842169958583,
+    "incumbent_checked_at_utc": "2026-09-15T05:19:03Z",
+    "incumbent_url": "https://github.com/commaai/comma_video_compression_challenge/pull/135",
+    "rules_url": "https://github.com/commaai/comma_video_compression_challenge",
+    "submission_url": "https://github.com/commaai/comma_video_compression_challenge/pulls",
+    "open_to_user": true,
+    "public_proof_before_merge": true,
+    "proof_latency_hours": 1
+  },
+  "prestige": {
+    "tier": "A",
+    "institution_or_platform": "comma.ai",
+    "independent_verifier": true,
+    "verifier_url": "https://github.com/commaai/comma_video_compression_challenge/blob/master/evaluate.sh",
+    "public_attribution": true,
+    "durable_public_evidence": true,
+    "real_incumbent_competition": true,
+    "competitor_count": 60,
+    "accepted_submission_protocol": true,
+    "buyer_legibility": 0.95
+  },
+  "commercial": {
+    "buyer_personas": ["performance engineering teams", "autonomy/video systems teams"],
+    "offer": "deterministic benchmark optimization and reproducibility engineering",
+    "demand_evidence_urls": ["https://comma.ai/leaderboard"],
+    "p_paid_conversation_7d": 0.05,
+    "expected_cash_30d": 1,
+    "expected_cash_90d": 1000,
+    "case_study_claim": "Improved or rigorously falsified a public compression benchmark using frozen evaluation."
+  },
+  "evolution": {
+    "donors": [
+      {
+        "url": "https://github.com/commaai/comma_video_compression_challenge/pull/135",
+        "allowed": true,
+        "type": "incumbent artifact",
+        "contribution": "exact incumbent archive, lossless representation lineage, deterministic promotion loop"
+      },
+      {
+        "url": "https://github.com/commaai/comma_video_compression_challenge/pull/133",
+        "allowed": true,
+        "type": "runner-up donor",
+        "contribution": "int12 coefficient polishing lineage"
+      }
+    ],
+    "mutable_axes": ["lossless archive/container representation", "carrier/entropy coding parameters"],
+    "weakness_hypothesis": "The 0.162 incumbent is a stack of many small byte-level wins, so a remaining exact lossless representation inefficiency could improve score without semantic regression.",
+    "gap_evidence_urls": ["https://github.com/commaai/comma_video_compression_challenge/pull/135"],
+    "canary": {
+      "runtime_minutes": 5,
+      "cost_usd": 0,
+      "status": "FAIL_TIE_MINIMAL_ZIP_OVERHEAD",
+      "promotion_rule": "PROMOTE only if payload SHA is identical and charged archive bytes strictly decrease; otherwise KILL this fingerprint/axis."
+    },
+    "full_run": {
+      "runtime_minutes": 30,
+      "cost_usd": 0
+    }
+  },
+  "execution": {
+    "frontier_required": false,
+    "provider_live": true,
+    "provider_class": "local_cots",
+    "provider_route": "OVH x86_64 shell",
+    "no_weak_fallback": true,
+    "evaluator_frozen": true,
+    "local_reproduction_ready": true,
+    "external_auth_ready": false,
+    "carrier": "OVH VPS x86_64"
+  },
+  "probability": {
+    "p_beat_incumbent": 0.12,
+    "p_public_proof_24h": 0.7,
+    "p_public_proof_7d": 0.9,
+    "confidence": 0.65,
+    "basis": "Current board is open and public-PR submission is explicit. The incumbent artifact is public and the evaluator is frozen, but the 0.162 score is already heavily optimized."
+  },
+  "budget": {
+    "max_spend_usd": 0,
+    "max_operator_minutes": 10,
+    "max_wallclock_hours": 1
+  },
+  "evidence": [
+    "https://comma.ai/leaderboard",
+    "https://github.com/commaai/comma_video_compression_challenge",
+    "https://github.com/commaai/comma_video_compression_challenge/pull/135"
+  ],
+  "notes": "Carrier-local reducer selected this after falsifying PCBGolf for no visible real incumbent/independent verifier and SISAP Task 1 for an ambiguous post-challenge accepted submission path. Canary reconstructed the incumbent one-member stored ZIP at the protocol minimum 100-byte ZIP overhead. Incumbent archive 186724 bytes, payload 186624 bytes, candidate 186724 bytes. Payload SHA256 identical 66da2921780038cad6b18d25ea36e066c63b07b755fec33c15ac013ff4bcfc3c; candidate delta 0. This exact outer-container fingerprint is killed; do not repeat without changing strategy."
+}
